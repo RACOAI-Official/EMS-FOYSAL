@@ -1,0 +1,54 @@
+[
+  {
+    "_id": "60ad8c5e9f8c9a001f5c3b01",
+    "name": "Development Team",
+    "description": "Core backend and frontend development",
+    "image": "team.png",
+    "leader": "507f1f77bcf86cd799439012",
+    "status": "active",
+    "progress": 0,
+    "progressNote": ""
+  },
+  {
+    "_id": "60ad8c5e9f8c9a001f5c3b02",
+    "name": "Quality Assurance",
+    "description": "Testing and quality assurance team",
+    "image": "team.png",
+    "leader": "507f1f77bcf86cd799439013",
+    "status": "active",
+    "progress": 0,
+    "progressNote": ""
+  },
+  {
+    "_id": "60ad8c5e9f8c9a001f5c3b03",
+    "name": "Operations Team",
+    "description": "Operations and infrastructure management",
+    "image": "team.png",
+    "leader": null,
+    "status": "active",
+    "progress": 0,
+    "progressNote": ""
+  },
+  {
+    "_id": "60ad8c5e9f8c9a001f5c3b04",
+    "name": "Design Team",
+    "description": "UI/UX design and product design",
+    "image": "team.png",
+    "leader": null,
+    "status": "active",
+    "progress": 0,
+    "progressNote": ""
+  },
+  {
+    "_id": "60ad8c5e9f8c9a001f5c3b05",
+    "name": "Support Team",
+    "description": "Customer support and success",
+    "image": "team.png",
+    "leader": null,
+    "status": "active",
+    "progress": 0,
+    "progressNote": ""
+  }
+]
+  
+
