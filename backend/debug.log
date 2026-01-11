@@ -1,0 +1,305 @@
+[2026-01-03T09:56:39.690Z] DEBUG: User model loaded, type: function
+[2026-01-03T09:56:39.691Z] DEBUG: User.findById type: function
+[2026-01-03T09:56:41.800Z] DEBUG: User model loaded, type: function
+[2026-01-03T09:56:41.801Z] DEBUG: User.findById type: function
+[2026-01-03T09:56:43.814Z] DEBUG: User model loaded, type: function
+[2026-01-03T09:56:43.815Z] DEBUG: User.findById type: function
+[2026-01-03T14:03:07.550Z] DEBUG: User model loaded, type: function
+[2026-01-03T14:03:07.551Z] DEBUG: User.findById type: function
+[2026-01-03T14:21:02.543Z] === TASK CREATE REQUEST ===
+[2026-01-03T14:21:02.544Z] Body: {"title":"Raco pulse","description":"Build a full functioning web app","assignedTo":"6959233204651b19bbd3a7dc","startDate":"2026-01-04","endDate":"2026-01-31"}
+[2026-01-03T14:21:02.545Z] Title from body: "Raco pulse"
+[2026-01-03T14:21:02.545Z] Assigned to user ID: 6959233204651b19bbd3a7dc
+[2026-01-03T14:21:02.546Z] File uploaded: storage\files\tasks\taskFile-1767450062541-470377092-AI Engineer-test.pdf
+[2026-01-03T14:21:02.546Z] Final task object to create: title="Raco pulse", assignedTo="6959233204651b19bbd3a7dc"
+[2026-01-03T14:21:03.151Z] ✅ Task created successfully in DB: 695925ce04651b19bbd3abaa
+[2026-01-03T15:38:54.231Z] DEBUG: User model loaded, type: function
+[2026-01-03T15:38:54.232Z] DEBUG: User.findById type: function
+[2026-01-04T04:20:47.925Z] DEBUG: User model loaded, type: function
+[2026-01-04T04:20:47.926Z] DEBUG: User.findById type: function
+[2026-01-04T04:48:22.742Z] DEBUG: User model loaded, type: function
+[2026-01-04T04:48:22.743Z] DEBUG: User.findById type: function
+[2026-01-04T04:48:30.627Z] DEBUG: User model loaded, type: function
+[2026-01-04T04:48:30.628Z] DEBUG: User.findById type: function
+[2026-01-04T04:48:36.650Z] DEBUG: User model loaded, type: function
+[2026-01-04T04:48:36.651Z] DEBUG: User.findById type: function
+[2026-01-04T04:48:45.917Z] DEBUG: User model loaded, type: function
+[2026-01-04T04:48:45.917Z] DEBUG: User.findById type: function
+[2026-01-04T04:48:51.055Z] DEBUG: User model loaded, type: function
+[2026-01-04T04:48:51.056Z] DEBUG: User.findById type: function
+[2026-01-04T04:49:00.782Z] DEBUG: User model loaded, type: function
+[2026-01-04T04:49:00.783Z] DEBUG: User.findById type: function
+[2026-01-04T04:49:14.063Z] DEBUG: User model loaded, type: function
+[2026-01-04T04:49:14.064Z] DEBUG: User.findById type: function
+[2026-01-04T04:49:16.025Z] DEBUG: User model loaded, type: function
+[2026-01-04T04:49:16.026Z] DEBUG: User.findById type: function
+[2026-01-04T04:49:28.961Z] DEBUG: User model loaded, type: function
+[2026-01-04T04:49:28.963Z] DEBUG: User.findById type: function
+[2026-01-04T04:49:39.913Z] DEBUG: User model loaded, type: function
+[2026-01-04T04:49:39.915Z] DEBUG: User.findById type: function
+[2026-01-04T04:49:52.385Z] DEBUG: User model loaded, type: function
+[2026-01-04T04:49:52.386Z] DEBUG: User.findById type: function
+[2026-01-04T04:49:54.365Z] DEBUG: User model loaded, type: function
+[2026-01-04T04:49:54.366Z] DEBUG: User.findById type: function
+[2026-01-04T04:50:03.373Z] DEBUG: User model loaded, type: function
+[2026-01-04T04:50:03.374Z] DEBUG: User.findById type: function
+[2026-01-04T04:50:05.294Z] DEBUG: User model loaded, type: function
+[2026-01-04T04:50:05.295Z] DEBUG: User.findById type: function
+[2026-01-04T04:50:12.687Z] DEBUG: User model loaded, type: function
+[2026-01-04T04:50:12.688Z] DEBUG: User.findById type: function
+[2026-01-04T04:50:20.602Z] DEBUG: User model loaded, type: function
+[2026-01-04T04:50:20.603Z] DEBUG: User.findById type: function
+[2026-01-04T04:50:22.526Z] DEBUG: User model loaded, type: function
+[2026-01-04T04:50:22.527Z] DEBUG: User.findById type: function
+[2026-01-04T04:51:05.063Z] DEBUG: User model loaded, type: function
+[2026-01-04T04:51:05.064Z] DEBUG: User.findById type: function
+[2026-01-04T04:52:08.579Z] DEBUG: User model loaded, type: function
+[2026-01-04T04:52:08.581Z] DEBUG: User.findById type: function
+[2026-01-04T04:52:43.333Z] DEBUG: User model loaded, type: function
+[2026-01-04T04:52:43.335Z] DEBUG: User.findById type: function
+[2026-01-04T04:53:24.152Z] DEBUG: User model loaded, type: function
+[2026-01-04T04:53:24.153Z] DEBUG: User.findById type: function
+[2026-01-04T05:22:05.432Z] DEBUG: User model loaded, type: function
+[2026-01-04T05:22:05.433Z] DEBUG: User.findById type: function
+[2026-01-04T05:28:10.130Z] DEBUG: User model loaded, type: function
+[2026-01-04T05:28:10.130Z] DEBUG: User.findById type: function
+[2026-01-04T05:28:12.116Z] DEBUG: User model loaded, type: function
+[2026-01-04T05:28:12.117Z] DEBUG: User.findById type: function
+[2026-01-04T05:28:14.111Z] DEBUG: User model loaded, type: function
+[2026-01-04T05:28:14.112Z] DEBUG: User.findById type: function
+[2026-01-04T06:15:40.811Z] DEBUG: User model loaded, type: function
+[2026-01-04T06:15:40.812Z] DEBUG: User.findById type: function
+[2026-01-05T04:16:30.192Z] DEBUG: User model loaded, type: function
+[2026-01-05T04:16:30.193Z] DEBUG: User.findById type: function
+[2026-01-05T04:34:20.491Z] DEBUG: User model loaded, type: function
+[2026-01-05T04:34:20.492Z] DEBUG: User.findById type: function
+[2026-01-05T08:24:48.237Z] DEBUG: User model loaded, type: function
+[2026-01-05T08:24:48.238Z] DEBUG: User.findById type: function
+[2026-01-05T10:10:28.740Z] DEBUG: User model loaded, type: function
+[2026-01-05T10:10:28.741Z] DEBUG: User.findById type: function
+[2026-01-05T10:45:06.474Z] DEBUG: User model loaded, type: function
+[2026-01-05T10:45:06.475Z] DEBUG: User.findById type: function
+[2026-01-05T10:45:17.591Z] DEBUG: User model loaded, type: function
+[2026-01-05T10:45:17.592Z] DEBUG: User.findById type: function
+[2026-01-05T11:34:22.246Z] DEBUG: User model loaded, type: function
+[2026-01-05T11:34:22.247Z] DEBUG: User.findById type: function
+[2026-01-05T11:56:32.541Z] DEBUG: User model loaded, type: function
+[2026-01-05T11:56:32.542Z] DEBUG: User.findById type: function
+[2026-01-05T15:32:03.118Z] DEBUG: User model loaded, type: function
+[2026-01-05T15:32:03.119Z] DEBUG: User.findById type: function
+[2026-01-06T03:12:20.868Z] DEBUG: User model loaded, type: function
+[2026-01-06T03:12:20.869Z] DEBUG: User.findById type: function
+[2026-01-06T04:12:49.571Z] === TASK CREATE REQUEST ===
+[2026-01-06T04:12:49.571Z] Body: {"title":"desigen","description":"fsdfsdfsdfsd","assignedTo":"695c8b2c824b58aa3dcfcf2b","startDate":"2026-01-07","endDate":"2026-01-22"}
+[2026-01-06T04:12:49.572Z] Title from body: "desigen"
+[2026-01-06T04:12:49.572Z] Assigned to user ID: 695c8b2c824b58aa3dcfcf2b
+[2026-01-06T04:12:49.572Z] File uploaded: storage\files\tasks\taskFile-1767672769569-113701019-Backend Engineer.pdf
+[2026-01-06T04:12:49.573Z] Final task object to create: title="desigen", assignedTo="695c8b2c824b58aa3dcfcf2b"
+[2026-01-06T04:12:50.152Z] ✅ Task created successfully in DB: 695c8bc1824b58aa3dcfcf4d
+[2026-01-06T04:24:36.448Z] DEBUG: User model loaded, type: function
+[2026-01-06T04:24:36.449Z] DEBUG: User.findById type: function
+[2026-01-06T04:33:27.152Z] === TASK CREATE REQUEST ===
+[2026-01-06T04:33:27.152Z] Body: {"title":"Developement","description":"dfsdfsdfs","assignedTo":"695baf263abddc6acd8b5017","startDate":"2026-01-15","endDate":"2026-01-15"}
+[2026-01-06T04:33:27.153Z] Title from body: "Developement"
+[2026-01-06T04:33:27.153Z] Assigned to user ID: 695baf263abddc6acd8b5017
+[2026-01-06T04:33:27.154Z] File uploaded: storage\files\tasks\taskFile-1767674007149-620892289-YVVotFnKHpM-HD.jpg
+[2026-01-06T04:33:27.154Z] Final task object to create: title="Developement", assignedTo="695baf263abddc6acd8b5017"
+[2026-01-06T04:33:27.710Z] ✅ Task created successfully in DB: 695c9097b8dc6337b62816ac
+[2026-01-06T04:51:01.012Z] DEBUG: User model loaded, type: function
+[2026-01-06T04:51:01.013Z] DEBUG: User.findById type: function
+[2026-01-06T04:51:02.858Z] DEBUG: User model loaded, type: function
+[2026-01-06T04:51:02.859Z] DEBUG: User.findById type: function
+[2026-01-06T04:53:08.588Z] === TASK CREATE REQUEST ===
+[2026-01-06T04:53:08.588Z] Body: {"title":"desigen","description":"fdfsadfsd","assignedTo":"695c8b2c824b58aa3dcfcf2b","startDate":"2026-01-07","endDate":"2026-01-15"}
+[2026-01-06T04:53:08.589Z] Title from body: "desigen"
+[2026-01-06T04:53:08.589Z] Assigned to user ID: 695c8b2c824b58aa3dcfcf2b
+[2026-01-06T04:53:08.590Z] File uploaded: storage\files\tasks\taskFile-1767675188585-659532536-YVVotFnKHpM-HD.jpg
+[2026-01-06T04:53:08.590Z] Final task object to create: title="desigen", assignedTo="695c8b2c824b58aa3dcfcf2b"
+[2026-01-06T04:53:09.167Z] ✅ Task created successfully in DB: 695c9534fd332683a56a8377
+[2026-01-06T06:44:13.305Z] DEBUG: User model loaded, type: function
+[2026-01-06T06:44:13.306Z] DEBUG: User.findById type: function
+[2026-01-06T11:39:14.009Z] DEBUG: User model loaded, type: function
+[2026-01-06T11:39:14.010Z] DEBUG: User.findById type: function
+[2026-01-06T12:31:19.460Z] DEBUG: User model loaded, type: function
+[2026-01-06T12:31:19.461Z] DEBUG: User.findById type: function
+[2026-01-06T15:41:31.975Z] === TASK CREATE REQUEST ===
+[2026-01-06T15:41:31.976Z] Body: {"title":"PULSE","description":"NZDCNJKSDEJLKASEMLKCDJSDEOICFKASLMCJKSDJCOIASEMCLKNASEJKCJQWMXCJKASENCOIAJLK","assignedTo":"695c8b2c824b58aa3dcfcf2b","startDate":"2026-01-01","endDate":"2026-02-01"}
+[2026-01-06T15:41:31.976Z] Title from body: "PULSE"
+[2026-01-06T15:41:31.977Z] Assigned to user ID: 695c8b2c824b58aa3dcfcf2b
+[2026-01-06T15:41:31.977Z] File uploaded: storage\files\tasks\taskFile-1767714091973-305043795-Junior Full Stack Engineer-test.pdf
+[2026-01-06T15:41:31.977Z] Final task object to create: title="PULSE", assignedTo="695c8b2c824b58aa3dcfcf2b"
+[2026-01-06T15:41:32.582Z] ✅ Task created successfully in DB: 695d2d2be6356982fcd7423d
+[2026-01-07T05:41:24.729Z] DEBUG: User model loaded, type: function
+[2026-01-07T05:41:24.731Z] DEBUG: User.findById type: function
+[2026-01-07T05:44:50.252Z] DEBUG: User model loaded, type: function
+[2026-01-07T05:44:50.253Z] DEBUG: User.findById type: function
+[2026-01-07T05:44:52.162Z] DEBUG: User model loaded, type: function
+[2026-01-07T05:44:52.163Z] DEBUG: User.findById type: function
+[2026-01-07T05:45:05.648Z] DEBUG: User model loaded, type: function
+[2026-01-07T05:45:05.649Z] DEBUG: User.findById type: function
+[2026-01-07T06:24:21.097Z] DEBUG: User model loaded, type: function
+[2026-01-07T06:24:21.098Z] DEBUG: User.findById type: function
+[2026-01-07T06:24:23.046Z] DEBUG: User model loaded, type: function
+[2026-01-07T06:24:23.047Z] DEBUG: User.findById type: function
+[2026-01-07T06:24:25.050Z] DEBUG: User model loaded, type: function
+[2026-01-07T06:24:25.050Z] DEBUG: User.findById type: function
+[2026-01-07T06:24:27.137Z] DEBUG: User model loaded, type: function
+[2026-01-07T06:24:27.138Z] DEBUG: User.findById type: function
+[2026-01-08T04:47:32.322Z] DEBUG: User model loaded, type: function
+[2026-01-08T04:47:32.324Z] DEBUG: User.findById type: function
+[2026-01-08T05:05:43.188Z] DEBUG: User model loaded, type: function
+[2026-01-08T05:05:43.188Z] DEBUG: User.findById type: function
+[2026-01-08T05:08:34.106Z] DEBUG: User model loaded, type: function
+[2026-01-08T05:08:34.107Z] DEBUG: User.findById type: function
+[2026-01-08T05:27:12.272Z] DEBUG: User model loaded, type: function
+[2026-01-08T05:27:12.272Z] DEBUG: User.findById type: function
+[2026-01-08T05:27:16.386Z] DEBUG: User model loaded, type: function
+[2026-01-08T05:27:16.386Z] DEBUG: User.findById type: function
+[2026-01-08T05:54:28.142Z] DEBUG: User model loaded, type: function
+[2026-01-08T05:54:28.143Z] DEBUG: User.findById type: function
+[2026-01-08T05:54:30.085Z] DEBUG: User model loaded, type: function
+[2026-01-08T05:54:30.085Z] DEBUG: User.findById type: function
+[2026-01-08T05:55:32.850Z] DEBUG: User model loaded, type: function
+[2026-01-08T05:55:32.850Z] DEBUG: User.findById type: function
+[2026-01-08T05:55:45.992Z] DEBUG: User model loaded, type: function
+[2026-01-08T05:55:45.993Z] DEBUG: User.findById type: function
+[2026-01-08T05:55:49.072Z] DEBUG: User model loaded, type: function
+[2026-01-08T05:55:49.072Z] DEBUG: User.findById type: function
+[2026-01-08T05:55:50.267Z] DEBUG: User model loaded, type: function
+[2026-01-08T05:55:50.268Z] DEBUG: User.findById type: function
+[2026-01-08T05:56:01.836Z] DEBUG: User model loaded, type: function
+[2026-01-08T05:56:01.837Z] DEBUG: User.findById type: function
+[2026-01-08T05:56:15.980Z] DEBUG: User model loaded, type: function
+[2026-01-08T05:56:15.981Z] DEBUG: User.findById type: function
+[2026-01-08T05:56:17.867Z] DEBUG: User model loaded, type: function
+[2026-01-08T05:56:17.867Z] DEBUG: User.findById type: function
+[2026-01-08T05:56:34.949Z] DEBUG: User model loaded, type: function
+[2026-01-08T05:56:34.949Z] DEBUG: User.findById type: function
+[2026-01-08T05:56:41.601Z] DEBUG: User model loaded, type: function
+[2026-01-08T05:56:41.602Z] DEBUG: User.findById type: function
+[2026-01-08T05:56:46.679Z] DEBUG: User model loaded, type: function
+[2026-01-08T05:56:46.679Z] DEBUG: User.findById type: function
+[2026-01-08T06:12:20.673Z] DEBUG: User model loaded, type: function
+[2026-01-08T06:12:20.674Z] DEBUG: User.findById type: function
+[2026-01-08T06:13:19.906Z] DEBUG: User model loaded, type: function
+[2026-01-08T06:13:19.907Z] DEBUG: User.findById type: function
+[2026-01-08T06:13:23.432Z] DEBUG: User model loaded, type: function
+[2026-01-08T06:13:23.432Z] DEBUG: User.findById type: function
+[2026-01-08T06:13:25.392Z] DEBUG: User model loaded, type: function
+[2026-01-08T06:13:25.393Z] DEBUG: User.findById type: function
+[2026-01-08T06:18:31.115Z] DEBUG: User model loaded, type: function
+[2026-01-08T06:18:31.116Z] DEBUG: User.findById type: function
+[2026-01-08T06:31:35.191Z] DEBUG: User model loaded, type: function
+[2026-01-08T06:31:35.192Z] DEBUG: User.findById type: function
+[2026-01-08T06:31:45.015Z] DEBUG: User model loaded, type: function
+[2026-01-08T06:31:45.016Z] DEBUG: User.findById type: function
+[2026-01-08T06:34:51.243Z] DEBUG: User model loaded, type: function
+[2026-01-08T06:34:51.244Z] DEBUG: User.findById type: function
+[2026-01-08T06:51:20.780Z] DEBUG: User model loaded, type: function
+[2026-01-08T06:51:20.782Z] DEBUG: User.findById type: function
+[2026-01-08T06:58:12.851Z] DEBUG: User model loaded, type: function
+[2026-01-08T06:58:12.852Z] DEBUG: User.findById type: function
+[2026-01-08T06:58:12.945Z] DEBUG: User model loaded, type: function
+[2026-01-08T06:58:12.946Z] DEBUG: User.findById type: function
+[2026-01-08T06:58:22.215Z] DEBUG: User model loaded, type: function
+[2026-01-08T06:58:22.216Z] DEBUG: User.findById type: function
+[2026-01-08T06:58:22.314Z] DEBUG: User model loaded, type: function
+[2026-01-08T06:58:22.315Z] DEBUG: User.findById type: function
+[2026-01-08T07:00:15.264Z] DEBUG: User model loaded, type: function
+[2026-01-08T07:00:15.265Z] DEBUG: User.findById type: function
+[2026-01-08T07:00:52.767Z] DEBUG: User model loaded, type: function
+[2026-01-08T07:00:52.768Z] DEBUG: User.findById type: function
+[2026-01-08T07:03:36.473Z] DEBUG: User model loaded, type: function
+[2026-01-08T07:03:36.474Z] DEBUG: User.findById type: function
+[2026-01-08T07:03:36.477Z] DEBUG: User model loaded, type: function
+[2026-01-08T07:03:36.478Z] DEBUG: User.findById type: function
+[2026-01-08T07:03:36.616Z] DEBUG: User model loaded, type: function
+[2026-01-08T07:03:36.617Z] DEBUG: User.findById type: function
+[2026-01-08T07:05:05.157Z] DEBUG: User model loaded, type: function
+[2026-01-08T07:05:05.158Z] DEBUG: User.findById type: function
+[2026-01-08T07:09:14.912Z] DEBUG: User model loaded, type: function
+[2026-01-08T07:09:14.912Z] DEBUG: User.findById type: function
+[2026-01-08T07:09:47.921Z] DEBUG: User model loaded, type: function
+[2026-01-08T07:09:47.922Z] DEBUG: User.findById type: function
+[2026-01-08T07:09:48.028Z] DEBUG: User model loaded, type: function
+[2026-01-08T07:09:48.029Z] DEBUG: User.findById type: function
+[2026-01-08T09:23:26.435Z] DEBUG: User model loaded, type: function
+[2026-01-08T09:23:26.436Z] DEBUG: User.findById type: function
+[2026-01-08T09:23:26.453Z] DEBUG: User model loaded, type: function
+[2026-01-08T09:23:26.454Z] DEBUG: User.findById type: function
+[2026-01-09T04:48:25.665Z] DEBUG: User model loaded, type: function
+[2026-01-09T04:48:25.676Z] DEBUG: User.findById type: function
+[2026-01-09T05:40:34.444Z] DEBUG: User model loaded, type: function
+[2026-01-09T05:40:34.445Z] DEBUG: User.findById type: function
+[2026-01-09T05:44:38.651Z] === TASK CREATE REQUEST ===
+[2026-01-09T05:44:38.652Z] Body: {"title":"dfasfsd","description":"fsafsdfsa","assignedTo":"695f58de0ba2de019fcd69bd","startDate":"2026-01-20","endDate":"2026-01-15"}
+[2026-01-09T05:44:38.654Z] Title from body: "dfasfsd"
+[2026-01-09T05:44:38.655Z] Assigned to user ID: 695f58de0ba2de019fcd69bd
+[2026-01-09T05:44:38.655Z] Final task object to create: title="dfasfsd", assignedTo="695f58de0ba2de019fcd69bd"
+[2026-01-09T05:44:38.751Z] ✅ Task created successfully in DB: 696095c63aa8809f9937ffb6
+[2026-01-09T05:49:29.318Z] DEBUG: User model loaded, type: function
+[2026-01-09T05:49:29.320Z] DEBUG: User.findById type: function
+[2026-01-10T17:22:39.526Z] DEBUG: User model loaded, type: function
+[2026-01-10T17:22:39.579Z] DEBUG: User.findById type: function
+[2026-01-10T17:48:05.268Z] DEBUG: User model loaded, type: function
+[2026-01-10T17:48:05.278Z] DEBUG: User.findById type: function
+[2026-01-10T17:52:04.113Z] DEBUG: User model loaded, type: function
+[2026-01-10T17:52:04.115Z] DEBUG: User.findById type: function
+[2026-01-10T17:52:06.019Z] DEBUG: User model loaded, type: function
+[2026-01-10T17:52:06.021Z] DEBUG: User.findById type: function
+[2026-01-10T17:56:07.220Z] DEBUG: User model loaded, type: function
+[2026-01-10T17:56:07.222Z] DEBUG: User.findById type: function
+[2026-01-10T18:08:12.250Z] DEBUG: User model loaded, type: function
+[2026-01-10T18:08:12.259Z] DEBUG: User.findById type: function
+[2026-01-10T19:28:41.667Z] DEBUG: User model loaded, type: function
+[2026-01-10T19:28:41.676Z] DEBUG: User.findById type: function
+[2026-01-11T03:43:39.761Z] DEBUG: User model loaded, type: function
+[2026-01-11T03:43:39.762Z] DEBUG: User.findById type: function
+[2026-01-11T04:30:06.993Z] DEBUG: User model loaded, type: function
+[2026-01-11T04:30:06.994Z] DEBUG: User.findById type: function
+[2026-01-11T04:50:22.253Z] DEBUG: User model loaded, type: function
+[2026-01-11T04:50:22.254Z] DEBUG: User.findById type: function
+[2026-01-11T05:08:41.132Z] DEBUG: User model loaded, type: function
+[2026-01-11T05:08:41.133Z] DEBUG: User.findById type: function
+[2026-01-11T05:13:44.676Z] DEBUG: User model loaded, type: function
+[2026-01-11T05:13:44.677Z] DEBUG: User.findById type: function
+[2026-01-11T05:21:02.219Z] DEBUG: User model loaded, type: function
+[2026-01-11T05:21:02.220Z] DEBUG: User.findById type: function
+[2026-01-11T05:21:39.891Z] DEBUG: User model loaded, type: function
+[2026-01-11T05:21:39.892Z] DEBUG: User.findById type: function
+[2026-01-11T07:05:26.967Z] DEBUG: User model loaded, type: function
+[2026-01-11T07:05:26.968Z] DEBUG: User.findById type: function
+[2026-01-11T07:08:52.861Z] DEBUG: User model loaded, type: function
+[2026-01-11T07:08:52.862Z] DEBUG: User.findById type: function
+[2026-01-11T07:27:06.209Z] DEBUG: User model loaded, type: function
+[2026-01-11T07:27:06.209Z] DEBUG: User.findById type: function
+[2026-01-11T07:37:55.297Z] DEBUG: User model loaded, type: function
+[2026-01-11T07:37:55.298Z] DEBUG: User.findById type: function
+[2026-01-11T07:40:07.292Z] DEBUG: User model loaded, type: function
+[2026-01-11T07:40:07.293Z] DEBUG: User.findById type: function
+[2026-01-11T07:41:34.476Z] DEBUG: User model loaded, type: function
+[2026-01-11T07:41:34.477Z] DEBUG: User.findById type: function
+[2026-01-11T07:42:49.180Z] DEBUG: User model loaded, type: function
+[2026-01-11T07:42:49.181Z] DEBUG: User.findById type: function
+[2026-01-11T07:46:57.149Z] DEBUG: User model loaded, type: function
+[2026-01-11T07:46:57.150Z] DEBUG: User.findById type: function
+[2026-01-11T07:47:09.403Z] DEBUG: User model loaded, type: function
+[2026-01-11T07:47:09.403Z] DEBUG: User.findById type: function
+[2026-01-11T07:50:19.543Z] DEBUG: User model loaded, type: function
+[2026-01-11T07:50:19.544Z] DEBUG: User.findById type: function
+[2026-01-11T07:53:18.021Z] DEBUG: User model loaded, type: function
+[2026-01-11T07:53:18.022Z] DEBUG: User.findById type: function
+[2026-01-11T08:07:55.952Z] DEBUG: User model loaded, type: function
+[2026-01-11T08:07:55.952Z] DEBUG: User.findById type: function
+[2026-01-11T08:10:49.396Z] DEBUG: User model loaded, type: function
+[2026-01-11T08:10:49.396Z] DEBUG: User.findById type: function
+[2026-01-11T08:14:09.294Z] DEBUG: User model loaded, type: function
+[2026-01-11T08:14:09.295Z] DEBUG: User.findById type: function
+[2026-01-11T08:32:59.654Z] DEBUG: User model loaded, type: function
+[2026-01-11T08:32:59.655Z] DEBUG: User.findById type: function
+[2026-01-11T08:40:18.341Z] DEBUG: User model loaded, type: function
+[2026-01-11T08:40:18.342Z] DEBUG: User.findById type: function
+[2026-01-11T10:13:44.215Z] DEBUG: User model loaded, type: function
+[2026-01-11T10:13:44.217Z] DEBUG: User.findById type: function
+[2026-01-11T14:30:42.958Z] DEBUG: User model loaded, type: function
+[2026-01-11T14:30:42.959Z] DEBUG: User.findById type: function
