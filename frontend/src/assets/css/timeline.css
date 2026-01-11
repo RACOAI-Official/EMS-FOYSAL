@@ -1,0 +1,78 @@
+ .timeline-container {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+/* The vertical line */
+.timeline-container::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  background-color: #dee2e6; /* Light gray line */
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  margin-left: -2px;
+}
+
+.timeline-item {
+  padding: 10px 40px;
+  position: relative;
+  background-color: inherit;
+  width: 50%;
+}
+
+/* The Icon Circle */
+.timeline-icon {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  right: -16px;
+  top: 15px;
+  border-radius: 50%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+}
+
+/* Left side positioning */
+.timeline-start {
+  left: 0;
+  text-align: right;
+}
+
+/* Right side positioning */
+.timeline-end {
+  left: 50%;
+}
+
+.timeline-end .timeline-icon {
+  left: -16px;
+}
+
+/* Mobile Responsive Adjustments */
+@media screen and (max-width: 600px) {
+  .timeline-container::after {
+    left: 31px;
+  }
+  .timeline-item {
+    width: 100%;
+    padding-left: 70px;
+    padding-right: 25px;
+    text-align: left !important;
+  }
+  .timeline-end {
+    left: 0%;
+  }
+  .timeline-icon {
+    left: 15px !important;
+  }
+}
+
+.text-lg {
+  font-size: 1.125rem;
+}

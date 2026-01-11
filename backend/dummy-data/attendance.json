@@ -1,0 +1,68 @@
+[
+  {
+    "_id": "607f1f77bcf86cd799439001",
+    "employeeID": "507f1f77bcf86cd799439014",
+    "year": 2025,
+    "month": 1,
+    "date": 6,
+    "day": "Monday",
+    "present": true,
+    "checkInTime": "09:00 AM",
+    "checkOutTime": "05:30 PM"
+  },
+  {
+    "_id": "607f1f77bcf86cd799439002",
+    "employeeID": "507f1f77bcf86cd799439014",
+    "year": 2025,
+    "month": 1,
+    "date": 7,
+    "day": "Tuesday",
+    "present": true,
+    "checkInTime": "08:55 AM",
+    "checkOutTime": "05:45 PM"
+  },
+  {
+    "_id": "607f1f77bcf86cd799439003",
+    "employeeID": "507f1f77bcf86cd799439015",
+    "year": 2025,
+    "month": 1,
+    "date": 6,
+    "day": "Monday",
+    "present": false,
+    "checkInTime": null,
+    "checkOutTime": null
+  },
+  {
+    "_id": "607f1f77bcf86cd799439004",
+    "employeeID": "507f1f77bcf86cd799439015",
+    "year": 2025,
+    "month": 1,
+    "date": 7,
+    "day": "Tuesday",
+    "present": true,
+    "checkInTime": "09:15 AM",
+    "checkOutTime": "05:30 PM"
+  },
+  {
+    "_id": "607f1f77bcf86cd799439005",
+    "employeeID": "507f1f77bcf86cd799439016",
+    "year": 2025,
+    "month": 1,
+    "date": 6,
+    "day": "Monday",
+    "present": true,
+    "checkInTime": "09:05 AM",
+    "checkOutTime": "05:40 PM"
+  },
+  {
+    "_id": "607f1f77bcf86cd799439006",
+    "employeeID": "507f1f77bcf86cd799439016",
+    "year": 2025,
+    "month": 1,
+    "date": 7,
+    "day": "Tuesday",
+    "present": true,
+    "checkInTime": "09:00 AM",
+    "checkOutTime": "05:30 PM"
+  }
+]

@@ -1,0 +1,173 @@
+:root {
+  --primary-blur: blur(12px);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  --secondary-gradient: linear-gradient(135deg, #3b82f6 0%, #2dd4bf 100%);
+  --surface-bg: #f8fafc;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --shadow-sm: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--surface-bg) !important;
+  color: var(--text-main);
+}
+
+.modal-social {
+  /* background-color: red !important; */
+  z-index: 2000;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  justify-items: center;
+}
+
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--primary-blur);
+  -webkit-backdrop-filter: var(--primary-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+/* Sidebar Beautification */
+.main-sidebar {
+  background: white !important;
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.02) !important;
+  border-right: 1px solid #f1f5f9 !important;
+}
+
+.sidebar-brand {
+  height: 80px !important;
+  line-height: 80px !important;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800 !important;
+  letter-spacing: 1px;
+}
+
+.sidebar-menu li a {
+  border-radius: 12px !important;
+  margin: 4px 15px !important;
+  padding: 0 15px !important;
+  height: 46px !important;
+  line-height: 46px !important;
+  transition: all 0.2s ease !important;
+  font-weight: 500 !important;
+  color: var(--text-muted) !important;
+}
+
+.sidebar-menu li a i {
+  font-size: 16px !important;
+  margin-right: 12px !important;
+  width: 24px !important;
+  text-align: center !important;
+}
+
+.sidebar-menu li.active a {
+  background: var(--primary-gradient) !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3) !important;
+}
+
+.sidebar-menu li.active a i {
+  color: white !important;
+}
+
+.sidebar-menu li a:hover:not(.active) {
+  background: #f8fafc !important;
+  color: #6366f1 !important;
+}
+
+.menu-header {
+  margin-top: 25px !important;
+  padding: 0 30px !important;
+  color: #94a3b8 !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.5px !important;
+  font-size: 10px !important;
+}
+
+/* Navbar Beautification */
+.main-navbar {
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border-bottom: 1px solid rgba(241, 245, 249, 0.5) !important;
+  height: 80px !important;
+  padding: 0 40px !important;
+}
+
+.navbar-bg {
+  display: none !important;
+}
+
+.navbar-nav .nav-link-user {
+  padding: 10px 15px !important;
+  border-radius: 12px !important;
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.navbar-nav .nav-link.nav-link-lg i {
+  color: var(--text-main) !important;
+}
+
+.search-element .form-control {
+  background: #f1f5f9 !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding-left: 20px !important;
+}
+
+.search-element .btn {
+  background: var(--primary-gradient) !important;
+  color: white !important;
+  border-radius: 0 12px 12px 0 !important;
+}
+
+.gradient-btn {
+  background: var(--primary-gradient);
+  border: none;
+  color: white !important;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  padding: 12px 24px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.39);
+}
+
+.gradient-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+  filter: brightness(1.1);
+}
+
+.gradient-btn:active {
+  transform: translateY(0);
+}
+
+.gradient-text {
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+}
