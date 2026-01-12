@@ -303,3 +303,60 @@
 [2026-01-11T10:13:44.217Z] DEBUG: User.findById type: function
 [2026-01-11T14:30:42.958Z] DEBUG: User model loaded, type: function
 [2026-01-11T14:30:42.959Z] DEBUG: User.findById type: function
+[2026-01-11T15:00:07.416Z] DEBUG: User model loaded, type: function
+[2026-01-11T15:00:07.418Z] DEBUG: User.findById type: function
+[2026-01-12T03:56:54.832Z] DEBUG: User model loaded, type: function
+[2026-01-12T03:56:54.832Z] DEBUG: User.findById type: function
+[2026-01-12T04:10:51.227Z] DEBUG: User model loaded, type: function
+[2026-01-12T04:10:51.227Z] DEBUG: User.findById type: function
+[2026-01-12T04:10:54.414Z] DEBUG: User model loaded, type: function
+[2026-01-12T04:10:54.415Z] DEBUG: User.findById type: function
+[2026-01-12T04:10:56.401Z] DEBUG: User model loaded, type: function
+[2026-01-12T04:10:56.402Z] DEBUG: User.findById type: function
+[2026-01-12T04:31:27.911Z] DEBUG: User model loaded, type: function
+[2026-01-12T04:31:27.914Z] DEBUG: User.findById type: function
+[2026-01-12T04:41:46.675Z] DEBUG: User model loaded, type: function
+[2026-01-12T04:41:46.679Z] DEBUG: User.findById type: function
+[2026-01-12T04:48:38.614Z] DEBUG: User model loaded, type: function
+[2026-01-12T04:48:38.615Z] DEBUG: User.findById type: function
+[2026-01-12T04:52:26.164Z] DEBUG: User model loaded, type: function
+[2026-01-12T04:52:26.166Z] DEBUG: User.findById type: function
+[2026-01-12T04:52:41.204Z] DEBUG: User model loaded, type: function
+[2026-01-12T04:52:41.206Z] DEBUG: User.findById type: function
+[2026-01-12T04:57:49.867Z] DEBUG: User model loaded, type: function
+[2026-01-12T04:57:49.867Z] DEBUG: User.findById type: function
+[2026-01-12T05:00:02.650Z] === TASK CREATE REQUEST ===
+[2026-01-12T05:00:02.651Z] Body: {"title":"csdfasdfsdf","description":"fsdfasdf","assignedTo":"695f58de0ba2de019fcd69bd","startDate":"2026-01-07","endDate":"2026-01-23"}
+[2026-01-12T05:00:02.652Z] Title from body: "csdfasdfsdf"
+[2026-01-12T05:00:02.653Z] Assigned to user ID: 695f58de0ba2de019fcd69bd
+[2026-01-12T05:00:02.653Z] Final task object to create: title="csdfasdfsdf", assignedTo="695f58de0ba2de019fcd69bd"
+[2026-01-12T05:00:03.212Z] ✅ Task created successfully in DB: 69647fd2f483efaad10cd158
+[2026-01-12T05:07:41.910Z] DEBUG: User model loaded, type: function
+[2026-01-12T05:07:41.911Z] DEBUG: User.findById type: function
+[2026-01-12T05:07:52.751Z] DEBUG: User model loaded, type: function
+[2026-01-12T05:07:52.752Z] DEBUG: User.findById type: function
+[2026-01-12T05:08:02.927Z] DEBUG: User model loaded, type: function
+[2026-01-12T05:08:02.928Z] DEBUG: User.findById type: function
+[2026-01-12T05:08:13.564Z] DEBUG: User model loaded, type: function
+[2026-01-12T05:08:13.565Z] DEBUG: User.findById type: function
+[2026-01-12T05:08:15.618Z] DEBUG: User model loaded, type: function
+[2026-01-12T05:08:15.619Z] DEBUG: User.findById type: function
+[2026-01-12T05:08:28.288Z] DEBUG: User model loaded, type: function
+[2026-01-12T05:08:28.289Z] DEBUG: User.findById type: function
+[2026-01-12T05:08:40.861Z] DEBUG: User model loaded, type: function
+[2026-01-12T05:08:40.862Z] DEBUG: User.findById type: function
+[2026-01-12T05:11:16.065Z] DEBUG: User model loaded, type: function
+[2026-01-12T05:11:16.066Z] DEBUG: User.findById type: function
+[2026-01-12T05:11:31.608Z] DEBUG: User model loaded, type: function
+[2026-01-12T05:11:31.610Z] DEBUG: User.findById type: function
+[2026-01-12T05:13:56.186Z] DEBUG: User model loaded, type: function
+[2026-01-12T05:13:56.187Z] DEBUG: User.findById type: function
+[2026-01-12T05:19:35.960Z] === TASK CREATE REQUEST ===
+[2026-01-12T05:19:35.961Z] Body: {"title":"You can do it","description":"fsdfasdfsd","assignedTo":"6964840ba18255b4c5e7345f","startDate":"2026-01-12","endDate":"2026-01-17"}
+[2026-01-12T05:19:35.961Z] Title from body: "You can do it"
+[2026-01-12T05:19:35.961Z] Assigned to user ID: 6964840ba18255b4c5e7345f
+[2026-01-12T05:19:35.962Z] File uploaded: storage\files\tasks\taskFile-1768195175957-475718208-In Person Backend Task.pdf
+[2026-01-12T05:19:35.962Z] Final task object to create: title="You can do it", assignedTo="6964840ba18255b4c5e7345f"
+[2026-01-12T05:19:36.058Z] ✅ Task created successfully in DB: 69648467a18255b4c5e7347b
+[2026-01-12T05:37:01.793Z] DEBUG: User model loaded, type: function
+[2026-01-12T05:37:01.794Z] DEBUG: User.findById type: function
