@@ -130,15 +130,13 @@ class ChatController {
       const { userId } = req.params; // Target user to delete conversation with
       const myId = req.user._id;
 
-      // Delete ALL messages between these two users
+      // Delete ONLY messages SENT by me to this user
       await Chat.deleteMany({
-        $or: [
-          { sender: myId, receiver: userId },
-          { sender: userId, receiver: myId }
-        ]
+        sender: myId,
+        receiver: userId
       });
 
-      res.json({ success: true, message: 'Conversation deleted successfully' });
+      res.json({ success: true, message: 'Your sent messages deleted successfully' });
     } catch (err) {
       next(err);
     }

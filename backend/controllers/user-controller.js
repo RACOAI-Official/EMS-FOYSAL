@@ -8,6 +8,7 @@ const attendanceService = require('../services/attendance-service');
 const problemService = require('../services/problem-service');
 const fs = require('fs');
 const path = require('path');
+const fileService = require('../services/file-service');
 
 
 class UserController {
@@ -524,33 +525,7 @@ class UserController {
             }
 
             // --- FILE CLEANUP START ---
-            try {
-                // 1. Delete Profile Image
-                if (user.image && user.image !== 'user.png') {
-                    const profilePath = path.join(__dirname, '../storage/images/profile', user.image);
-                    if (fs.existsSync(profilePath)) {
-                        fs.unlinkSync(profilePath);
-                        console.log(`Deleted profile image: ${profilePath}`);
-                    }
-                }
-
-                // 2. Delete Problem Images
-                const problems = await problemService.findProblems({ user: id });
-                if (problems && problems.length > 0) {
-                    for (const problem of problems) {
-                        if (problem.image) {
-                            const problemPath = path.join(__dirname, '../storage/images/problems', problem.image);
-                            if (fs.existsSync(problemPath)) {
-                                fs.unlinkSync(problemPath);
-                                console.log(`Deleted problem image: ${problemPath}`);
-                            }
-                        }
-                    }
-                }
-            } catch (err) {
-                console.error("Error during file cleanup:", err);
-                // Continue with user deletion even if file cleanup fails
-            }
+            await fileService.deleteUserFiles(user, problemService);
             // --- FILE CLEANUP END ---
 
             const result = await userService.deleteUser(id);

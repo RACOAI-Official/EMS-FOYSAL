@@ -4,6 +4,7 @@ const TeamDto = require('../dtos/team-dto');
 const userService = require('../services/user-service');
 const mongoose = require('mongoose');
 const UserDto = require('../dtos/user-dto');
+const fileService = require('../services/file-service');
 
 class TeamController {
 
@@ -232,6 +233,11 @@ class TeamController {
 
             const team = await teamService.findTeam({ _id: id });
             if (!team) return next(ErrorHandler.notFound('Team not found'));
+
+            // Cleanup team image
+            if (team.image) {
+                fileService.deleteTeamImage(team.image);
+            }
 
             // Unassign all users from this team (remove from team arrays)
             await userService.UserModel.updateMany({ team: id }, { $pull: { team: id } });

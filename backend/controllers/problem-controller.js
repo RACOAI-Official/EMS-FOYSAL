@@ -1,6 +1,7 @@
 const problemService = require('../services/problem-service');
 const ErrorHandler = require('../utils/error-handler');
 const mongoose = require('mongoose');
+const fileService = require('../services/file-service');
 
 class ProblemController {
   submitProblem = async (req, res, next) => {
@@ -133,6 +134,27 @@ class ProblemController {
     res.json({
       success: true,
       data: problem
+    });
+  }
+
+  deleteProblem = async (req, res, next) => {
+    const { id } = req.params;
+    const problem = await problemService.findProblem({ _id: id });
+    if (!problem) {
+      return next(ErrorHandler.notFound('Problem not found'));
+    }
+
+    if (problem.image) {
+      fileService.deleteProblemImage(problem.image);
+    }
+
+    const result = await problemService.deleteProblem(id);
+    if (!result) {
+      return next(ErrorHandler.serverError('Failed to delete problem'));
+    }
+    res.json({
+      success: true,
+      message: 'Problem deleted successfully'
     });
   }
 }
