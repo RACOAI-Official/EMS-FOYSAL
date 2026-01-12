@@ -63,32 +63,17 @@ const Navigation = () => {
 
     const toggleSidebar = () => {
         setIsSidebarCollapsed(!isSidebarCollapsed);
-
-        // Handle mobile sidebar toggle
-        if (window.innerWidth <= 991) {
-            if (document.body.classList.contains('sidebar-show')) {
-                document.body.classList.remove('sidebar-show');
-                document.body.classList.add('sidebar-gone');
-            } else {
-                document.body.classList.add('sidebar-show');
-                document.body.classList.remove('sidebar-gone');
-            }
-        }
     };
 
     useEffect(() => {
         const handleResize = () => {
-            if (window.innerWidth <= 991) {
-                document.body.classList.add('sidebar-gone');
-                document.body.classList.remove('sidebar-mini');
-            } else {
-                document.body.classList.remove('sidebar-gone', 'sidebar-show');
+            if (window.innerWidth > 991) {
+                document.body.classList.remove('sidebar-show');
             }
         };
 
         window.addEventListener('resize', handleResize);
-        handleResize(); // Initial check
-
+        
         if (isSidebarCollapsed && window.innerWidth > 991) {
             document.body.classList.add('sidebar-mini');
         } else {
@@ -115,8 +100,29 @@ const Navigation = () => {
                     </div>
                 </form>
                 <ul className="navbar-nav navbar-right">
-                    <li className="dropdown dropdown-list-toggle"><a href='#' data-bs-toggle="dropdown" className={`nav-link notification-toggle nav-link-lg ${notifications.length > 0 ? 'beep' : ''}`}><i className="far fa-bell"></i></a>
-                        <div className="dropdown-menu dropdown-list dropdown-menu-right">
+                    <li className="dropdown dropdown-list-toggle">
+                        <a href='#' data-bs-toggle="dropdown" className="nav-link notification-toggle nav-link-lg" style={{ position: 'relative' }}>
+                            <i className="far fa-bell"></i>
+                            {notifications.length > 0 && (
+                                <span className="badge badge-danger" style={{
+                                    position: 'absolute',
+                                    top: '10px',
+                                    right: '5px',
+                                    padding: '2px 5px',
+                                    fontSize: '10px',
+                                    borderRadius: '50%',
+                                    minWidth: '18px',
+                                    height: '18px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontWeight: 'bold'
+                                }}>
+                                    {notifications.length}
+                                </span>
+                            )}
+                        </a>
+                        <div className="dropdown-menu dropdown-list dropdown-menu-end">
                             <div className="dropdown-header">Notifications
                                 <div className="float-right">
                                     <NavLink to='#' onClick={handleMarkAllRead}>Mark All As Read</NavLink>
@@ -149,7 +155,7 @@ const Navigation = () => {
                     <li className="dropdown"><a href='#' data-bs-toggle="dropdown" className="nav-link dropdown-toggle nav-link-lg nav-link-user" style={{ color: 'black' }}>
                         <img alt="image" src={image} className="rounded-circle mr-1" />
                         <div className="d-sm-none d-lg-inline-block">Hi, {name}</div></a>
-                        <div className="dropdown-menu dropdown-menu-right">
+                        <div className="dropdown-menu dropdown-menu-end">
                             <div className="dropdown-title">Logged in 5 min ago</div>
                             <NavLink to="features-profile.html" className="dropdown-item has-icon">
                                 <i className="far fa-user"></i> Profile
