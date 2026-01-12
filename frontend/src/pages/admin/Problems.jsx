@@ -70,6 +70,24 @@ const AdminProblems = () => {
         }
     };
 
+    const handleDeleteProblem = async (id) => {
+        if (window.confirm("Are you sure you want to delete this problem?")) {
+            try {
+                const { deleteProblem } = require("../../http");
+                const res = await deleteProblem(id);
+                if (res.success) {
+                    toast.success("Problem deleted successfully");
+                    fetchProblems();
+                } else {
+                    toast.error(res.message || "Failed to delete problem");
+                }
+            } catch (err) {
+                console.error(err);
+                toast.error("An error occurred");
+            }
+        }
+    };
+
     return (
         <div className="main-content">
             <section className="section">
@@ -136,10 +154,16 @@ const AdminProblems = () => {
                                                 <td>{moment(problem.createdAt).format('DD MMM YYYY')}</td>
                                                 <td>
                                                     <button 
-                                                        className="btn btn-info btn-sm" 
+                                                        className="btn btn-info btn-sm mr-2" 
                                                         onClick={() => handleViewDetails(problem)}
                                                     >
                                                         View Details
+                                                    </button>
+                                                    <button 
+                                                        className="btn btn-danger btn-sm" 
+                                                        onClick={() => handleDeleteProblem(problem._id)}
+                                                    >
+                                                        Delete
                                                     </button>
                                                 </td>
                                             </tr>

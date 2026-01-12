@@ -287,28 +287,34 @@ const Chat = () => {
                                             }
 
                                             return (
-                                                <div key={index} className={`d-flex mb-3 ${isMe ? 'justify-content-end' : 'justify-content-start'}`}>
-
-                                                    {/* Avatar for receiver (Left side only) */}
+                                                <div key={index} className={`d-flex mb-4 ${isMe ? 'justify-content-end' : 'align-items-start'}`}>
+                                                    {/* Avatar (Left side for others) */}
                                                     {!isMe && (
-                                                        <div className="mr-2 align-self-end text-center" style={{ width: '32px' }}>
+                                                        <div className="mr-3 align-self-end">
                                                             <img
                                                                 src={activeContact.image ? `${process.env.REACT_APP_BASE_URL}/storage/images/profile/${activeContact.image}` : '/avatar/avatar-1.png'}
-                                                                alt={activeContact.name}
-                                                                className="rounded-circle"
-                                                                width="28"
-                                                                height="28"
+                                                                alt="avatar"
+                                                                className="rounded-circle shadow-sm"
+                                                                width="40"
+                                                                height="40"
                                                                 style={{ objectFit: 'cover' }}
                                                                 onError={(e) => { e.target.src = 'https://ui-avatars.com/api/?name=' + activeContact.name; }}
                                                             />
-                                                            <small className="text-muted d-block mt-1" style={{ fontSize: '0.6rem' }}>
-                                                                {moment(msg.createdAt).format('HH:mm')}
-                                                            </small>
                                                         </div>
                                                     )}
 
-                                                    <div className={`d-flex flex-column ${isMe ? 'align-items-end' : 'align-items-start'}`} style={{ maxWidth: '70%', position: 'relative' }}>
-                                                        {/* Message Bubble */}
+                                                    <div className={`d-flex flex-column ${isMe ? 'align-items-end' : 'align-items-start'}`} style={{ maxWidth: '75%', position: 'relative' }}>
+                                                        {/* Header: Name + Time */}
+                                                        <div className="small text-muted mb-1">
+                                                            <span className="font-weight-bold">
+                                                                {isMe ? 'You' : activeContact.name}
+                                                            </span>
+                                                            <span className="opacity-50 ml-2">
+                                                                {moment(msg.createdAt).format('HH:mm')}
+                                                            </span>
+                                                        </div>
+
+                                                        {/* Bubble Section */}
                                                         <div className="d-flex align-items-center">
                                                             {/* Delete Button (Left of bubble for Me) */}
                                                             {isMe && (
@@ -316,7 +322,7 @@ const Chat = () => {
                                                                     className="btn btn-sm btn-link text-danger mr-2 p-0 opacity-0 delete-btn"
                                                                     style={{ transition: 'opacity 0.2s' }}
                                                                     onClick={async () => {
-                                                                        if (window.confirm("Delete this message?")) {
+                                                                        if (window.confirm("Are you sure you want to delete this message?")) {
                                                                             try {
                                                                                 const res = await deleteMessage(msg._id);
                                                                                 if (res.success) {
@@ -335,14 +341,13 @@ const Chat = () => {
                                                             )}
 
                                                             <div
-                                                                className={`p-3 px-4 shadow-sm position-relative ${isMe ? 'text-white' : 'text-dark'} message-bubble-container`}
+                                                                className={`p-3 rounded shadow-sm ${isMe ? 'bg-primary text-white' : 'bg-white text-dark border'}`}
                                                                 style={{
-                                                                    backgroundColor: isMe ? '#0084ff' : '#e4e6eb', // Messenger Blue vs Gray
-                                                                    borderRadius: isMe ? '18px 18px 4px 18px' : '18px 18px 18px 4px', // Rounded corners effect
+                                                                    borderRadius: isMe ? '15px 15px 2px 15px' : '15px 15px 15px 2px',
                                                                     fontSize: '0.95rem',
                                                                     lineHeight: '1.4',
                                                                     wordWrap: 'break-word',
-                                                                    cursor: 'default'
+                                                                    minWidth: '50px'
                                                                 }}
                                                                 onMouseEnter={(e) => {
                                                                     const btn = e.currentTarget.parentElement.querySelector('.delete-btn');
@@ -357,16 +362,26 @@ const Chat = () => {
                                                             </div>
                                                         </div>
 
-                                                        {/* Avatar/Time for Sender (Right side - usually just status) */}
-                                                        {isMe && (
-                                                            <div className="mr-1 mt-1">
-                                                                <small className="text-muted" style={{ fontSize: '0.65rem' }}>
-                                                                    {moment(msg.createdAt).format('HH:mm')}
-                                                                    {msg.isRead ? <i className="fas fa-check-double text-primary ml-1"></i> : <i className="fas fa-check ml-1"></i>}
-                                                                </small>
-                                                            </div>
-                                                        )}
+                                                        {/* Footer: Status */}
+                                                        <div className="small text-muted mt-1 opacity-50">
+                                                            {isMe ? (msg.isRead ? 'Seen' : 'Delivered') : ''}
+                                                        </div>
                                                     </div>
+
+                                                    {/* Avatar (Right side for me) */}
+                                                    {isMe && (
+                                                        <div className="ml-3 align-self-end">
+                                                            <img
+                                                                src={user.image ? `${process.env.REACT_APP_BASE_URL}/storage/images/profile/${user.image}` : '/avatar/avatar-1.png'}
+                                                                alt="avatar"
+                                                                className="rounded-circle shadow-sm"
+                                                                width="40"
+                                                                height="40"
+                                                                style={{ objectFit: 'cover' }}
+                                                                onError={(e) => { e.target.src = 'https://ui-avatars.com/api/?name=' + user.name; }}
+                                                            />
+                                                        </div>
+                                                    )}
                                                 </div>
                                             );
                                         })}
