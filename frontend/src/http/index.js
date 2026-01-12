@@ -97,6 +97,7 @@ export const getProblem = (id) => api.get(`/problems/${id}`);
 export const updateProblemStatus = (id, data) => api.patch(`/problems/status/${id}`, data);
 export const provideSolution = (id, data) => api.patch(`/problems/solution/${id}`, data);
 export const getLeaderProblems = () => api.get('/problems/leader-problems');
+export const deleteProblem = (id) => api.delete(`/problems/${id}`);
 
 // Chat
 export const sendMessage = (data) => api.post('/chat/send', data);
