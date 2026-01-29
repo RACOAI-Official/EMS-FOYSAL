@@ -226,6 +226,13 @@
   color: var(--text-main) !important;
   border-color: var(--border-color) !important;
 }
+
+/* Global Textarea Size Increase */
+textarea, 
+textarea.form-control {
+  min-height: 200px !important;
+  height: auto !important;
+}
 .dark-mode .form-control:focus,
 .dark-mode .form-select:focus {
   background-color: var(--input-bg) !important;
@@ -697,6 +704,40 @@ h1, h2, h3, h4, h5, h6, p, span, label, div {
 .dark-mode .close {
   color: var(--text-main) !important;
   opacity: 0.8;
+}
+
+/* Global Bootstrap Modal Centering Fix */
+.modal.show,
+.modal.d-block {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  padding-right: 0 !important;
+}
+
+.modal-dialog {
+  margin: auto !important;
+  max-width: 95%; /* Ensure it fits on smaller screens */
+}
+
+/* Ensure centering for different Bootstrap versions/custom setups */
+@media (min-width: 576px) {
+  .modal-dialog {
+    max-width: 500px;
+    margin: auto !important;
+  }
+  .modal-lg {
+    max-width: 800px;
+  }
+}
+
+.modal-content {
+  margin: auto;
 }
 
 /* Fix for standard Stisla elements in dark mode */

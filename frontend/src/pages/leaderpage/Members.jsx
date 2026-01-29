@@ -33,13 +33,14 @@ const Members = () =>
                       <table className="table table-striped table-md center-text">
                         <thead>
                           <tr>
-                            <th>#</th>
-                            <th>Employee ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Mobile</th>
-                            <th>Sub-Type (Position)</th>
+                        
+                            <th>ID/Name</th>
+                            <th>Position</th>
+                            <th>Email/Number</th>
                             <th>Status</th>
+                            <th>Tems</th>
+                            <th>Progress</th>
+                            <th>Action</th>
                              
                           </tr>
                         </thead>

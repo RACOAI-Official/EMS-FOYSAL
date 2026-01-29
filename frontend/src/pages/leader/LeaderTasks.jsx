@@ -3,10 +3,13 @@ import HeaderSection from "../../components/HeaderSection";
 import { getLeaderTasks, downloadTaskPDF, backendUrl } from '../../http';
 import { getFileUrl } from '../../utils/fileUtil';
 import CircularProgress from '../../components/CircularProgress';
+import Modal from '../../components/modal/Modal';
 
 const LeaderTasks = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
      fetchTasks();
@@ -57,8 +60,7 @@ const LeaderTasks = () => {
                             <tr key={task._id} className="bg-white">
                                 <td className="ps-3 border-0">
                                     <div className="fw-bold text-dark">{task.title}</div>
-                                    <p className="text-muted mb-1 small" style={{lineHeight: '1.4'}}>{task.description}</p>
-                                    <div className="small text-secondary">
+                                    <div className="small text-secondary mt-1">
                                         <span className="fw-bold">Deadline:</span> {task.endDate ? new Date(task.endDate).toLocaleDateString() : 'N/A'}
                                     </div>
                                 </td>
@@ -83,14 +85,15 @@ const LeaderTasks = () => {
                                 </td>
                                 <td className="border-0">
                                     <div className="d-flex gap-2">
-                                        <a 
-                                            href={downloadTaskPDF(task._id, 'view')} 
-                                            target="_blank" 
-                                            rel="noopener noreferrer"
+                                        <button 
+                                            onClick={() => {
+                                                setSelectedTask(task);
+                                                setShowModal(true);
+                                            }}
                                             className="btn btn-sm btn-outline-info rounded-pill px-3"
                                         >
-                                            <i className="fas fa-file-pdf mr-1"></i> PDF View
-                                        </a>
+                                            <i className="fas fa-eye mr-1"></i> View
+                                        </button>
                                         {task.file && (
                                             <a 
                                                 href={getFileUrl(task.file)} 
@@ -109,6 +112,48 @@ const LeaderTasks = () => {
                 </table>
             </div>
         </div>
+
+        {showModal && selectedTask && (
+            <Modal 
+                title="Task Details" 
+                close={() => setShowModal(false)}
+                width="600px"
+            >
+                <div className="p-4">
+                    <h5 className="fw-bold text-primary mb-3">{selectedTask.title}</h5>
+                    <div className="mb-4">
+                        <label className="fw-bold text-muted small text-uppercase mb-2 d-block">Description</label>
+                        <div className="bg-light p-3 rounded" style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>
+                            {selectedTask.description || 'No description provided.'}
+                        </div>
+                    </div>
+                    <div className="row mb-4">
+                        <div className="col-6">
+                            <label className="fw-bold text-muted small text-uppercase mb-1 d-block">Deadline</label>
+                            <div className="text-dark">
+                                <i className="fas fa-calendar-alt text-secondary mr-2"></i>
+                                {selectedTask.endDate ? new Date(selectedTask.endDate).toLocaleDateString() : 'N/A'}
+                            </div>
+                        </div>
+                        <div className="col-6 text-right">
+                             <label className="fw-bold text-muted small text-uppercase mb-1 d-block">Progress</label>
+                             <div className="fw-bold text-primary">{selectedTask.progress || 0}% Complete</div>
+                        </div>
+                    </div>
+                    <div className="d-flex justify-content-end gap-2 mt-4">
+                        <a 
+                            href={downloadTaskPDF(selectedTask._id, 'view')} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="btn btn-info rounded-pill px-4"
+                        >
+                            <i className="fas fa-file-pdf mr-1"></i> View PDF
+                        </a>
+                        <button className="btn btn-secondary rounded-pill px-4" onClick={() => setShowModal(false)}>Close</button>
+                    </div>
+                </div>
+            </Modal>
+        )}
       </section>
     </div>
   );

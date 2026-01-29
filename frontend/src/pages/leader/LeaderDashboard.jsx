@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import HeaderSection from "../../components/HeaderSection";
 import { getLeaderStats, getMembers_Leader } from "../../http";
 import RowEmployee from "../../components/rows/row-employee";
-import ProgressLeaderboard from "../../components/common/ProgressLeaderboard";
 import CircularProgress from "../../components/CircularProgress";
 
 const LeaderDashboard = () => {
@@ -125,7 +124,36 @@ const LeaderDashboard = () => {
                     </div>
                   </div>
                 </div>
-
+  {/* Personal Progress Card */}
+                <div className="card">
+                    <div className="card-header">
+                        <h4><i className="fas fa-user-check mr-2"></i>My Progress</h4>
+                    </div>
+                    <div className="card-body">
+                        <div className="row align-items-center">
+                            <div className="col-md-3 text-center">
+                                <CircularProgress value={user.progress || 0} size={100} />
+                            </div>
+                            <div className="col-md-9">
+                                <h5 className="mb-3">Your Performance: {user.progress || 0}%</h5>
+                                <div className="progress mb-3" style={{ height: '30px' }}>
+                                    <div 
+                                        className={`progress-bar ${user.progress >= 75 ? 'bg-success' : user.progress >= 50 ? 'bg-info' : user.progress >= 25 ? 'bg-warning' : 'bg-danger'}`}
+                                        role="progressbar" 
+                                        style={{ width: `${user.progress || 0}%` }}
+                                    >
+                                        {user.progress || 0}%
+                                    </div>
+                                </div>
+                                {user.progressNote && (
+                                    <div className="alert alert-info mb-0">
+                                        <strong>Note from Admin:</strong> {user.progressNote}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div className="card">
                     <div className="card-header">
                         <h4>Employers Under You</h4>
@@ -161,56 +189,12 @@ const LeaderDashboard = () => {
                     </div>
                 </div>
 
-                {/* Personal Progress Card */}
-                <div className="card">
-                    <div className="card-header">
-                        <h4><i className="fas fa-user-check mr-2"></i>My Progress</h4>
-                    </div>
-                    <div className="card-body">
-                        <div className="row align-items-center">
-                            <div className="col-md-3 text-center">
-                                <CircularProgress value={user.progress || 0} size={100} />
-                            </div>
-                            <div className="col-md-9">
-                                <h5 className="mb-3">Your Performance: {user.progress || 0}%</h5>
-                                <div className="progress mb-3" style={{ height: '30px' }}>
-                                    <div 
-                                        className={`progress-bar ${user.progress >= 75 ? 'bg-success' : user.progress >= 50 ? 'bg-info' : user.progress >= 25 ? 'bg-warning' : 'bg-danger'}`}
-                                        role="progressbar" 
-                                        style={{ width: `${user.progress || 0}%` }}
-                                    >
-                                        {user.progress || 0}%
-                                    </div>
-                                </div>
-                                {user.progressNote && (
-                                    <div className="alert alert-info mb-0">
-                                        <strong>Note from Admin:</strong> {user.progressNote}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+              
 
-                {/* Leader Comparison Section */}
-                <ProgressLeaderboard 
-                  mode="users"
-                  includeLeaders={true} 
-                  title="Leader Comparison" 
-                />
+                
+ 
 
-                {/* Team Members Progress Leaderboard */}
-                <ProgressLeaderboard 
-                  mode="users"
-                  includeLeaders={false} 
-                  title="Top Performing Members" 
-                />
-
-                {/* Team Progress Overview */}
-                <ProgressLeaderboard 
-                  mode="teams" 
-                  title="Team Progress Overview" 
-                />
+               
         </>
     );
 }

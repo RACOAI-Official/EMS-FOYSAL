@@ -166,13 +166,13 @@ const Addtasksubmit = ({ onTaskAdded, isPage = true }) => {
 
             <div className="form-group pt-3 col-md-12">
               <button
-                className="gradient-btn w-100 py-3 text-uppercase letter-spacing-1 shadow-lg border-0"
+                className="btn btn-primary w-100 py-3 text-uppercase letter-spacing-1 shadow-lg border-0"
                 type="submit"
                 disabled={loading}
               >
                 {loading ? (
                   <><span className="spinner-border spinner-border-sm me-2" role="status"></span> Deploying...</>
-                ) : "Deploy Mission"}
+                ) : "Submit"}
               </button>
             </div>
           </div>
@@ -188,8 +188,8 @@ const Addtasksubmit = ({ onTaskAdded, isPage = true }) => {
       <section className="section">
         <div className="container py-4">
           <div className="mb-4">
-             <h2 className="display-6 fw-bold gradient-text">Command Center</h2>
-             <p className="text-muted">Control and coordinate agent objectives</p>
+             <h2 className="display-6 fw-bold gradient-text">Add Task</h2>
+             
           </div>
           <div className="row justify-content-center">
             <div className="col-lg-8">

@@ -585,7 +585,7 @@ const AttendanceView = () => {
               role="document"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="glass-card border-0 shadow-2xl overflow-hidden w-100">
+              <div className="modal-content glass-card border-0 shadow-2xl overflow-hidden w-100">
                 <div className="modal-header border-bottom bg-white py-3 px-4 d-flex justify-content-between align-items-center">
                   <div>
                     <h5 className="modal-title font-weight-bold text-dark mb-0">Live Tracking</h5>
