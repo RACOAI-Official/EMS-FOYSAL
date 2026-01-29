@@ -13,5 +13,8 @@
   "dependencies": {
     "@react-leaflet/core": "^1.1.1",
     "react-leaflet": "^3.2.5"
+  },
+  "devDependencies": {
+    "file-loader": "^6.2.0"
   }
 }
