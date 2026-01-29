@@ -75,7 +75,7 @@ class UserService {
 
     // Find all admins
     findAdmins = async () => {
-        return await UserModel.find({ type: 'admin' }).populate('team');
+        return await UserModel.find({ type: { $in: ['super_admin', 'sub_admin'] } }).populate('team');
     }
 
     // Find all leaders
@@ -104,7 +104,11 @@ class UserService {
 
     updateLeaveApplication = async (id, updatedLeave) => LeaveModel.findByIdAndUpdate(id, updatedLeave);
 
+    deleteLeaveApplication = async (id) => await LeaveModel.findByIdAndDelete(id);
+
     deleteUser = async (_id) => await UserModel.findByIdAndDelete({ _id });
+
+    deleteSalary = async (_id) => await UserSalaryModel.findByIdAndDelete({ _id });
 
 }
 

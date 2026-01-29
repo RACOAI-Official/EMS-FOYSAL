@@ -22,9 +22,9 @@ class UserDto {
             this.email = user.email,
             this.mobile = user.mobile,
             this.image = user.image && user.image !== 'user.png'
-                ? `${process.env.BASE_URL}/storage/images/profile/${user.image}`
-                : './assets/img/avatar/avatar-1.png',
-            this.type = user.type && user.type.charAt(0).toUpperCase() + user.type.slice(1),
+                ? (user.image.startsWith('http') ? user.image : `${process.env.BASE_URL}/storage/images/profile/${user.image}`)
+                : '/assets/icons/user.png',
+            this.type = user.type,
             this.address = user.address,
             this.status = user.status && user.status.charAt(0).toUpperCase() + user.status.slice(1),
             this.team = user.team && new TeamDto(Array.isArray(user.team) && user.team.length > 0 ? user.team[0] : user.team),
@@ -33,7 +33,16 @@ class UserDto {
             this.empire = user.empire,
             this.designation = user.designation,
             this.project = user.project,
-            this.totalMembers = user.totalMembers || 0
+            this.totalMembers = user.totalMembers || 0,
+            this.createdAt = user.createdAt,
+            this.fatherName = user.fatherName || 'N/A',
+            this.motherName = user.motherName || 'N/A',
+            this.bloodGroup = user.bloodGroup || 'N/A',
+            this.employeeId = user.employeeId || 'N/A',
+            this.presentAddress = user.presentAddress || 'N/A',
+
+            this.nid = user.nid || 'N/A',
+            this.position = user.position || 'Not Specified'
     }
 
 }

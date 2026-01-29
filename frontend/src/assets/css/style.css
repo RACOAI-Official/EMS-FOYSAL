@@ -3624,7 +3624,7 @@ pre {
 .navbar,
 .main-content,
 .main-footer {
-  transition: all .5s;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 body.sidebar-gone .main-sidebar {
@@ -4258,7 +4258,8 @@ body:not(.sidebar-mini) .sidebar-style-2 .sidebar-menu li.active ul.dropdown-men
     margin-top: 0 !important;
     z-index: 891;
     transform: translateX(-250px);
-    transition: transform 0.3s ease;
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 10px 0 20px rgba(0,0,0,0.1) !important;
   }
 
   body.sidebar-show .main-sidebar {
@@ -4302,13 +4303,14 @@ body:not(.sidebar-mini) .sidebar-style-2 .sidebar-menu li.active ul.dropdown-men
     right: 0;
     width: 100%;
     height: 100%;
-    background-color: #000;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(2px);
     opacity: 0;
-    z-index: 891;
+    z-index: 890;
     -webkit-animation-name: fadeinbackdrop;
     animation-name: fadeinbackdrop;
-    -webkit-animation-duration: 1s;
-    animation-duration: 1s;
+    -webkit-animation-duration: 0.4s;
+    animation-duration: 0.4s;
     -webkit-animation-fill-mode: forwards;
     animation-fill-mode: forwards;
   }

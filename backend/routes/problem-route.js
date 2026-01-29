@@ -13,9 +13,10 @@ router.get('/my-problems', auth, asyncMiddleware(problemController.getUserProble
 router.get('/leader-problems', auth, authRole(['leader']), asyncMiddleware(problemController.getScopedProblems));
 
 // Admin routes
-router.get('/all', auth, authRole(['admin']), asyncMiddleware(problemController.getAllProblems));
-router.patch('/status/:id', auth, authRole(['admin']), asyncMiddleware(problemController.updateProblemStatus));
-router.patch('/solution/:id', auth, authRole(['admin']), asyncMiddleware(problemController.provideSolution));
+router.get('/all', auth, authRole(['super_admin', 'sub_admin']), asyncMiddleware(problemController.getAllProblems));
+router.patch('/status/:id', auth, authRole(['super_admin', 'sub_admin']), asyncMiddleware(problemController.updateProblemStatus));
+router.patch('/solution/:id', auth, authRole(['super_admin', 'sub_admin', 'leader']), asyncMiddleware(problemController.provideSolution));
+router.delete('/:id', auth, authRole(['super_admin', 'sub_admin']), asyncMiddleware(problemController.deleteProblem));
 router.get('/:id', auth, asyncMiddleware(problemController.getProblem));
 
 module.exports = router;

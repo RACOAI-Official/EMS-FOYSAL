@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import CountsCard from "../../../components/dashboard/CountsCard";
-import RowMember from "../../../components/rows/row-member";
-import { getTeam_Leader, getMembers_Leader } from "../../../http";
+import CountsCard from "../../components/dashboard/CountsCard";
+import RowMember from "../../components/rows/row-member";
+import { getTeam_Leader, getMembers_Leader } from "../../http";
+import CircularProgress from "../../components/CircularProgress";
 
 const Team = () => {
   const [team, setTeam] = useState(null);
@@ -59,10 +60,8 @@ const Team = () => {
                         <tr>
                           <th>Progress</th>
                           <td>
-                            <div className="progress" style={{height:'20px'}}>
-                              <div className="progress-bar" role="progressbar" style={{width: `${team.progress || 0}%`}} aria-valuenow={team.progress || 0} aria-valuemin="0" aria-valuemax="100">
-                                {team.progress || 0}%
-                              </div>
+                            <div className="text-center">
+                                <CircularProgress value={team.progress || 0} size={50} />
                             </div>
                           </td>
                         </tr>

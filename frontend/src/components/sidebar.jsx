@@ -18,13 +18,13 @@ const SideBar = () => {
           <NavLink to="/home">RA</NavLink>
         </div>
         {
-          (user.type === 'Admin') ? <Admin /> : (user.type === 'Leader') ? <Leader /> : <Employee />
+          (['super_admin', 'sub_admin'].includes(user.type)) ? <Admin /> : (user.type === 'leader') ? <Leader /> : <Employee />
         }
-        {/* <div className="mt-4 mb-4 p-3 hide-sidebar-mini">
-          <a href="https://devdeepak.vercel.app/" target="_blank" className="btn btn-primary btn-lg btn-block btn-icon-split">
-            <i className="fas fa-rocket"></i> Deepak Singh
+        <div className="mt-2 mb-4 p-3 hide-sidebar-mini">
+          <a href="https://racoai.io/" target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-lg btn-block btn-icon-split shadow-sm">
+            <i className="fas fa-id-card mr-2"></i> ID Card Website
           </a>
-        </div> */}
+        </div>
       </aside>
     </div>
   )

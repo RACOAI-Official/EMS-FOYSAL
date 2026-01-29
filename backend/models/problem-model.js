@@ -47,6 +47,11 @@ const problemSchema = new Schema({
   solutionDate: {
     type: Date,
     required: false
+  },
+  solutionBy: {
+    type: String,
+    enum: ['Admin', 'Leader'],
+    required: false
   }
 }, {
   timestamps: true

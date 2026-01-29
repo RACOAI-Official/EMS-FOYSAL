@@ -3,16 +3,20 @@ const Chat = require('../models/chat-model');
 const User = require('../models/user-model');
 const Team = require('../models/team-model');
 const ErrorHandler = require('../utils/error-handler');
+const fileService = require('../services/file-service');
 
 class ChatController {
   sendMessage = async (req, res, next) => {
     const { receiverId, message } = req.body;
-    if (!receiverId || !message) return next(ErrorHandler.badRequest('Receiver and Message are required'));
+    const file = req.file;
+    if (!receiverId) return next(ErrorHandler.badRequest('Receiver is required'));
+    if (!message && !file) return next(ErrorHandler.badRequest('Message or File is required'));
 
     const chat = await Chat.create({
       sender: req.user._id,
       receiver: receiverId,
-      message
+      message,
+      file: file ? file.path : null
     });
 
     // Notify Receiver
@@ -24,6 +28,11 @@ class ChatController {
       link: '/chat',
       user: receiverId
     });
+
+    // Emit Real-time Message to Receiver
+    const socketService = require('../services/socket-service');
+    socketService.emitToUser(receiverId, 'message', chat);
+    socketService.emitToUser(receiverId, 'updateContacts', {});
 
     res.json({ success: true, data: chat });
   }
@@ -46,8 +55,25 @@ class ChatController {
       let contacts = [];
       const myId = req.user._id;
 
-      // Everyone can chat with everyone who is active
-      contacts = await User.find({ _id: { $ne: myId }, status: 'active' }).select('name email type image');
+      // Fetch full user details to get team and full type
+      const me = await User.findById(myId);
+      if (!me) return next(ErrorHandler.unauthorized('User not found'));
+
+      const myType = me.type.toLowerCase();
+      const myTeams = me.team || [];
+
+      // Base query: Not me
+      let query = { _id: { $ne: myId } };
+
+      // Role-based filtering (using $in with multiple cases for robustness)
+      // Role-based filtering - Removed to allow full communication
+      // if (myType === 'admin') {
+      //   query.type = { $nin: ['admin', 'Admin'] };
+      // } else if (myType === 'leader') {
+      //   query.type = { $nin: ['leader', 'Leader'] };
+      // }
+
+      contacts = await User.find(query).select('name email type image isOnline position');
 
       // Get unread message counts and LAST MESSAGE for each contact
       const contactsWithDetails = await Promise.all(contacts.map(async (contact) => {
@@ -109,14 +135,16 @@ class ChatController {
       const { id } = req.params;
       const message = await Chat.findById(id);
 
-      if (!message) {
-        return next(ErrorHandler.notFound('Message not found'));
-      }
-
       // Authorization: Only sender can delete (or Admin if needed later)
-      if (message.sender.toString() !== req.user._id.toString()) {
+      if (message.sender.toString() !== req.user._id.toString() && req.user.type !== 'admin') {
         return next(ErrorHandler.unauthorized('You can only delete your own messages'));
       }
+
+      // --- FILE CLEANUP START ---
+      if (message.file) {
+        fileService.deleteChatFile(message.file);
+      }
+      // --- FILE CLEANUP END ---
 
       await message.deleteOne();
       res.json({ success: true, message: 'Message deleted successfully' });
@@ -130,15 +158,13 @@ class ChatController {
       const { userId } = req.params; // Target user to delete conversation with
       const myId = req.user._id;
 
-      // Delete ALL messages between these two users
+      // Delete ONLY messages SENT by me to this user
       await Chat.deleteMany({
-        $or: [
-          { sender: myId, receiver: userId },
-          { sender: userId, receiver: myId }
-        ]
+        sender: myId,
+        receiver: userId
       });
 
-      res.json({ success: true, message: 'Conversation deleted successfully' });
+      res.json({ success: true, message: 'Your sent messages deleted successfully' });
     } catch (err) {
       next(err);
     }

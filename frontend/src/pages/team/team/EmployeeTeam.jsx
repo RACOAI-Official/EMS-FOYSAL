@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NavLink, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import CountsCard from "../../../components/dashboard/CountsCard";
 import RowMember from "../../../components/rows/row-member";
 import { getFreeEmployees, getFreeLeaders, getEmployeeTeam, getEmployeeTeamMembers } from "../../../http";
@@ -40,7 +40,7 @@ const EmployeeTeam = () => {
         setMembersLoading(false);
       }
     })();
-  }, [id])
+  }, [id, dispatch])
 
   const modalAction = async () => {
     setShowModal(showModal ? false : true);
@@ -85,9 +85,9 @@ const EmployeeTeam = () => {
               </div>
               <div className="row">
                 <CountsCard title='Total Employee' icon='fa-user' count={team.information.employee} />
-                <CountsCard title='Total Employee' icon='fa-user' count={team.information.employee} />
-                <CountsCard title='Total Employee' icon='fa-user' count={team.information.employee} />
-                <CountsCard title='Total Employee' icon='fa-user' count={team.information.employee} />
+                <CountsCard title='Total Leader' icon='fa-user' count={team.information.leader} />
+                <CountsCard title='Total Admin' icon='fa-user' count={team.information.admin} />
+                <CountsCard title='Total Team Member' icon='fa-user' count={team.information.totalTeam} />
               </div>
 
               <div className="card">
@@ -148,6 +148,7 @@ const EmployeeTeam = () => {
                         <th>Email</th>
                         <th>Mobile</th>
                         <th>Status</th>
+                        <th>progress</th>
                       </tr>
                     </thead>
                     <tbody>

@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+import { exportToPrint } from "../../utils/printHelper";
 import { useDispatch } from "react-redux";
 import HeaderSection from "../../components/HeaderSection";
 import RowTeam from "../../components/rows/team-row";
@@ -7,10 +9,9 @@ import { setTeam } from "../../store/team-slice";
 import { setTeamMembers } from "../../store/user-slice";
 import ConfirmationModal from "../../components/modal/ConfirmationModal";
 import { toast } from "react-toastify";
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
 
 const Teams = () => {
+    const history = useHistory();
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
     const [teams, setTeams] = useState([]);
@@ -50,17 +51,6 @@ const Teams = () => {
     }
 
     const handlePrintTeams = () => {
-        const doc = new jsPDF();
-
-        doc.setFontSize(22);
-        doc.text("Easy Employee", 15, 20);
-
-        doc.setFontSize(16);
-        doc.text("Teams List", 105, 40, null, null, "center");
-
-        doc.setFontSize(10);
-        doc.text(`Generated Date: ${new Date().toLocaleDateString()}`, 15, 50);
-
         const tableColumn = ["#", "Name", "Leader", "Status", "Total Members"];
         const tableRows = [];
 
@@ -75,47 +65,52 @@ const Teams = () => {
             tableRows.push(rowData);
         });
 
-        doc.autoTable({
-            startY: 60,
-            head: [tableColumn],
-            body: tableRows,
-            theme: 'striped',
-            headStyles: { fillColor: [103, 119, 239] },
+        exportToPrint({
+            title: "Teams List",
+            columns: tableColumn,
+            data: tableRows,
+            date: new Date().toLocaleDateString()
         });
-
-        // Preview
-        const pdfBlob = doc.output('blob');
-        const url = URL.createObjectURL(pdfBlob);
-        window.open(url, '_blank');
     };
 
     return (
         <div className="main-content">
             <section className="section">
-                <HeaderSection title='Teams' />
-                <div className="card">
-                    <div className="card-header d-flex justify-content-between">
-                        <h4>All Teams</h4>
-                        <button onClick={handlePrintTeams} className="btn btn-primary">
-                            <i className="fas fa-print mr-2"></i> Print List
-                        </button>
+                {/* Page Header */}
+                <div className="glass-card mb-4 p-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 className="font-weight-bold text-dark mb-1">Organizational Units</h3>
+                        <p className="text-muted mb-0">Manage and monitor all active teams within the company</p>
                     </div>
-                    <div className="card-body p-0">
+                    <button onClick={handlePrintTeams} className="btn btn-primary rounded-pill px-4 shadow-sm font-weight-bold">
+                        <i className="fas fa-print mr-2"></i> Export Directory
+                    </button>
+                </div>
+
+                <div className="glass-card border-0 shadow-lg overflow-hidden">
+                    <div className="card-header bg-white border-bottom py-4">
+                        <h5 className="mb-0 font-weight-bold text-dark">
+                            <i className="fas fa-users-cog mr-2 text-primary"></i> Team Registry
+                        </h5>
+                    </div>
+                    <div className="card-body p-3">
                         <div className="table-responsive">
-                            <table className="table table-striped table-md center-text">
+                            <table className="table table-borderless align-middle mb-0" style={{ borderCollapse: 'separate', borderSpacing: '0 12px' }}>
                                 <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Image</th>
-                                        <th>Name</th>
-                                        <th>Leader</th>
-                                        <th>Status</th>
-                                        <th>Total Members</th>
-                                        <th>Action</th>
+                                    <tr className="text-muted text-uppercase" style={{ fontSize: '0.72rem', letterSpacing: '1px' }}>
+                                        <th className="ps-4">Team</th>
+                                        <th>Leadership</th>
+                                        <th>Resource Stats</th>
+                                        <th className="text-center">Status</th>
+                                        <th className="text-right pe-4">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {!loading && teams && teams.map((data, index) => (
+                                    {loading ? (
+                                        <tr><td colSpan="5" className="text-center p-5 text-muted">Synchronizing team data...</td></tr>
+                                    ) : teams.length === 0 ? (
+                                        <tr><td colSpan="5" className="text-center p-5 text-muted">No teams found in the registry.</td></tr>
+                                    ) : teams.map((data, index) => (
                                         <RowTeam key={data.id} index={index + 1} data={{ ...data, onDelete: confirmDelete }} />
                                     ))}
                                 </tbody>

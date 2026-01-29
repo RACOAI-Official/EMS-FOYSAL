@@ -34,11 +34,13 @@ const Members = () =>
                         <thead>
                           <tr>
                             <th>#</th>
-                            <th>Image</th>
+                            <th>Employee ID</th>
                             <th>Name</th>
                             <th>Email</th>
                             <th>Mobile</th>
+                            <th>Sub-Type (Position)</th>
                             <th>Status</th>
+                             
                           </tr>
                         </thead>
                         <tbody>

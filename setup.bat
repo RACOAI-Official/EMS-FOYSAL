@@ -41,5 +41,5 @@ echo.
 echo Admin Credentials:
 echo Email: admin@admin.com
 echo Password: admin123
-echo.
+echo. docker compose up --build -d
 pause

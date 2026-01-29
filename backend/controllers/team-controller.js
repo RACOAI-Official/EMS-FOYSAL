@@ -4,11 +4,12 @@ const TeamDto = require('../dtos/team-dto');
 const userService = require('../services/user-service');
 const mongoose = require('mongoose');
 const UserDto = require('../dtos/user-dto');
+const fileService = require('../services/file-service');
 
 class TeamController {
 
     createTeam = async (req, res, next) => {
-        const image = req.file && req.file.filename;
+        const image = req.file && req.file.path;
         const { name, description } = req.body;
         if (!name) return next(ErrorHandler.badRequest('Required Parameter Teams Name Is Empty'))
         const team = {
@@ -26,7 +27,7 @@ class TeamController {
         if (!id) return next(ErrorHandler.badRequest('Team Id Is Missing'));
         if (!mongoose.Types.ObjectId.isValid(id)) return next(ErrorHandler.badRequest('Invalid Team Id'));
         let { name, description, status, leader } = req.body;
-        const image = req.file && req.file.filename;
+        const image = req.file && req.file.path;
         status = status && status.toLowerCase();
         if (leader && !mongoose.Types.ObjectId.isValid(leader)) return next(ErrorHandler.badRequest('Invalid Leader Id'));
 
@@ -34,8 +35,16 @@ class TeamController {
             name,
             description,
             status,
-            leader
+            leader,
+            isFavorite: req.body.isFavorite === 'true' || req.body.isFavorite === true
         };
+
+        if (req.body.progress !== undefined) {
+            team.progress = Number(req.body.progress);
+        }
+        if (req.body.progressNote !== undefined) {
+            team.progressNote = req.body.progressNote;
+        }
 
         // Only update image if a new file was uploaded
         if (image) {
@@ -167,10 +176,8 @@ class TeamController {
         const user = await userService.findUser({ _id: id });
         if (!user) return next(ErrorHandler.notFound('No Leader Found'));
         if (user.type !== 'leader') return next(ErrorHandler.badRequest(`${user.name} is not a Leader`));
-        const team = await teamService.findTeam({ leader: id });
-        console.log(team)
-        if (type === 'add' && team) return next(ErrorHandler.badRequest(`${user.name} is already leading '${team.name}' team`));
-        if (type === 'remove' && !team) return next(ErrorHandler.badRequest(`${user.name} is not leading any team`));
+
+        // Removed restriction that prevents leading multiple teams
         const update = await teamService.updateTeam(teamId, { leader: type === 'add' ? id : null });
         console.log(type === 'add' ? id : null);
         return update.modifiedCount !== 1 ? next(ErrorHandler.serverError(`Failed To ${type.charAt(0).toUpperCase() + type.slice(1)} Leader`)) : res.json({ success: true, message: `${type === 'add' ? 'Added' : 'Removed'} Successfully ${user.name} As A Leader` })
@@ -196,8 +203,14 @@ class TeamController {
         const team = await teamService.findTeam({ _id: id });
         if (!team) return next(ErrorHandler.notFound('No Team Found'));
         const data = new TeamDto(team);
-        const employee = await userService.findCount({ team: data.id });
-        data.information = { employee };
+        const membersCount = await userService.findCount({ team: data.id });
+        const leaderCount = team.leader ? 1 : 0;
+        data.information = {
+            employee: membersCount,
+            leader: leaderCount,
+            admin: 0,
+            totalTeam: membersCount + leaderCount
+        };
         res.json({ success: true, message: 'Team Found', data })
     }
 
@@ -211,7 +224,7 @@ class TeamController {
     }
 
     getCounts = async (req, res, next) => {
-        const admin = await userService.findCount({ type: 'admin' });
+        const admin = await userService.findCount({ type: { $in: ['super_admin', 'sub_admin'] } });
         const employee = await userService.findCount({ type: 'employee' });
         const leader = await userService.findCount({ type: 'leader' });
         const team = await teamService.findCount({});
@@ -232,6 +245,11 @@ class TeamController {
 
             const team = await teamService.findTeam({ _id: id });
             if (!team) return next(ErrorHandler.notFound('Team not found'));
+
+            // Cleanup team image
+            if (team.image) {
+                fileService.deleteTeamImage(team.image);
+            }
 
             // Unassign all users from this team (remove from team arrays)
             await userService.UserModel.updateMany({ team: id }, { $pull: { team: id } });

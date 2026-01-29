@@ -1,13 +1,49 @@
-import { NavLink } from "react-router-dom";
-import { useLocation } from "react-router-dom"; // Added import for useLocation
+import { NavLink, useLocation, useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { dLogout } from "../../http";
+import { setAuth } from "../../store/auth-slice";
+import swal from 'sweetalert';
 
 const Leader = () =>
 {
+    const dispatch = useDispatch();
+    const history = useHistory();
+    const { user } = useSelector(state => state.authSlice); // Get user from state
     const location = useLocation(); // Added useLocation hook
+
+    const logout = async (e) => {
+        if (e) e.preventDefault();
+        
+        const willLogout = await swal({
+            title: "Are you sure?",
+            text: "Do you want to logout?",
+            icon: "warning",
+            buttons: ["Cancel", "Yes, Logout"],
+            dangerMode: true,
+        });
+        
+        if (!willLogout) {
+            return;
+        }
+        
+        try {
+            await dLogout();
+            dispatch(setAuth(null));
+            history.push('/login');
+        } catch (err) {
+            console.error("Logout failed", err);
+            dispatch(setAuth(null));
+            history.push('/login');
+        }
+    }
+
     return(
-    <ul className="sidebar-menu">
-      <li><NavLink className="nav-link" to="/leader/dashboard"><i className="fas fa-home"></i> <span>Leader Dashboard</span></NavLink></li>
+    <ul className="sidebar-menu overflow-auto">
+      <li><NavLink className="nav-link" to="/dashboardEmployee"><i className="fas fa-home"></i> <span>Leader Dashboard</span></NavLink></li>
+      
       <li><NavLink className="nav-link" to="/members"><i className="fas fa-users"></i> <span>Members</span></NavLink></li>
+      <li><NavLink className="nav-link" to="/Addtask"><i className="fas fa-plus-circle"></i> <span>Assign task</span></NavLink></li>
+      <li><NavLink className="nav-link" to="/leader/tasks"><i className="fas fa-tasks"></i> <span>Team Tasks</span></NavLink></li>
       <li><NavLink className="nav-link" to="/leader/problems"><i className="fas fa-exclamation-triangle"></i> <span>Problems</span></NavLink></li>
       <li><NavLink className="nav-link" to="/leader/report-problem"><i className="fas fa-bug"></i> <span>Report Problem</span></NavLink></li>
       <li className={location.pathname === '/chat' ? 'active' : ''}>
@@ -18,10 +54,11 @@ const Leader = () =>
       <li><NavLink className="nav-link" to="/userAttendance"><i className="fas fa-user-check"></i> <span>Attendance</span></NavLink></li>
       <li><NavLink className="nav-link" to="/applyforleave"><i className="fas fa-pen"></i> <span>Apply For Leave</span></NavLink></li>
       <li><NavLink className="nav-link" to="/userLeaveApplications"><i className="fas fa-book"></i> <span>Leave Applications</span></NavLink></li>
-      <li><NavLink className="nav-link" to="/userSalary"><i class="fas fa-piggy-bank"></i> <span>Salary</span></NavLink></li>
-
-      <li className="menu-header">Settings</li>
-        <li><NavLink className="nav-link" to="/home"><i className="fas fa-sign-out-alt"></i> <span>Logout</span></NavLink></li>
+      <li><NavLink className="nav-link" to="/userSalary"><i className="fas fa-piggy-bank"></i> <span>Salary</span></NavLink>
+      </li>
+    
+     
+        <li><NavLink className="nav-link" onClick={logout} to="#"><i className="fas fa-sign-out-alt"></i> <span>Logout</span></NavLink></li>
     </ul>
     )
 }

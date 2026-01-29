@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import HeaderSection from "../../components/HeaderSection";
 import { getDropdownUsers, createTask } from "../../http";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -67,7 +66,7 @@ const Addtasksubmit = ({ onTaskAdded, isPage = true }) => {
 
   const formBody = (
     <div className="glass-card overflow-hidden">
-      <div className="px-4 py-4 border-bottom border-light bg-light bg-opacity-10">
+      <div className="px-4 py-4 border-bottom border-light">
         <h5 className="mb-0 gradient-text h4">Create Mission</h5>
         <p className="text-muted small mb-0">Assign a new task to your team members</p>
       </div>
@@ -79,7 +78,7 @@ const Addtasksubmit = ({ onTaskAdded, isPage = true }) => {
               <input
                 type="text"
                 className="form-control form-control-lg border-0 shadow-sm rounded-3 px-4"
-                style={{ backgroundColor: '#fff', fontSize: '1rem' }}
+                style={{ fontSize: '1rem' }}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="What objective needs to be achieved?"
@@ -91,7 +90,7 @@ const Addtasksubmit = ({ onTaskAdded, isPage = true }) => {
               <label className="mb-2 small text-uppercase fw-bold text-muted">Assign Special Agent <span className="text-danger">*</span></label>
               <select
                 className="form-select form-select-lg border-0 shadow-sm rounded-3 px-4"
-                style={{ backgroundColor: '#fff', fontSize: '1rem', height: '54px' }}
+                style={{ fontSize: '1rem', height: '54px' }}
                 value={assignedTo}
                 onChange={(e) => setAssignedTo(e.target.value)}
                 required
@@ -108,13 +107,13 @@ const Addtasksubmit = ({ onTaskAdded, isPage = true }) => {
             <div className="form-group col-md-6">
               <label className="mb-2 small text-uppercase fw-bold text-muted">Activation Date</label>
               <div className="input-group">
-                <span className="input-group-text border-0 bg-white shadow-sm rounded-start-3">
+                <span className="input-group-text border-0 shadow-sm rounded-start-3">
                   <i className="far fa-calendar-alt text-primary"></i>
                 </span>
                 <input
                   type="date"
                   className="form-control form-control-lg border-0 shadow-sm rounded-end-3"
-                  style={{ backgroundColor: '#fff', fontSize: '0.95rem' }}
+                  style={{ fontSize: '0.95rem' }}
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
                 />
@@ -124,13 +123,13 @@ const Addtasksubmit = ({ onTaskAdded, isPage = true }) => {
             <div className="form-group col-md-6">
               <label className="mb-2 small text-uppercase fw-bold text-muted">Deadline</label>
               <div className="input-group">
-                <span className="input-group-text border-0 bg-white shadow-sm rounded-start-3">
+                <span className="input-group-text border-0 shadow-sm rounded-start-3">
                   <i className="far fa-calendar-check text-danger"></i>
                 </span>
                 <input
                   type="date"
                   className="form-control form-control-lg border-0 shadow-sm rounded-end-3"
-                  style={{ backgroundColor: '#fff', fontSize: '0.95rem' }}
+                  style={{ fontSize: '0.95rem' }}
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
                 />
@@ -139,7 +138,7 @@ const Addtasksubmit = ({ onTaskAdded, isPage = true }) => {
 
             <div className="form-group col-md-12">
               <label className="mb-2 small text-uppercase fw-bold text-muted">Mission Files</label>
-              <div className="p-4 rounded-3 border-2 border-dashed text-center bg-white shadow-sm position-relative" style={{ border: '2px dashed #e2e8f0' }}>
+              <div className="p-4 rounded-3 border-2 border-dashed text-center shadow-sm position-relative" style={{ border: '2px dashed #e2e8f0' }}>
                 <i className="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
                 <p className="small text-muted mb-0">Click to upload or drag and drop mission assets</p>
                 <input
@@ -157,7 +156,7 @@ const Addtasksubmit = ({ onTaskAdded, isPage = true }) => {
               <textarea
                 className="form-control border-0 shadow-sm rounded-3 p-4"
                 rows="5"
-                style={{ backgroundColor: '#fff', fontSize: '1rem' }}
+                style={{ fontSize: '1rem' }}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Describe the mission parameters and expectations..."

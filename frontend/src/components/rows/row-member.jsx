@@ -6,6 +6,7 @@ import { setFreeEmployees, setTeamMembers } from "../../store/user-slice";
 import { useSelector } from "react-redux";
 import { updateEmployeeCount } from "../../store/team-slice";
 import { toast } from "react-toastify";
+import CircularProgress from "../CircularProgress";
 // Progress update by leader removed (inputs now only on user dashboard)
 
 
@@ -52,13 +53,10 @@ const RowMember = ({index,data}) =>
             <td>{data.mobile}</td>
             <td><div className={`badge ${data.status==='Active' ? 'badge-primary' :'badge-danger'}`}>{data.status}</div></td>
             <td style={{minWidth:'200px'}}> 
-                <div className="progress" style={{height:'16px'}}>
-                  <div className="progress-bar" role="progressbar" style={{width: `${data.progress || 0}%`}} aria-valuenow={data.progress || 0} aria-valuemin="0" aria-valuemax="100">
-                  </div>
-                </div>
+                <CircularProgress value={data.progress || 0} size={40} />
             </td>
             {
-                user.type==="Admin"?
+                (['super_admin', 'sub_admin'].includes(user.type))?
                 (<td><button className='btn btn-danger' onClick={showDialog}><i className="fas fa-trash-alt"></i></button></td>)
                 :
                 (<td></td>)

@@ -37,6 +37,16 @@ const taskSchema = new Schema({
   isDeleted: {
     type: Boolean,
     default: false
+  },
+  progress: {
+    type: Number,
+    min: 0,
+    max: 100,
+    default: 0
+  },
+  progressNote: {
+    type: String,
+    default: ''
   }
 }, {
   timestamps: true

@@ -6,9 +6,9 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
     name: {
         type: String,
-        required: true,
-        minlength: 4,
-        maxlength: 25,
+        required: false, // Optional during invitation
+        minlength: 2,
+        maxlength: 50,
         trim: true
     },
     email: {
@@ -23,26 +23,32 @@ const userSchema = new Schema({
     },
     username: {
         type: String,
-        required: true,
+        required: false, // Generated or entered during registration
         unique: true,
+        sparse: true, // Allow multiple nulls
         minlength: 4,
-        maxlength: 15,
+        maxlength: 25,
         trim: true
     },
     mobile: {
-        type: Number,
-        required: true,
+        type: String, // Changed to String for better phone number support
+        required: false,
         minlength: 10,
-        maxlength: 13,
+        maxlength: 15,
     },
     password: {
         type: String,
-        required: true,
+        required: false, // Optional during initial creation
         minlength: 8,
     },
     type: {
         type: String,
-        enum: ['admin', 'employee', 'leader', 'employer', 'team']
+        enum: ['super_admin', 'sub_admin', 'leader', 'employee', 'employer', 'team']
+    },
+    invited_role: {
+        type: String,
+        enum: ['sub_admin', 'leader', 'employee'],
+        required: false
     },
     empire: {
         type: Schema.Types.ObjectId,
@@ -56,10 +62,23 @@ const userSchema = new Schema({
         type: String,
         default: 'Not Assigned'
     },
+    position: {
+        type: String,
+        enum: [
+            'AI Engineer', 'AI Developer',
+            'Full Stack Developer', 'Full Stack Engineer',
+            'HR', 'CEO', 'COO', 'Not Specified'
+        ],
+        default: 'Not Specified'
+    },
     status: {
         type: String,
-        enum: ['active', 'banned'],
-        default: 'active'
+        enum: ['active', 'deactive', 'banned'],
+        default: 'deactive'
+    },
+    isOnline: {
+        type: Boolean,
+        default: false
     },
     team: [{
         type: Schema.Types.ObjectId,
@@ -86,7 +105,26 @@ const userSchema = new Schema({
         type: String,
         required: false,
         default: ''
-    }
+    },
+    employeeId: {
+        type: String,
+        unique: true,
+        sparse: true
+    },
+    fatherName: String,
+    motherName: String,
+    presentAddress: String,
+
+    bloodGroup: String,
+    nid: {
+        type: String,
+        unique: true,
+        sparse: true
+    },
+    companyName: {
+        type: String,
+        default: 'RACOAI'
+    },
 }, {
     timestamps: true
 });

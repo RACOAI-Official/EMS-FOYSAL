@@ -1,6 +1,7 @@
 const problemService = require('../services/problem-service');
 const ErrorHandler = require('../utils/error-handler');
 const mongoose = require('mongoose');
+const fileService = require('../services/file-service');
 
 class ProblemController {
   submitProblem = async (req, res, next) => {
@@ -16,7 +17,7 @@ class ProblemController {
       problemLocation,
       description,
       priority: priority || 'Low',
-      image: file ? file.filename : undefined,
+      image: file ? file.path : undefined,
       empire: empireId
     };
 
@@ -40,6 +41,15 @@ class ProblemController {
     }));
 
     await Notification.insertMany(notifications);
+
+    // Emit Real-time Notification to Admins
+    const socketService = require('../services/socket-service');
+    socketService.emitToAdmins('notification', {
+      title: 'New Mission Report',
+      message: `${req.user.name} submitted a new report: ${project}`,
+      type: 'problem',
+      link: '/admin/problems'
+    });
 
     res.json({
       success: true,
@@ -112,7 +122,8 @@ class ProblemController {
     const problem = await problemService.updateProblem(id, {
       adminSolution: solution,
       solutionDate: new Date(),
-      status: 'Checked' // Auto-update status to Checked when solved
+      status: 'Checked', // Auto-update status to Checked when solved
+      solutionBy: req.user.type // 'Admin' or 'Leader'
     });
 
     if (!problem) return next(ErrorHandler.notFound('Problem not found'));
@@ -133,6 +144,27 @@ class ProblemController {
     res.json({
       success: true,
       data: problem
+    });
+  }
+
+  deleteProblem = async (req, res, next) => {
+    const { id } = req.params;
+    const problem = await problemService.findProblem({ _id: id });
+    if (!problem) {
+      return next(ErrorHandler.notFound('Problem not found'));
+    }
+
+    if (problem.image) {
+      fileService.deleteProblemImage(problem.image);
+    }
+
+    const result = await problemService.deleteProblem(id);
+    if (!result) {
+      return next(ErrorHandler.serverError('Failed to delete problem'));
+    }
+    res.json({
+      success: true,
+      message: 'Problem deleted successfully'
     });
   }
 }

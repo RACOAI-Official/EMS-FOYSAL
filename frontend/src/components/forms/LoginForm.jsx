@@ -13,6 +13,8 @@ const LoginForm = () =>
         password:''
     });
 
+    const [showPassword, setShowPassword] = useState(false);
+
     const inputEvent = (e) =>
     {
         const {name,value} = e.target;
@@ -29,7 +31,7 @@ const LoginForm = () =>
     {
         e.preventDefault();
         const {email,password} = formData;
-        if(!email || !password) return toast.error('All Fields Required');
+        if(!email || !password) return toast.error('Email and Password are Required');
         try {
             console.log('Login attempt with:', {email});
             const res = await doLogin({email,password});
@@ -64,7 +66,7 @@ const LoginForm = () =>
             <div className="row justify-content-center">
               <div className="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
                 <div className="text-center mb-5 mt-4">
-                  <h1 className="display-5 fw-bold gradient-text mb-2">Target Pro</h1>
+                  <h1 className="display-5 fw-bold gradient-text mb-2">RACO AI</h1>
                   <p className="text-muted">Precision management for elite teams</p>
                 </div>
     
@@ -96,30 +98,23 @@ const LoginForm = () =>
                             <span className="input-group-text border-0 bg-light rounded-start-3">
                                 <i className="fas fa-lock text-primary"></i>
                             </span>
-                            <input id="password" onChange={inputEvent} value={formData.password} type="password" className="form-control form-control-lg border-0 bg-light shadow-none rounded-end-3" name="password" placeholder="••••••••" tabIndex="2" required/>
+                            <input id="password" onChange={inputEvent} value={formData.password} type={showPassword ? "text" : "password"} className="form-control form-control-lg border-0 bg-light shadow-none" name="password" placeholder="••••••••" tabIndex="2" required/>
+                            <span className="input-group-text border-0 bg-light rounded-end-3" onClick={() => setShowPassword(!showPassword)} style={{cursor: 'pointer'}}>
+                                <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'} text-primary`}></i>
+                            </span>
                         </div>
                       </div>
     
     
                       <div className="form-group mt-5 mb-0">
-                        <button type="submit" className="gradient-btn w-100 py-3 shadow-lg border-0 text-uppercase letter-spacing-1 fw-bold" tabIndex="4">
-                          Authorize Access
+                        <button type="submit" className="btn-primary w-100 py-3 shadow-lg border-0 text-uppercase letter-spacing-1 fw-bold" tabIndex="4">
+                           Log In
                         </button>
                       </div>
                     </form>
                   </div>
                 </div>
-                <div className="text-center mt-5 text-muted small">
-                  Crafted for excellence by <a href="https://github.com/deepak-singh5219" target="_blank" className="text-primary text-decoration-none fw-semibold">Deepak Singh</a>
-                  <div className="mt-3 fs-5 d-flex justify-content-center gap-3">
-                    <a className="text-muted opacity-50 hover-opacity-100 transition-all" target="_blank" href="https://github.com/deepak-singh5219">
-                        <i className="fab fa-github"></i>
-                    </a>
-                    <a className="text-muted opacity-50 hover-opacity-100 transition-all" href="https://www.linkedin.com/in/deepaksingh5219/" target="_blank">
-                        <i className="fab fa-linkedin"></i>
-                    </a>
-                  </div>
-                </div>
+            
               </div>
             </div>
           </div>

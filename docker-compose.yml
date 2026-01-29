@@ -1,37 +1,46 @@
-version: '3.8'
-
 services:
-  mongo:
-    image: mongo:6
-    container_name: easy_employee_mongo
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo-data:/data/db
-
+  # 1. Backend Service
   backend:
     build: ./backend
-    container_name: easy_employee_backend
+    container_name: ems_backend
+    env_file:
+      - ./backend/.env
     ports:
-      - "5500:5500"
+      - "5588:5588"
     environment:
-      - PORT=5500
-      - DB_URL=mongodb://mongo:27017/easy_employee
-      - CLIENT_URL=http://localhost:3000
+      - PORT=5588
+      # Use the ATLAS URL for DB
+      - DB_URL=mongodb+srv://RACO:P2zbjmPN2Az80ai3@invertory.lhz7idi.mongodb.net/easy-employee?retryWrites=true&w=majority&appName=Invertory
+      # Allow the browser to connect via CORS (using LAN IP)
+      - CLIENT_URL=http://192.168.10.55:3000
+      - BASE_URL=http://192.168.10.55:5588
     volumes:
       - ./backend/storage:/app/storage
-    depends_on:
-      - mongo
+    networks:
+      - app-network
 
+  # 2. Frontend Service
   frontend:
     build: ./frontend
-    container_name: easy_employee_frontend
+    container_name: ems_frontend
     ports:
       - "3000:3000"
     environment:
-      - REACT_APP_BASE_URL=http://localhost:5500/api
+      # Browser runs on your machine, so it looks for backend at host IP
+      - REACT_APP_BASE_URL=http://192.168.10.55:5588
+      - HOST=0.0.0.0
+      # Fix for React file watching in Docker on Windows
+      - CHOKIDAR_USEPOLLING=true
+      # Prevent browser opening inside container
+      - BROWSER=none
+    # Essential for React in Docker to keep running
+    stdin_open: true
+    tty: true
     depends_on:
       - backend
+    networks:
+      - app-network
 
-volumes:
-  mongo-data:
+networks:
+  app-network:
+    driver: bridge

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import  style from  './Modal.module.css';
 
 
 const Modal = ({close,title,children,width}) =>
 {
     const [windowWidth,setWindowWidth] = useState(window.innerWidth);
-    console.log(windowWidth);
 
     const updateWidth = () =>
     {
@@ -16,9 +16,9 @@ const Modal = ({close,title,children,width}) =>
         window.addEventListener("resize", updateWidth);
         
         return () => window.removeEventListener("resize", updateWidth);
-    })
+    }, []); 
 
-    return (    
+    const modalContent = (    
           <div className={`${style.modalMask}`}>
               <div className={`card ${style.modalBody}`} style={{width:windowWidth>800 ? width : ''}}>
               <div className="card-header justify-content-between">
@@ -30,7 +30,9 @@ const Modal = ({close,title,children,width}) =>
             </div>
               </div>
           </div>
-    )
+    );
+
+    return createPortal(modalContent, document.body);
 }
 
 export default Modal;

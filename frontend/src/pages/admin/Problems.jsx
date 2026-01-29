@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import HeaderSection from "../../components/HeaderSection";
-import { getAllProblems, updateProblemStatus, provideSolution } from "../../http";
+import { getAllProblems, updateProblemStatus, provideSolution, backendUrl } from "../../http";
+import { getFileUrl } from "../../utils/fileUtil";
 import moment from "moment";
 import BootstrapModal from "../../BootstrapModal";
 
@@ -67,6 +68,24 @@ const AdminProblems = () => {
             }
         } catch (err) {
             toast.error("An error occurred");
+        }
+    };
+
+    const handleDeleteProblem = async (id) => {
+        if (window.confirm("Are you sure you want to delete this problem?")) {
+            try {
+                const { deleteProblem } = require("../../http");
+                const res = await deleteProblem(id);
+                if (res.success) {
+                    toast.success("Problem deleted successfully");
+                    fetchProblems();
+                } else {
+                    toast.error(res.message || "Failed to delete problem");
+                }
+            } catch (err) {
+                console.error(err);
+                toast.error("An error occurred");
+            }
         }
     };
 
@@ -136,10 +155,16 @@ const AdminProblems = () => {
                                                 <td>{moment(problem.createdAt).format('DD MMM YYYY')}</td>
                                                 <td>
                                                     <button 
-                                                        className="btn btn-info btn-sm" 
+                                                        className="btn btn-info btn-sm mr-2" 
                                                         onClick={() => handleViewDetails(problem)}
                                                     >
                                                         View Details
+                                                    </button>
+                                                    <button 
+                                                        className="btn btn-danger btn-sm" 
+                                                        onClick={() => handleDeleteProblem(problem._id)}
+                                                    >
+                                                        Delete
                                                     </button>
                                                 </td>
                                             </tr>
@@ -197,6 +222,20 @@ const AdminProblems = () => {
                                             {selectedProblem.description}
                                         </div>
                                     </div>
+                                    {selectedProblem.image && (
+                                        <div className="col-md-12 mt-3">
+                                            <h6>Problem Image:</h6>
+                                            <div className="text-center bg-light p-2 rounded">
+                                                <img 
+                                                    src={getFileUrl(selectedProblem.image)} 
+                                                    alt="Problem" 
+                                                    className="img-fluid rounded shadow-sm" 
+                                                    style={{ maxHeight: '400px', cursor: 'pointer' }}
+                                                    onClick={() => window.open(getFileUrl(selectedProblem.image), '_blank')}
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
                                     <div className="col-md-12 mt-3">
                                         <h6>Admin Solution:</h6>
                                         <textarea

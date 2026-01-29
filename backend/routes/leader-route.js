@@ -40,5 +40,33 @@ router.patch('/team/progress', asyncMiddleware(async (req, res, next) => {
 router.post('/progress', asyncMiddleware(progressController.submitSelfProgress));
 router.get('/progress', asyncMiddleware(progressController.getSelfProgress));
 
+// Member Progress
+router.patch('/progress/member/:id', async (req, res, next) => {
+    const { id } = req.params;
+    const Team = require('../models/team-model');
+    const User = require('../models/user-model');
+    const ErrorHandler = require('../utils/error-handler');
+
+    try {
+        // Find leader's team
+        const team = await Team.findOne({ leader: req.user._id });
+        if (!team) return next(ErrorHandler.notFound('You are not leading any team'));
+
+        // Verify target user is in leader's team
+        const member = await User.findById(id);
+        if (!member || !member.team.includes(team._id)) {
+            return next(ErrorHandler.unauthorized('You can only update progress for your own team members'));
+        }
+
+        // Proceed to controller
+        return userController.updateUserProgress(req, res, next);
+    } catch (err) {
+        next(err);
+    }
+});
+
+// Attendance summary (self)
+router.get('/attendance-summary', asyncMiddleware(userController.getAttendanceSummary));
+
 
 module.exports = router;

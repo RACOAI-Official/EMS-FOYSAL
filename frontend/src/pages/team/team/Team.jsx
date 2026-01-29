@@ -10,6 +10,7 @@ import { setFreeEmployees, setTeamMembers,setFreeLeaders } from '../../../store/
 import LeaderModal from "./modal/LeaderModal";
 import LeadersModal from "./modal/LeadersModal";
 import MembersModal from "./modal/MembersModal";
+import CircularProgress from "../../../components/CircularProgress";
 
 
 const Team = () => {
@@ -100,9 +101,9 @@ const Team = () => {
               </div>
               <div className="row">
                 <CountsCard title='Total Employee' icon='fa-user' count={team.information.employee} />
-                <CountsCard title='Total Employee' icon='fa-user' count={team.information.employee} />
-                <CountsCard title='Total Employee' icon='fa-user' count={team.information.employee} />
-                <CountsCard title='Total Employee' icon='fa-user' count={team.information.employee} />
+                <CountsCard title='Total leader' icon='fa-user' count={team.information.leader} />
+                <CountsCard title='Total Admin' icon='fa-user' count={team.information.admin} />
+                <CountsCard title='Total Manager' icon='fa-user' count={team.information.manager} />
               </div>
 
               <div className="card">
@@ -124,10 +125,8 @@ const Team = () => {
                         <tr>
                           <th>Progress</th>
                           <td>
-                            <div className="progress" style={{height:'20px'}}>
-                              <div className="progress-bar" role="progressbar" style={{width: `${team.progress || 0}%`}} aria-valuenow={team.progress || 0} aria-valuemin="0" aria-valuemax="100">
-                                {team.progress || 0}%
-                              </div>
+                            <div className="text-center">
+                                <CircularProgress value={team.progress || 0} size={50} />
                             </div>
                           </td>
                         </tr>
@@ -174,6 +173,7 @@ const Team = () => {
                         <th>Email</th>
                         <th>Mobile</th>
                         <th>Status</th>
+                        <th>Progress</th>
                         <th>Action</th>
                       </tr>
                     </thead>

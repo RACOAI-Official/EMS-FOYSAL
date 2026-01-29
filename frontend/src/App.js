@@ -3,48 +3,49 @@ import { Redirect, Switch, Route } from 'react-router-dom'
 import Login from './pages/auth/Login'
 import Forgot from './pages/auth/Forgot'
 import Home from './pages/Home'
+import InviteUser from './pages/user/InviteUser'
+import RegisterInvited from './pages/auth/RegisterInvited'
+import VerifyUser from './pages/public/VerifyUser';
 import { useSelector } from 'react-redux';
-// import '../node_modules/materialize-css/dist/css/materialize.min.css';
-// import '../node_modules/materialize-css/dist/js/materialize.min.js';
-// import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
-// import '../node_modules/bootstrap/dist/js/bootstrap.min.js'
+
 import '@popperjs/core';
-import './App.css';
 import Loading from './components/Loading';
+import SearchResults from './pages/user/SearchResults';
 import { useAutoLogin } from './hooks/useAutoLogin';
 import Employees from './pages/employee/Employees';
 import Admins from './pages/admin/Admins';
-import AddLeader from './pages/admin/AddLeader';
 import Teams from './pages/team/Teams';
-import AddUser from './pages/user/AddUser';
 import AddTeam from './pages/team/AddTeam';
 import Employee from './pages/employee/Employee';
 import Team from './pages/team/team/Team';
 import EditUser from './pages/user/EditUser';
 import EditTeam from './pages/team/EditTeam';
 import Admin from './pages/admin/Admin';
-import './App.css';
 import './assets/css/bootstrap.min.css';
 import './assets/css/style.css';
 import './assets/css/components.css';
+import './App.css';
 import Leaders from './pages/leader/Leaders';
-import SideBar from './components/sidebar';
-import Navigation from './components/navigation';
+import MainLayout from './components/Navigation/MainLayout';
 import Members from './pages/leaderpage/Members';
-import UserTeams from './components/Employees/UserTeams';
-import Attendance from './components/Employees/Attendance';
-import LeaveApplications from './components/Employees/LeaveApplications';
-import Salary from './components/Employees/Salary';
-import ApplyForLeave from './components/Employees/ApplyForLeave';
+import UserTeams from './pages/employee/components/UserTeams';
+import Attendance from './pages/employee/components/Attendance';
+import LeaveApplications from './pages/employee/components/LeaveApplications';
+import Salary from './pages/employee/components/Salary';
+import ApplyForLeave from './pages/employee/components/ApplyForLeave';
 import EmployeeTeam from './pages/team/team/EmployeeTeam';
-import LeaveApplication from './components/Employees/LeaveApplication';
-import DashboardEmployee from './components/DashboardEmployee';
-import AttendanceView from './components/Admin/AttendanceView';
-import LeaveView from './components/Admin/LeaveView';
-import Leave from './components/Admin/Leave';
-import AssignSalary from './components/Admin/AssignSalary';
-import Salaries from './components/Admin/Salaries';
-import SalaryView from './components/Admin/Salary';
+import LeaveApplication from './pages/employee/components/LeaveApplication';
+import DashboardEmployee from './pages/employee/components/DashboardEmployee';
+// LocationTracker needs to be imported after DashboardEmployee to avoid compilation errors order
+import LocationTracker from './components/common/LocationTracker';
+import AttendanceView from './pages/admin/components/AttendanceView';
+import LeaveView from './pages/admin/components/LeaveView';
+import Leave from './pages/admin/components/Leave';
+import AssignSalary from './pages/admin/components/AssignSalary';
+import Salaries from './pages/admin/components/Salaries';
+import SalaryView from './pages/admin/components/Salary';
+import IdCard from './pages/employee/components/IdCard';
+import AdminAttendanceManagement from './pages/admin/components/AdminAttendanceManagement';
 
 import Addtasksubmit from './pages/user/Addtasksubmit'
 import Userproblem from './pages/user/Userproblem.jsx'
@@ -52,10 +53,14 @@ import AdminProblems from './pages/admin/Problems.jsx'
 
 import LeaderDashboard from './pages/leader/LeaderDashboard.jsx';
 import LeaderProblems from './pages/leader/LeaderProblems.jsx';
+import LeaderTasks from './pages/leader/LeaderTasks.jsx';
 import Chat from "./pages/Chat";
+import Profile from './pages/user/Profile';
 import NotFound from "./pages/NotFound";
-// import './assets/css/asdfasdf';
-// import './assets/css/asdfasdf';
+import Letterhead from './Letterhead';
+import PrintReport from './components/common/PrintReport';
+
+
 
 const App = () => {
   const loading = useAutoLogin();
@@ -70,7 +75,11 @@ const App = () => {
           <EmployeeTeam />
         </EmployeeRoute>
         <EmployeeRoute exact path='/dashboardEmployee'>
-          <DashboardEmployee />
+          <div className="main-content">
+            <section className="section">
+              <DashboardEmployee />
+            </section>
+          </div>
         </EmployeeRoute>
         <EmployeeRoute exact path='/userAttendance'>
           <Attendance />
@@ -98,12 +107,21 @@ const App = () => {
         <GuestRoute exact path='/login' >
           <Login />
         </GuestRoute>
+        <GuestRoute exact path='/verify/:id' >
+          <VerifyUser />
+        </GuestRoute>
+        <GuestRoute exact path='/register/:token' >
+          <RegisterInvited />
+        </GuestRoute>
         <GuestRoute exact path='/forgot' >
           <Forgot />
         </GuestRoute>
         <ProtectedRoute exact path='/home'>
           <Home />
         </ProtectedRoute>
+        <AdminRoute exact path='/letterhead'>
+          <Letterhead />
+        </AdminRoute>
         <AdminRoute exact path='/employees'>
           <Employees />
         </AdminRoute>
@@ -116,19 +134,19 @@ const App = () => {
         <AdminRoute exact path='/teams'>
           <Teams />
         </AdminRoute>
-        <AdminRoute exact path='/adduser'>
-          <AddUser />
-        </AdminRoute>
-        <AdminRoute exact path='/addleader'>
-          <AddLeader />
+        <AdminRoute exact path='/inviteuser'>
+          <InviteUser />
         </AdminRoute>
 
-        <AdminRoute exact path='/Addtask'>
+        <AdminLeaderRoute exact path='/Addtask'>
           < Addtasksubmit />
-        </AdminRoute>
+        </AdminLeaderRoute>
 
         <AdminRoute exact path='/attendance'>
           <AttendanceView />
+        </AdminRoute>
+        <AdminRoute exact path='/admin/attendance-management'>
+          <AdminAttendanceManagement />
         </AdminRoute>
         <AdminRoute exact path='/leaves'>
           <LeaveView />
@@ -160,6 +178,12 @@ const App = () => {
         <AdminRoute path='/editteam/:id'>
           <EditTeam />
         </AdminRoute>
+        <PlainProtectedRoute path='/print-id/:id'>
+          <IdCard />
+        </PlainProtectedRoute>
+        <PlainProtectedRoute path='/print-report'>
+          <PrintReport />
+        </PlainProtectedRoute>
         <AdminRoute path='/admin/problems'>
           <AdminProblems />
         </AdminRoute>
@@ -167,7 +191,14 @@ const App = () => {
           <Leaders />
         </AdminRoute>
         <LeaderRoute exact path='/leader/dashboard'>
-          <LeaderDashboard />
+          <div className="main-content">
+            <section className="section">
+              <LeaderDashboard />
+            </section>
+          </div>
+        </LeaderRoute>
+        <LeaderRoute exact path='/leader/tasks'>
+          <LeaderTasks />
         </LeaderRoute>
         <ProtectedRoute path="/leader/problems" exact>
           <LeaderProblems />
@@ -175,6 +206,14 @@ const App = () => {
 
         <ProtectedRoute path="/chat" exact>
           <Chat />
+        </ProtectedRoute>
+
+        <ProtectedRoute path="/profile" exact>
+          <Profile />
+        </ProtectedRoute>
+
+        <ProtectedRoute path="/search" exact>
+          <SearchResults />
         </ProtectedRoute>
 
         <LeaderRoute exact path='/leader/report-problem'>
@@ -195,8 +234,9 @@ const GuestRoute = ({ children, ...rest }) => {
   return (
     <Route {...rest} render={({ location }) => {
       let pathname = '/home';
-      if (user?.type === 'Employee') pathname = '/dashboardEmployee';
-      else if (user?.type === 'Leader') pathname = '/leader/dashboard';
+      if (user?.type === 'employee') pathname = '/dashboardEmployee';
+      else if (user?.type === 'leader') pathname = '/leader/dashboard';
+      else if (['super_admin', 'sub_admin'].includes(user?.type)) pathname = '/home';
 
       return isAuth ? (
         <Redirect to={{ pathname, state: { from: location } }} />
@@ -207,16 +247,34 @@ const GuestRoute = ({ children, ...rest }) => {
 }
 
 
+const PlainProtectedRoute = ({ children, ...rest }) => {
+  const { isAuth } = useSelector((state) => state.authSlice);
+  return (
+    <Route {...rest} render={({ location }) => {
+      return isAuth ? (
+        children
+      ) : (
+        <Redirect
+          to={{
+            pathname: '/',
+            state: {
+              from: location
+            }
+          }}
+        />
+      );
+    }} />
+  );
+}
+
 const ProtectedRoute = ({ children, ...rest }) => {
   const { isAuth } = useSelector((state) => state.authSlice);
   return (
     <Route {...rest} render={({ location }) => {
       return isAuth ? (
-        <>
-          <SideBar />
-          <Navigation />
+        <MainLayout>
           {children}
-        </>) : (
+        </MainLayout>) : (
         <Redirect
           to={{
             pathname: '/',
@@ -234,35 +292,10 @@ const AdminRoute = ({ children, ...rest }) => {
   const { user } = useSelector((state) => state.authSlice);
   return (
     <Route {...rest} render={({ location }) => {
-      return user && user.type === 'Admin' ? (
-        <>
-          <SideBar />
-          <Navigation />
+      return user && ['super_admin', 'sub_admin'].includes(user.type) ? (
+        <MainLayout>
           {children}
-        </>) : (
-        <Redirect
-          to={{
-            pathname: '/',
-            state: {
-              from: location
-            }
-          }}
-        />
-      );
-    }} />
-  );
-}
-
-const AdminLeaderRouter = ({ children, ...rest }) => {
-  const { user } = useSelector((state) => state.authSlice);
-  return (
-    <Route {...rest} render={({ location }) => {
-      return user && (user.type === 'Admin' || user.type === 'Leader') ? (
-        <>
-          <SideBar />
-          <Navigation />
-          {children}
-        </>) : (
+        </MainLayout>) : (
         <Redirect
           to={{
             pathname: '/',
@@ -281,12 +314,11 @@ const LeaderRoute = ({ children, ...rest }) => {
   const { user } = useSelector((state) => state.authSlice);
   return (
     <Route {...rest} render={({ location }) => {
-      return user && user.type === 'Leader' ? (
-        <>
-          <SideBar />
-          <Navigation />
+      return user && user.type === 'leader' ? (
+        <MainLayout>
+          <LocationTracker />
           {children}
-        </>) : (
+        </MainLayout>) : (
         <Redirect
           to={{
             pathname: '/',
@@ -304,12 +336,32 @@ const EmployeeRoute = ({ children, ...rest }) => {
   const { user } = useSelector((state) => state.authSlice);
   return (
     <Route {...rest} render={({ location }) => {
-      return user && (user.type === 'Employee' || user.type === 'Leader') ? (
-        <>
-          <SideBar />
-          <Navigation />
+      return user && (user.type === 'employee' || user.type === 'leader') ? (
+        <MainLayout>
+          <LocationTracker />
           {children}
-        </>) : (
+        </MainLayout>) : (
+        <Redirect
+          to={{
+            pathname: '/',
+            state: {
+              from: location
+            }
+          }}
+        />
+      );
+    }} />
+  );
+}
+
+const AdminLeaderRoute = ({ children, ...rest }) => {
+  const { user } = useSelector((state) => state.authSlice);
+  return (
+    <Route {...rest} render={({ location }) => {
+      return user && (['super_admin', 'sub_admin', 'leader'].includes(user.type)) ? (
+        <MainLayout>
+          {children}
+        </MainLayout>) : (
         <Redirect
           to={{
             pathname: '/',

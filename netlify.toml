@@ -1,11 +1,21 @@
 [build]
-  base = "frontend"
-  command = "npm run build"
-  publish = "build"
+  base = "."
+  command = "cd frontend && npm run build"
+  publish = "frontend/build"
 
 [build.environment]
-  NODE_VERSION = "16"
+  NODE_VERSION = "18"
   NPM_VERSION = "8"
+  CI = "false"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
 
 [[redirects]]
   from = "/*"

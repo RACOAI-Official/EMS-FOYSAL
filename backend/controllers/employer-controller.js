@@ -3,6 +3,8 @@ const userService = require('../services/user-service');
 const teamService = require('../services/team-service');
 const ErrorHandler = require('../utils/error-handler');
 const mongoose = require('mongoose');
+const fileService = require('../services/file-service');
+const problemService = require('../services/problem-service');
 
 class EmpireController {
   createEmpire = async (req, res, next) => {
@@ -50,16 +52,41 @@ class EmpireController {
       const empire = await employerService.findEmpire({ _id: id });
       if (!empire) return next(ErrorHandler.notFound('Empire not found'));
 
-      // 1. Delete all Problems associated with this empire
-      // Assuming problems are linked to empire.
+      // 1. Delete all Problem images associated with this empire
+      const problems = await problemService.findProblems({ empire: id });
+      if (problems && problems.length > 0) {
+        for (const problem of problems) {
+          if (problem.image) {
+            fileService.deleteProblemImage(problem.image);
+          }
+        }
+      }
       await mongoose.model('Problem').deleteMany({ empire: id }).session(session);
 
       // 2. Find all Teams under this empire
       const teams = await teamService.findTeams({ empire: id });
       const teamIds = teams.map(t => t._id);
 
-      // 3. Find all Leaders and Employers under this empire
-      // We can delete users where empire matches or they belong to a team in this empire
+      // 3. Find and Delete User files, then delete Users
+      const users = await userService.findUsers({
+        $or: [
+          { empire: id },
+          { team: { $in: teamIds } }
+        ]
+      });
+
+      if (users && users.length > 0) {
+        for (const user of users) {
+          await fileService.deleteUserFiles(user, problemService);
+        }
+      }
+
+      // 3.1. Delete any Invitations for these users
+      if (users && users.length > 0) {
+        const emails = users.map(u => u.email);
+        await mongoose.model('Invitation').deleteMany({ email: { $in: emails } }).session(session);
+      }
+
       await mongoose.model('User').deleteMany({
         $or: [
           { empire: id },
@@ -67,7 +94,14 @@ class EmpireController {
         ]
       }).session(session);
 
-      // 4. Delete all Teams under this empire
+      // 4. Delete all Teams under this empire (and their images)
+      if (teams && teams.length > 0) {
+        for (const team of teams) {
+          if (team.image) {
+            fileService.deleteTeamImage(team.image);
+          }
+        }
+      }
       await mongoose.model('Team').deleteMany({ empire: id }).session(session);
 
       // 5. Delete the Empire itself

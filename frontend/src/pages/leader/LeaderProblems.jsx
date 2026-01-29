@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import HeaderSection from "../../components/HeaderSection";
-import { getLeaderProblems } from "../../http";
+import { getLeaderProblems, provideSolution } from "../../http";
+import { toast } from "react-toastify";
 
 const LeaderProblems = () => {
     const [problems, setProblems] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [solutionInputs, setSolutionInputs] = useState({});
 
     const fetchProblems = async () => {
         setLoading(true);
@@ -18,6 +20,32 @@ const LeaderProblems = () => {
     useEffect(() => {
         fetchProblems();
     }, []);
+
+    const handleInputChange = (id, value) => {
+        setSolutionInputs(prev => ({...prev, [id]: value}));
+    }
+
+    const handleSubmitSolution = async (id) => {
+        const solution = solutionInputs[id];
+        if(!solution || !solution.trim()) return toast.error("Please enter a solution");
+        
+        try {
+            const res = await provideSolution(id, { solution });
+            if(res.success) {
+                toast.success("Solution submitted successfully");
+                fetchProblems();
+                setSolutionInputs(prev => {
+                    const newState = {...prev};
+                    delete newState[id];
+                    return newState;
+                });
+            } else {
+                toast.error(res.message || "Failed to submit solution");
+            }
+        } catch (err) {
+            toast.error("Something went wrong");
+        }
+    }
 
     return (
         <div className="main-content">
@@ -38,7 +66,8 @@ const LeaderProblems = () => {
                                         <th>Problem Area</th>
                                         <th>Priority</th>
                                         <th>Status</th>
-                                        <th>Admin Solution</th>
+                                        <th>Description</th>
+                                        <th>Admin/Leader Solution</th>
                                         <th>Submitted At</th>
                                     </tr>
                                 </thead>
@@ -67,18 +96,39 @@ const LeaderProblems = () => {
                                         </div>
                                     </td>
                                     <td>
+                                        <button className="btn btn-sm btn-info" onClick={() => toast.info(prob.description)}>View</button>
+                                    </td>
+                                    <td style={{minWidth: '250px'}}>
                                         {prob.adminSolution ? (
                                             <div className="text-success small">
-                                                <strong>Admin: </strong>{prob.adminSolution}
+                                                <strong>{prob.solutionBy || 'Admin'}: </strong>{prob.adminSolution}
                                             </div>
-                                        ) : <span className="text-muted small">No solution</span>}
+                                        ) : (
+                                            <div className="input-group input-group-sm">
+                                                <input 
+                                                    type="text" 
+                                                    className="form-control" 
+                                                    placeholder="Provide solution..."
+                                                    value={solutionInputs[prob._id] || ''}
+                                                    onChange={(e) => handleInputChange(prob._id, e.target.value)}
+                                                />
+                                                <div className="input-group-append">
+                                                    <button 
+                                                        className="btn btn-primary"
+                                                        onClick={() => handleSubmitSolution(prob._id)}
+                                                    >
+                                                        Submit
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
                                     </td>
                                             <td>{new Date(prob.createdAt).toLocaleDateString()}</td>
                                         </tr>
                                     ))}
                                     {!loading && problems.length === 0 && (
                                         <tr>
-                                            <td colSpan="6" className="text-center">No problems reported yet</td>
+                                            <td colSpan="9" className="text-center">No problems reported yet</td>
                                         </tr>
                                     )}
                                 </tbody>

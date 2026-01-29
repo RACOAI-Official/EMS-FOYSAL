@@ -47,6 +47,10 @@ const teamScheam = new Schema({
         type: String,
         required: false,
         default: ''
+    },
+    isFavorite: {
+        type: Boolean,
+        default: false
     }
 
 }, {

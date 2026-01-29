@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import HeaderSection from "../../components/HeaderSection";
-import { getTeams, submitProblem, getUserProblems, getUserTasks } from "../../http";
+import { submitProblem, getUserProblems, getUserTasks } from "../../http";
 import moment from "moment";
 import { useSelector } from "react-redux";
 
@@ -21,7 +21,6 @@ const Userproblem = () => {
     const [loading, setLoading] = useState(false);
     const [imagePreview, setImagePreview] = useState(null);
 
-    const { user } = useSelector((state) => state.authSlice);
 
     const fetchMyProblems = async () => {
         try {
@@ -241,7 +240,7 @@ const Userproblem = () => {
                                                 <td>
                                                     {problem.adminSolution ? (
                                                         <div className="text-success small">
-                                                            <strong>Admin: </strong>{problem.adminSolution}
+                                                            <strong>{problem.solutionBy || 'Admin'}: </strong>{problem.adminSolution}
                                                         </div>
                                                     ) : <span className="text-muted small">No solution yet</span>}
                                                 </td>
@@ -250,7 +249,7 @@ const Userproblem = () => {
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan="6" className="text-center">No problems submitted yet</td>
+                                            <td colSpan="7" className="text-center">No problems submitted yet</td>
                                         </tr>
                                     )}
                                 </tbody>

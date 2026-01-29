@@ -1,123 +1,83 @@
 const multer = require('multer');
-const fs = require('fs');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
+// Cloudinary Configuration
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
-const storageEngine = multer.diskStorage({
-    destination: (req, file, cb) => {
-        console.log('Multer Storage Engine - Processing:', file.fieldname);
-        let dir = './storage/images/profile/';
+const storageEngine = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: async (req, file) => {
+        let folder = 'ems/other';
 
         if (file.fieldname === 'profile') {
-            dir = './storage/images/profile/';
+            folder = 'ems/profiles';
         }
         else if (file.fieldname === 'image') {
-            dir = './storage/images/teams/';
+            folder = 'ems/teams';
         }
         else if (file.fieldname === 'taskFile') {
-            dir = './storage/files/tasks/';
+            folder = 'ems/tasks';
         }
         else if (file.fieldname === 'problemImage') {
-            dir = './storage/images/problems/';
+            folder = 'ems/problems';
         }
-        else {
-            console.log('Unknown fieldname, rejecting upload');
-            return cb(null, false);
-        }
-
-        console.log(`Ensuring directory exists: ${dir}`);
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true });
-            console.log(`Created directory: ${dir}`);
+        else if (file.fieldname === 'chatFile') {
+            folder = 'ems/chat';
         }
 
-        cb(null, dir);
-    },
-    filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-        const filename = file.fieldname + "-" + uniqueSuffix + "-" + file.originalname;
-        console.log('Generated filename:', filename);
-        cb(null, filename);
-    }
-})
+        const public_id = file.fieldname + "-" + uniqueSuffix;
 
+        return {
+            folder: folder,
+            public_id: public_id,
+            resource_type: 'auto', // Important for non-image files like PDF
+        };
+    }
+});
 
 const fileFilter = (req, file, cb) => {
-    console.log('File Filter Method Called');
-    console.log('File fieldname:', file.fieldname);
-    console.log('File mimetype:', file.mimetype);
+    console.log('File Filter - Processing:', file.fieldname, file.mimetype);
 
-    if (file === 'undefined') {
-        console.log('File is undefined');
-        cb(null, false);
+    if (!file) {
+        return cb(null, false);
     }
-    // Check for profile image (user profile pictures)
-    else if (file.fieldname === 'profile') {
-        if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg') {
-            console.log('Profile image accepted:', file.originalname);
-            cb(null, true);
-        }
-        else {
-            console.log('Profile image rejected - invalid mimetype:', file.mimetype);
-            cb(null, false);
-        }
-    }
-    // Check for team image
-    else if (file.fieldname === 'image') {
-        if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg') {
-            console.log('Team image accepted:', file.originalname);
-            cb(null, true)
-        }
-        else {
-            console.log('Team image rejected - invalid mimetype:', file.mimetype);
-            cb(null, false)
-        }
-    }
-    // Check for task file (allow pdf, doc, images)
-    else if (file.fieldname === 'taskFile') {
-        // Allow common document types and images
-        const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/png', 'image/jpeg', 'image/jpg', 'text/plain'];
+
+    if (file.fieldname === 'profile' || file.fieldname === 'image' || file.fieldname === 'problemImage') {
+        const allowedTypes = ['image/png', 'image/jpg', 'image/jpeg'];
         if (allowedTypes.includes(file.mimetype)) {
-            console.log('Task file accepted:', file.originalname);
-            cb(null, true)
-        }
-        else {
-            console.log('Task file rejected - invalid mimetype:', file.mimetype);
-            cb(null, false)
+            cb(null, true);
+        } else {
+            cb(new Error('Invalid image format'), false);
         }
     }
-    else if (file.fieldname === 'problemImage') {
-        if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg') {
-            console.log('Problem image accepted:', file.originalname);
-            cb(null, true)
-        }
-        else {
-            console.log('Problem image rejected - invalid mimetype:', file.mimetype);
-            cb(null, false)
-        }
+    else if (file.fieldname === 'taskFile' || file.fieldname === 'chatFile') {
+        // Allow all file types for task and chat files
+        cb(null, true);
     }
     else if (file.fieldname === 'video') {
         if (file.mimetype === 'video/mp4') {
-            console.log('Video accepted:', file.originalname);
-            cb(null, true)
-        }
-        else {
-            console.log('Video rejected - invalid mimetype:', file.mimetype);
-            cb(null, false)
+            cb(null, true);
+        } else {
+            cb(new Error('Invalid video format'), false);
         }
     }
     else {
-        console.log('Unknown fieldname:', file.fieldname);
         cb(null, false);
     }
 }
 
-
 const upload = multer({
     storage: storageEngine,
     fileFilter: fileFilter,
-    limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+    limits: { fileSize: 10 * 1024 * 1024 } // Increased limit to 10MB for cloud storage
 });
 
-console.log('Multer configured successfully');
+console.log('Multer-Cloudinary configured successfully');
 
 module.exports = upload;

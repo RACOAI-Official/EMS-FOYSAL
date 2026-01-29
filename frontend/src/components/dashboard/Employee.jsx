@@ -55,7 +55,7 @@ const Employee = () => {
                         </table>
                         
                     </div>
-                    <div class="container py-5">
+                    <div className="container py-5">
  
 </div>
                   </div>

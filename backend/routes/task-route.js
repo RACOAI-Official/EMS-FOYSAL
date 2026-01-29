@@ -18,13 +18,25 @@ const log = (msg) => {
 log('DEBUG: User model loaded, type: ' + typeof User);
 log('DEBUG: User.findById type: ' + typeof User.findById);
 
-// ADMIN ROUTES
-router.post('/admin', authRole(['admin']), upload.single('taskFile'), asyncMiddleware(async (req, res, next) => {
+// ADMIN & LEADER ROUTES
+router.post('/admin', authRole(['super_admin', 'sub_admin', 'leader']), upload.single('taskFile'), asyncMiddleware(async (req, res, next) => {
   log('=== TASK CREATE REQUEST ===');
   log('Body: ' + JSON.stringify(req.body));
 
   const { description, assignedTo, startDate, endDate } = req.body;
   let { title } = req.body;
+
+  // If leader, verify assignedTo is in their team
+  if (req.user.type === 'leader') {
+    const Team = require('../models/team-model');
+    const team = await Team.findOne({ leader: req.user._id });
+    if (!team) return next(ErrorHandler.badRequest('You must be leading a team to assign tasks'));
+
+    const user = await User.findById(assignedTo);
+    if (!user || user.team.toString() !== team._id.toString()) {
+      return next(ErrorHandler.unauthorized('You can only assign tasks to members of your own team'));
+    }
+  }
 
   log(`Title from body: "${title}"`);
   log(`Assigned to user ID: ${assignedTo}`);
@@ -88,7 +100,7 @@ router.post('/admin', authRole(['admin']), upload.single('taskFile'), asyncMiddl
 }));
 
 // Get All Tasks (Admin view)
-router.get('/admin', authRole(['admin']), asyncMiddleware(async (req, res, next) => {
+router.get('/admin', authRole(['super_admin', 'sub_admin']), asyncMiddleware(async (req, res, next) => {
   const tasks = await Task.find({ isDeleted: false })
     .populate({
       path: 'assignedTo',
@@ -99,8 +111,38 @@ router.get('/admin', authRole(['admin']), asyncMiddleware(async (req, res, next)
   res.json(tasks);
 }));
 
+// Get Team Tasks (Leader view)
+router.get('/leader', authRole(['leader']), asyncMiddleware(async (req, res, next) => {
+  const Team = require('../models/team-model');
+
+  // Find the team led by this user
+  const team = await Team.findOne({ leader: req.user._id });
+  if (!team) {
+    // It's possible the leader has no team assigned yet, returning empty list
+    return res.json([]);
+  }
+
+  // Find all users in this team
+  const teamMembers = await User.find({ team: team._id }).select('_id');
+  const memberIds = teamMembers.map(u => u._id);
+
+  // Find tasks assigned to these members
+  const tasks = await Task.find({
+    assignedTo: { $in: memberIds },
+    isDeleted: false
+  })
+    .populate({
+      path: 'assignedTo',
+      select: 'name email type',
+      populate: { path: 'team', select: 'name' }
+    })
+    .populate('assignedBy', 'name');
+
+  res.json(tasks);
+}));
+
 // Soft Delete Task
-router.delete('/admin/:id', authRole(['admin']), asyncMiddleware(async (req, res, next) => {
+router.delete('/admin/:id', authRole(['super_admin', 'sub_admin']), asyncMiddleware(async (req, res, next) => {
   const task = await Task.findById(req.params.id);
   if (!task) return next(ErrorHandler.notFound('Task not found'));
 
@@ -118,7 +160,7 @@ router.get('/:id/pdf', asyncMiddleware(async (req, res, next) => {
   if (!task) return next(ErrorHandler.notFound('Task not found'));
 
   // Authorization check: Admin OR Assigned User
-  const isAdmin = req.user.type === 'admin';
+  const isAdmin = ['super_admin', 'sub_admin'].includes(req.user.type);
   const isAssigned = task.assignedTo && task.assignedTo._id.toString() === req.user._id.toString();
 
   if (!isAdmin && !isAssigned) {
@@ -174,6 +216,30 @@ router.get('/user', asyncMiddleware(async (req, res, next) => {
   console.log('Found tasks:', tasks.length);
 
   res.json(tasks);
+}));
+
+// Update Task Progress
+router.patch('/:id/progress', asyncMiddleware(async (req, res, next) => {
+  const { progress, progressNote } = req.body;
+  const taskId = req.params.id;
+
+  const task = await Task.findById(taskId);
+  if (!task) {
+    const ErrorHandler = require('../utils/error-handler');
+    return next(ErrorHandler.notFound('Task not found'));
+  }
+
+  // Authorization check: Only the assigned user can update progress
+  if (task.assignedTo.toString() !== req.user._id.toString()) {
+    const ErrorHandler = require('../utils/error-handler');
+    return next(ErrorHandler.unauthorized('You are not authorized to update this task'));
+  }
+
+  task.progress = progress;
+  task.progressNote = progressNote;
+  await task.save();
+
+  res.json({ success: true, message: 'Progress updated successfully', task });
 }));
 
 module.exports = router;

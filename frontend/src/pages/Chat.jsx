@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import HeaderSection from '../components/HeaderSection';
-import { getContacts, getMessages, sendMessage, markMessagesAsRead, deleteMessage, deleteConversation } from '../http';
+import { getContacts, getMessages, sendMessage, markMessagesAsRead, deleteMessage, deleteConversation, backendUrl } from '../http';
+import { getFileUrl } from '../utils/fileUtil';
 import moment from 'moment';
 import { toast } from 'react-toastify';
+import socket from '../socket';
 
 const Chat = () => {
     const { user } = useSelector((state) => state.authSlice);
@@ -13,26 +15,73 @@ const Chat = () => {
     const [newMessage, setNewMessage] = useState("");
     const messagesEndRef = useRef(null);
     const [loading, setLoading] = useState(false);
+    const [isSending, setIsSending] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const fileInputRef = useRef(null);
 
     useEffect(() => {
         fetchContacts();
-        // Refresh contacts every 5 seconds to update unread counts
-        const interval = setInterval(() => {
-            fetchContacts();
-        }, 5000);
-        return () => clearInterval(interval);
     }, []);
 
     useEffect(() => {
         if (activeContact) {
             fetchMessages(activeContact._id);
-            // Polling for new messages every 3 seconds
-            const interval = setInterval(() => {
-                fetchMessages(activeContact._id, true);
-            }, 3000);
-            return () => clearInterval(interval);
         }
     }, [activeContact]);
+
+    useEffect(() => {
+        const userId = user?.id || user?._id;
+        if (userId) {
+            const handleMessage = (msg) => {
+                console.log('New message received via socket:', msg);
+                if (activeContact && (String(msg.sender) === String(activeContact._id) || String(msg.receiver) === String(activeContact._id))) {
+                    setMessages(prev => {
+                        if (prev.find(m => m._id === msg._id)) return prev;
+                        return [...prev, msg];
+                    });
+                    
+                    if (String(msg.sender) === String(activeContact._id)) {
+                        markMessagesAsRead(activeContact._id).catch(console.error);
+                    }
+                }
+                fetchContacts();
+            };
+
+            const handleUpdateContacts = () => {
+                fetchContacts();
+            };
+
+            const handleStatusUpdate = ({ userId: updatedUserId, isOnline }) => {
+                setContacts(prev => prev.map(c => 
+                    String(c._id) === String(updatedUserId) ? { ...c, isOnline } : c
+                ));
+                if (activeContact && String(activeContact._id) === String(updatedUserId)) {
+                    setActiveContact(prev => ({ ...prev, isOnline }));
+                }
+            };
+
+            const handleConnect = () => {
+                socket.emit('join', userId);
+            };
+
+            socket.on('message', handleMessage);
+            socket.on('updateContacts', handleUpdateContacts);
+            socket.on('user-status-update', handleStatusUpdate);
+            socket.on('connect', handleConnect);
+
+            if (!socket.connected) {
+                socket.connect();
+                socket.emit('join', userId);
+            }
+        }
+
+        return () => {
+            socket.off('message');
+            socket.off('updateContacts');
+            socket.off('user-status-update');
+            socket.off('connect');
+        };
+    }, [activeContact, user]);
 
     useEffect(() => {
         scrollToBottom();
@@ -69,30 +118,50 @@ const Chat = () => {
 
     const handleSendMessage = async (e) => {
         e.preventDefault();
-        if (!newMessage.trim() || !activeContact) return;
+        if (isSending) return;
+        if (!newMessage.trim() && !selectedFile) return;
+        if (!activeContact) return;
 
+        setIsSending(true);
         try {
-            const res = await sendMessage({ receiverId: activeContact._id, message: newMessage });
+            const formData = new FormData();
+            formData.append('receiverId', activeContact._id);
+            if (newMessage.trim()) formData.append('message', newMessage);
+            if (selectedFile) formData.append('chatFile', selectedFile);
+
+            const res = await sendMessage(formData);
             if (res.success) {
                 setMessages([...messages, res.data]);
                 setNewMessage("");
+                setSelectedFile(null);
+                if (fileInputRef.current) fileInputRef.current.value = "";
             } else {
                 toast.error("Failed to send message");
             }
         } catch (err) {
             console.error(err);
             toast.error("Error sending message");
+        } finally {
+            setIsSending(false);
+        }
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            if (file.size > 10 * 1024 * 1024) {
+                toast.error("File size too large (max 10MB)");
+                return;
+            }
+            setSelectedFile(file);
         }
     };
 
     const handleContactClick = async (contact) => {
         setActiveContact(contact);
-
-        // Mark messages from this contact as read
         if (contact.unreadCount > 0) {
             try {
                 await markMessagesAsRead(contact._id);
-                // Update local state to clear badge immediately
                 setContacts(prevContacts =>
                     prevContacts.map(c =>
                         c._id === contact._id ? { ...c, unreadCount: 0 } : c
@@ -105,11 +174,16 @@ const Chat = () => {
     };
 
     const [searchTerm, setSearchTerm] = useState("");
-
     const filteredContacts = contacts.filter(c =>
         c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         c.type.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    const isImage = (filename) => {
+        if (!filename) return false;
+        const ext = filename.split('.').pop().toLowerCase();
+        return ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext);
+    };
 
     return (
         <div className="main-content">
@@ -117,7 +191,7 @@ const Chat = () => {
                 <HeaderSection title="Chat Room" />
                 <div className="row">
                     {/* Contacts List */}
-                    <div className="col-md-4">
+                    <div className={`col-md-4 ${activeContact ? 'd-none d-md-block' : 'd-block'}`}>
                         <div className="card" style={{ height: '75vh' }}>
                             <div className="card-header d-block pb-0">
                                 <h4>Contacts</h4>
@@ -145,16 +219,28 @@ const Chat = () => {
                                                 backgroundColor: activeContact?._id === contact._id ? '#f4f6f9' : 'white'
                                             }}
                                         >
-                                            <div className="d-flex align-items-center">
+                                            <div className="d-flex align-items-center w-100">
                                                 <div className="avatar mr-3 position-relative">
                                                     <img
-                                                        src={contact.image ? `${process.env.REACT_APP_BASE_URL}/storage/images/profile/${contact.image}` : '/avatar/avatar-1.png'}
+                                                        src={getFileUrl(contact.image)}
                                                         alt={contact.name}
                                                         className="rounded-circle"
                                                         width="40"
                                                         height="40"
                                                         onError={(e) => { e.target.src = 'https://ui-avatars.com/api/?name=' + contact.name; }}
                                                     />
+                                                    {contact.isOnline && (
+                                                        <span className="position-absolute" style={{
+                                                            bottom: '2px',
+                                                            right: '2px',
+                                                            width: '12px',
+                                                            height: '12px',
+                                                            backgroundColor: '#44b700',
+                                                            borderRadius: '50%',
+                                                            border: '2px solid white',
+                                                            zIndex: 999
+                                                        }}></span>
+                                                    )}
                                                 </div>
                                                 <div style={{ position: 'relative', width: '100%' }} className="contact-item">
                                                     <div className="d-flex justify-content-between align-items-center mb-1">
@@ -165,13 +251,12 @@ const Chat = () => {
                                                                     {moment(contact.lastMessageTime).format('MMM D')}
                                                                 </small>
                                                             )}
-                                                            {/* Delete Conversation Button (Hover) */}
                                                             <button
                                                                 className="btn btn-sm btn-link text-danger p-0 delete-conv-btn opacity-0"
                                                                 style={{ transition: 'opacity 0.2s', zIndex: 10 }}
                                                                 onClick={async (e) => {
                                                                     e.stopPropagation();
-                                                                    if (window.confirm(`Delete entire conversation with ${contact.name}?`)) {
+                                                                    if (window.confirm(`Delete your sent messages with ${contact.name}?`)) {
                                                                         try {
                                                                             const res = await deleteConversation(contact._id);
                                                                             if (res.success) {
@@ -179,21 +264,17 @@ const Chat = () => {
                                                                                 if (activeContact && activeContact._id === contact._id) {
                                                                                     setMessages([]);
                                                                                 }
-                                                                                toast.success("History deleted");
+                                                                                toast.success("Messages deleted");
                                                                             }
                                                                         } catch (err) {
                                                                             console.error(err);
-                                                                            toast.error("Failed to delete history");
+                                                                            toast.error("Failed to delete messages");
                                                                         }
                                                                     }
                                                                 }}
                                                             >
                                                                 <i className="fas fa-trash"></i>
                                                             </button>
-
-                                                            <style>{`
-                                                            .contact-item:hover .delete-conv-btn { opacity: 1 !important; }
-                                                        `}</style>
                                                         </div>
                                                     </div>
                                                     <div className="d-flex justify-content-between">
@@ -205,7 +286,7 @@ const Chat = () => {
                                                             maxWidth: '160px',
                                                             display: 'block'
                                                         }}>
-                                                            {contact.lastMessage || contact.type}
+                                                            {contact.lastMessage || contact.position || 'Not Specified'}
                                                         </small>
                                                         {contact.unreadCount > 0 && (
                                                             <span className="badge badge-primary badge-pill ml-2" style={{ fontSize: '0.7rem' }}>
@@ -215,7 +296,9 @@ const Chat = () => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            {/* Badge moved inside flex container above */}
+                                            <style>{`
+                                                .contact-item:hover .delete-conv-btn { opacity: 1 !important; }
+                                            `}</style>
                                         </li>
                                     ))}
                                     {filteredContacts.length === 0 && <li className="list-group-item text-muted text-center p-4">No contacts found</li>}
@@ -225,14 +308,17 @@ const Chat = () => {
                     </div>
 
                     {/* Chat Area */}
-                    <div className="col-md-8">
+                    <div className={`col-md-8 ${!activeContact ? 'd-none d-md-block' : 'd-block'}`}>
                         <div className="card shadow-sm" style={{ height: '75vh', display: 'flex', flexDirection: 'column', borderRadius: '15px', overflow: 'hidden' }}>
                             <div className="card-header bg-white border-bottom p-3">
                                 {activeContact ? (
                                     <div className="d-flex align-items-center">
+                                        <button className="btn btn-icon btn-light mr-3 d-md-none" onClick={() => setActiveContact(null)}>
+                                            <i className="fas fa-chevron-left"></i>
+                                        </button>
                                         <div className="avatar mr-3 position-relative">
                                             <img
-                                                src={activeContact.image ? `${process.env.REACT_APP_BASE_URL}/storage/images/profile/${activeContact.image}` : '/avatar/avatar-1.png'}
+                                                src={getFileUrl(activeContact.image)}
                                                 className="rounded-circle shadow-sm"
                                                 alt="avatar"
                                                 width="45"
@@ -240,16 +326,22 @@ const Chat = () => {
                                                 style={{ objectFit: 'cover' }}
                                                 onError={(e) => { e.target.src = 'https://ui-avatars.com/api/?name=' + activeContact.name; }}
                                             />
-                                            {/* Status dot could go here */}
+                                            {activeContact.isOnline && (
+                                                <span className="position-absolute" style={{
+                                                    bottom: '0px',
+                                                    right: '0px',
+                                                    width: '14px',
+                                                    height: '14px',
+                                                    backgroundColor: '#44b700',
+                                                    borderRadius: '50%',
+                                                    border: '2px solid white',
+                                                    zIndex: 999
+                                                }}></span>
+                                            )}
                                         </div>
                                         <div>
                                             <h5 className="mb-0 text-dark font-weight-bold">{activeContact.name}</h5>
-                                            <small className="text-muted">{activeContact.type}</small>
-                                        </div>
-                                        <div className="ml-auto">
-                                            {/* Optional: Add call/video icons here */}
-                                            <button className="btn btn-icon btn-light mr-2"><i className="fas fa-phone"></i></button>
-                                            <button className="btn btn-icon btn-light"><i className="fas fa-video"></i></button>
+                                            <small className="text-muted">{activeContact.isOnline ? 'Online' : 'Offline'}</small>
                                         </div>
                                     </div>
                                 ) : <h5 className="text-muted mb-0">Select a conversation</h5>}
@@ -258,59 +350,35 @@ const Chat = () => {
                                 {activeContact ? (
                                     <>
                                         {messages.map((msg, index) => {
-                                            const isMe = msg.sender === user._id; // Corrected: Sender is me
-                                            // Ensure user ID comparison is correct (sometimes could be string vs object)
-                                            // const isMe = String(msg.sender) === String(user._id); 
-
-                                            // const senderName = isMe ? user.name : activeContact.name;
-                                            // const senderImage = isMe ? user.image : activeContact.image;
-
-                                            // Grouping could be added here (if previous msg from same sender, hide avatar)
-
-                                            // Grouping could be added here (if previous msg from same sender, hide avatar)
-
-                                            const handleDelete = async (msgId) => {
-                                                if (window.confirm("Are you sure you want to delete this message?")) {
-                                                    try {
-                                                        const { deleteMessage } = require('../http'); // Dynamic import to avoid top-level if needed, or stick to top if already there. 
-                                                        // Note: imports usually top-level. I will assume it renders fine or the user will fix imports if I missed adding it to top.
-                                                        // Actually, let's just use the imported one from http.
-                                                        // Wait, I need to add it to imports at top of file first... 
-                                                        // Strategy: I'll use a separate tool call to add import, or assume I can do it here if I am careful.
-                                                        // Better: I will assume 'deleteMessage' is available in scope (Wait, I haven't imported it in this file yet).
-                                                        // I should have updated imports. I'll simply add the logic here and assume I'll fix imports next step or use 'api' directly if available? 
-                                                        // No, 'deleteMessage' is exported from http. 
-
-                                                        // To be safe, I'll use the existing 'handleDeleteMessage' function definition pattern here.
-                                                    } catch (err) { }
-                                                }
-                                            }
+                                            const isMe = String(msg.sender) === String(user?.id || user?._id);
 
                                             return (
-                                                <div key={index} className={`d-flex mb-3 ${isMe ? 'justify-content-end' : 'justify-content-start'}`}>
-
-                                                    {/* Avatar for receiver (Left side only) */}
+                                                <div key={index} className={`d-flex mb-4 message-item ${isMe ? 'justify-content-end' : 'align-items-start'}`}>
                                                     {!isMe && (
-                                                        <div className="mr-2 align-self-end text-center" style={{ width: '32px' }}>
+                                                        <div className="mr-3 align-self-end">
                                                             <img
-                                                                src={activeContact.image ? `${process.env.REACT_APP_BASE_URL}/storage/images/profile/${activeContact.image}` : '/avatar/avatar-1.png'}
-                                                                alt={activeContact.name}
-                                                                className="rounded-circle"
-                                                                width="28"
-                                                                height="28"
+                                                                src={getFileUrl(activeContact.image)}
+                                                                alt="avatar"
+                                                                className="rounded-circle shadow-sm"
+                                                                width="40"
+                                                                height="40"
                                                                 style={{ objectFit: 'cover' }}
                                                                 onError={(e) => { e.target.src = 'https://ui-avatars.com/api/?name=' + activeContact.name; }}
                                                             />
-                                                            <small className="text-muted d-block mt-1" style={{ fontSize: '0.6rem' }}>
-                                                                {moment(msg.createdAt).format('HH:mm')}
-                                                            </small>
                                                         </div>
                                                     )}
 
-                                                    <div className={`d-flex flex-column ${isMe ? 'align-items-end' : 'align-items-start'}`} style={{ maxWidth: '70%', position: 'relative' }}>
-                                                        {/* Message Bubble */}
+                                                    <div className={`d-flex flex-column ${isMe ? 'align-items-end' : 'align-items-start'}`} style={{ maxWidth: '75%', position: 'relative' }}>
+                                                        <div className="small text-muted mb-1">
+                                                            <span className="font-weight-bold">
+                                                                {isMe ? 'You' : activeContact.name}
+                                                            </span>
+                                                            <span className="opacity-50 ml-2">
+                                                                {moment(msg.createdAt).format('HH:mm')}
+                                                            </span>
+                                                        </div>
+
                                                         <div className="d-flex align-items-center">
-                                                            {/* Delete Button (Left of bubble for Me) */}
                                                             {isMe && (
                                                                 <button
                                                                     className="btn btn-sm btn-link text-danger mr-2 p-0 opacity-0 delete-btn"
@@ -321,11 +389,10 @@ const Chat = () => {
                                                                                 const res = await deleteMessage(msg._id);
                                                                                 if (res.success) {
                                                                                     setMessages(prev => prev.filter(m => m._id !== msg._id));
-                                                                                    toast.success("Message deleted");
+                                                                                    toast.success("Deleted");
                                                                                 }
                                                                             } catch (err) {
                                                                                 console.error(err);
-                                                                                toast.error("Failed to delete");
                                                                             }
                                                                         }
                                                                     }}
@@ -335,38 +402,59 @@ const Chat = () => {
                                                             )}
 
                                                             <div
-                                                                className={`p-3 px-4 shadow-sm position-relative ${isMe ? 'text-white' : 'text-dark'} message-bubble-container`}
+                                                                className={`p-3 rounded shadow-sm ${isMe ? 'bg-primary text-white' : 'bg-white text-dark border'}`}
                                                                 style={{
-                                                                    backgroundColor: isMe ? '#0084ff' : '#e4e6eb', // Messenger Blue vs Gray
-                                                                    borderRadius: isMe ? '18px 18px 4px 18px' : '18px 18px 18px 4px', // Rounded corners effect
+                                                                    borderRadius: isMe ? '15px 15px 2px 15px' : '15px 15px 15px 2px',
                                                                     fontSize: '0.95rem',
                                                                     lineHeight: '1.4',
                                                                     wordWrap: 'break-word',
-                                                                    cursor: 'default'
-                                                                }}
-                                                                onMouseEnter={(e) => {
-                                                                    const btn = e.currentTarget.parentElement.querySelector('.delete-btn');
-                                                                    if (btn) btn.classList.remove('opacity-0');
-                                                                }}
-                                                                onMouseLeave={(e) => {
-                                                                    const btn = e.currentTarget.parentElement.querySelector('.delete-btn');
-                                                                    if (btn) btn.classList.add('opacity-0');
+                                                                    minWidth: '50px'
                                                                 }}
                                                             >
-                                                                {msg.message}
+                                                                {msg.message && <div className="mb-1">{msg.message}</div>}
+                                                                {msg.file && (
+                                                                    <div className="mt-2 text-center">
+                                                                        {isImage(msg.file) ? (
+                                                                            <img 
+                                                                                src={getFileUrl(msg.file)} 
+                                                                                alt="Chat Attachment" 
+                                                                                className="img-fluid rounded" 
+                                                                                style={{ maxHeight: '250px', cursor: 'pointer' }}
+                                                                                onClick={() => window.open(getFileUrl(msg.file), '_blank')}
+                                                                            />
+                                                                        ) : (
+                                                                            <a 
+                                                                                href={getFileUrl(msg.file)} 
+                                                                                target="_blank" 
+                                                                                rel="noopener noreferrer" 
+                                                                                className={`btn btn-sm ${isMe ? 'btn-light' : 'btn-primary'}`}
+                                                                            >
+                                                                                <i className="fas fa-paperclip mr-1"></i> Download File
+                                                                            </a>
+                                                                        )}
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                         </div>
 
-                                                        {/* Avatar/Time for Sender (Right side - usually just status) */}
-                                                        {isMe && (
-                                                            <div className="mr-1 mt-1">
-                                                                <small className="text-muted" style={{ fontSize: '0.65rem' }}>
-                                                                    {moment(msg.createdAt).format('HH:mm')}
-                                                                    {msg.isRead ? <i className="fas fa-check-double text-primary ml-1"></i> : <i className="fas fa-check ml-1"></i>}
-                                                                </small>
-                                                            </div>
-                                                        )}
+                                                        <div className="small text-muted mt-1 opacity-50">
+                                                            {isMe ? (msg.isRead ? 'Seen' : 'Delivered') : ''}
+                                                        </div>
                                                     </div>
+
+                                                    {isMe && (
+                                                        <div className="ml-3 align-self-end">
+                                                            <img
+                                                                src={getFileUrl(user.image)}
+                                                                alt="avatar"
+                                                                className="rounded-circle shadow-sm"
+                                                                width="40"
+                                                                height="40"
+                                                                style={{ objectFit: 'cover' }}
+                                                                onError={(e) => { e.target.src = 'https://ui-avatars.com/api/?name=' + user.name; }}
+                                                            />
+                                                        </div>
+                                                    )}
                                                 </div>
                                             );
                                         })}
@@ -385,14 +473,25 @@ const Chat = () => {
                             {activeContact && (
                                 <div className="card-footer bg-white p-3 border-top">
                                     <form onSubmit={handleSendMessage}>
-                                        <div className="input-group align-items-center">
-                                            <div className="input-group-prepend mr-2">
-                                                <button className="btn btn-light rounded-circle text-primary" type="button">
-                                                    <i className="fas fa-plus-circle fa-lg"></i>
-                                                </button>
+                                        {selectedFile && (
+                                            <div className="alert alert-info py-2 px-3 mb-2 d-flex justify-content-between align-items-center" style={{ fontSize: '0.85rem' }}>
+                                                <span><i className="fas fa-paperclip mr-2"></i> {selectedFile.name}</span>
+                                                <button type="button" className="close" onClick={() => setSelectedFile(null)}><span>&times;</span></button>
                                             </div>
+                                        )}
+                                        <div className="input-group align-items-center">
+                                            <input 
+                                                type="file" 
+                                                ref={fileInputRef} 
+                                                className="d-none" 
+                                                onChange={handleFileChange}
+                                            />
                                             <div className="input-group-prepend mr-2">
-                                                <button className="btn btn-light rounded-circle text-primary" type="button">
+                                                <button 
+                                                    className="btn btn-light rounded-circle text-primary" 
+                                                    type="button" 
+                                                    onClick={() => fileInputRef.current.click()}
+                                                >
                                                     <i className="fas fa-image fa-lg"></i>
                                                 </button>
                                             </div>
@@ -407,12 +506,20 @@ const Chat = () => {
                                             />
 
                                             <div className="input-group-append ml-2">
-                                                <button className="btn btn-primary rounded-circle shadow-sm" type="submit" style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                    <i className="fas fa-paper-plane"></i>
+                                                <button 
+                                                    className="btn btn-primary rounded-circle shadow-sm" 
+                                                    type="submit" 
+                                                    disabled={isSending}
+                                                    style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                                >
+                                                    {isSending ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-paper-plane"></i>}
                                                 </button>
                                             </div>
                                         </div>
                                     </form>
+                                    <style>{`
+                                        .message-item:hover .delete-btn { opacity: 1 !important; }
+                                    `}</style>
                                 </div>
                             )}
                         </div>

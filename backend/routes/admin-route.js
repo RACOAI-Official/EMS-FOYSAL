@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const userController = require('../controllers/user-controller');
 const teamController = require('../controllers/team-controller');
+const holidayController = require('../controllers/holiday-controller');
 const progressController = require('../controllers/progress-controller');
 const upload = require('../services/file-upload-service');
 const asyncMiddleware = require('../middlewares/async-middleware');
@@ -42,9 +43,22 @@ router.post('/assign-employee-salary', asyncMiddleware(userController.assignEmpl
 router.post('/update-employee-salary/', asyncMiddleware(userController.updateEmployeeSalary));
 router.post('/view-all-salary', asyncMiddleware(userController.viewSalary));
 router.post('/update-leave/:id', asyncMiddleware(userController.updateLeaveApplication));
+router.delete('/delete-leave/:id', asyncMiddleware(userController.deleteLeaveApplication));
+router.delete('/delete-salary/:id', asyncMiddleware(userController.deleteSalary));
+
+// Attendance summary and management
+router.get('/attendance-summary/:userId', asyncMiddleware(userController.getAttendanceSummary));
+router.patch('/attendance/:id', asyncMiddleware(userController.editAttendance));
+router.patch('/user/:id/progress', asyncMiddleware(userController.updateUserProgress));
+router.post('/recalculate-salary/:userId', asyncMiddleware(userController.recalculateSalary));
 
 // Progress (admin read-only)
 router.get('/progress', asyncMiddleware(progressController.getAllProgress));
+
+// Holidays
+router.post('/holidays', asyncMiddleware(holidayController.createHoliday));
+router.get('/holidays', asyncMiddleware(holidayController.getHolidays));
+router.delete('/holidays/:id', asyncMiddleware(holidayController.deleteHoliday));
 
 
 module.exports = router;
