@@ -39,7 +39,7 @@ const LeaderTasks = () => {
                 <h5 className="mb-0 fw-bold text-primary">Tasks Assigned to Team Members</h5>
                 <span className="badge bg-soft-primary text-primary">{tasks.length} Active Tasks</span>
             </div>
-            <div className="table-responsive p-3">
+            <div className="table-responsive-sticky p-3">
                 <table className="table table-hover align-middle mb-0">
                     <thead className="bg-light text-secondary">
                         <tr>

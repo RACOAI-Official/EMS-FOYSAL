@@ -467,7 +467,7 @@ const AttendanceView = () => {
                       </span>
                   </div>
                   <div className="p-3">
-                    <div className="table-responsive">
+                    <div className="table-responsive-sticky">
                       <table className="table table-borderless align-middle mb-0" style={{ borderCollapse: 'separate', borderSpacing: '0 12px' }}>
                         <thead>
                           <tr className="text-muted text-uppercase" style={{ fontSize: '0.72rem', letterSpacing: '1px' }}>
