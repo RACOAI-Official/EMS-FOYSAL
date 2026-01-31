@@ -1,4 +1,4 @@
-import ForgotForm from "../../components/forms/ForgotForm";
+import ForgotForm from "../../forms/ForgotForm";
 
 const Forgot = () =>
 {

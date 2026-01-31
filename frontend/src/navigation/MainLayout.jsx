@@ -1,6 +1,6 @@
-import SideBar from '../sidebar.jsx';
-import Navigation from '../navigation.jsx';
-import { ThemeProvider } from '../../store/ThemeContext.js';
+import SideBar from './sidebar.jsx';
+import Navigation from './navigation.jsx';
+import { ThemeProvider } from '../store/ThemeContext.js';
 
 const MainLayout = ({ children }) => {
   return (

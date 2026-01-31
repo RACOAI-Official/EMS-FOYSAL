@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
-import { dLogout } from "../../http";
-import { setAuth } from "../../store/auth-slice";
+import { dLogout } from "../http";
+import { setAuth } from "../store/auth-slice";
 import { useDispatch, useSelector } from "react-redux"; // Added useSelector
 import { useHistory } from "react-router-dom";
 import swal from 'sweetalert';

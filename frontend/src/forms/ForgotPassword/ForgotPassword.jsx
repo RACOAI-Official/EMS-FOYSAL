@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {useSelector,useDispatch} from 'react-redux';
-import { setEmail } from "../../../store/auth-slice";
-import { forgotPassword } from "../../../http";
+import { setEmail } from "../../store/auth-slice";
+import { forgotPassword } from "../../http";
 import { toast } from "react-toastify";
 
 const ForgotPassword = ({onNext}) =>

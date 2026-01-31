@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { doLogin } from "../../http";
+import { doLogin } from "../http";
 import { useDispatch } from "react-redux";
-import {setAuth} from '../../store/auth-slice';
+import {setAuth} from '../store/auth-slice';
 import { toast } from "react-toastify";
 
 const LoginForm = () =>

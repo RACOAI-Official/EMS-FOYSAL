@@ -924,5 +924,32 @@ class UserController {
             next(error);
         }
     }
+
+    getUserListData = async (req, res, next) => {
+        try {
+            let query = {
+                type: { $in: ['employer', 'team', 'employee', 'leader'] },
+                status: { $in: ['active', 'deactive'] }
+            };
+
+            // If requester is a leader, only show members of their team
+            if (req.user && req.user.type === 'leader') {
+                const Team = require('../models/team-model');
+                const teams = await Team.find({ leader: req.user._id });
+                const teamIds = teams.map(t => t._id);
+                query = {
+                    team: { $in: teamIds },
+                    status: { $in: ['active', 'deactive'] },
+                    type: { $in: ['employee', 'leader'] }
+                };
+            }
+
+            const users = await userService.UserModel.find(query).select('name type email');
+            res.json(users);
+        } catch (error) {
+            next(error);
+        }
+    }
 }
+
 module.exports = new UserController();

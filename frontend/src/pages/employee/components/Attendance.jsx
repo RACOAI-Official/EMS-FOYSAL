@@ -268,7 +268,7 @@ const Attendance = () => {
                     disabled={isAttendanceMarked}
                 >
                     <i className={`fas ${isAttendanceMarked ? "fa-check-circle" : "fa-sign-in-alt"} mr-2`}></i>
-                    {isAttendanceMarked ? "Checked In" : "Mark Entrance"}
+                    {isAttendanceMarked ? "Checked In" : "Check In"}
                 </button>
                 <button
                     className={`btn btn-lg rounded-pill px-4 shadow-sm font-weight-bold ${isCheckedOut ? "btn-light border text-muted" : (isAttendanceMarked ? "btn-warning text-white" : "btn-light border text-muted")}`}
@@ -276,7 +276,7 @@ const Attendance = () => {
                     disabled={!isAttendanceMarked || isCheckedOut}
                 >
                     <i className={`fas ${isCheckedOut ? "fa-flag-checkered" : "fa-sign-out-alt"} mr-2`}></i>
-                    {isCheckedOut ? "Departure Marked" : "Mark Departure"}
+                    {isCheckedOut ? "Checked Out" : "Check Out"}
                 </button>
             </div>
         </div>

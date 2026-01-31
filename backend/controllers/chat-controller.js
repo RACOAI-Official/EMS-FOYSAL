@@ -28,9 +28,14 @@ class ChatController {
       link: '/chat',
       user: receiverId
     });
-
     // Emit Real-time Message to Receiver
     const socketService = require('../services/socket-service');
+    socketService.emitToUser(receiverId, 'notification', {
+      title: 'New Message',
+      message: `You have a new message from ${req.user.name}`,
+      type: 'chat',
+      link: '/chat'
+    });
     socketService.emitToUser(receiverId, 'message', chat);
     socketService.emitToUser(receiverId, 'updateContacts', {});
 

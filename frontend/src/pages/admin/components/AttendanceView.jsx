@@ -473,8 +473,8 @@ const AttendanceView = () => {
                           <tr className="text-muted text-uppercase" style={{ fontSize: '0.72rem', letterSpacing: '1px' }}>
                             <th className="ps-4">Date</th>
                             <th>Employee</th>
-                            <th>Entrance</th>
-                            <th>Departure</th>
+                            <th>Check In</th>
+                            <th>Check Out</th>
                             <th>Hours</th>
                             <th>Status</th>
                             <th className="text-right pe-4">Actions</th>

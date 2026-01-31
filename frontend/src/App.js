@@ -26,7 +26,7 @@ import './assets/css/style.css';
 import './assets/css/components.css';
 import './App.css';
 import Leaders from './pages/leader/Leaders';
-import MainLayout from './components/Navigation/MainLayout';
+import MainLayout from './navigation/MainLayout';
 import Members from './pages/leaderpage/Members';
 import UserTeams from './pages/employee/components/UserTeams';
 import Attendance from './pages/employee/components/Attendance';

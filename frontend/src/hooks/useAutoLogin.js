@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setAuth } from "../store/auth-slice";
+import { backendUrl } from "../http/index";
 
 export const useAutoLogin = () => {
     const [loading, setLoading] = useState(true);
@@ -10,8 +11,7 @@ export const useAutoLogin = () => {
     useEffect(() => {
         (async () => {
             try {
-                const baseUrl = (typeof process !== 'undefined' && process.env?.REACT_APP_BASE_URL) || '';
-                const res = await axios.get(`${baseUrl}/api/auth/refresh`, {
+                const res = await axios.get(`${backendUrl}/api/auth/refresh`, {
                     withCredentials: true,
                 });
                 if (res.status === 200) {

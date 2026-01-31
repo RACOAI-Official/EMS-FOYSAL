@@ -1,8 +1,9 @@
- import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
+const savedUser = localStorage.getItem('user');
 const initialState = {
-    isAuth: false,
-    user: null,
+    isAuth: !!savedUser,
+    user: savedUser ? JSON.parse(savedUser) : null,
     email: ''
 };
 
@@ -12,9 +13,15 @@ export const authSlice = createSlice({
     reducers: {
         setAuth: (state, action) => {
             const user = action.payload;
-            // If user is null, set isAuth to false, otherwise true
-            state.isAuth = !!user; 
+            state.isAuth = !!user;
             state.user = user;
+            if (user) {
+                localStorage.setItem('user', JSON.stringify(user));
+                localStorage.setItem('userType', user.type);
+            } else {
+                localStorage.removeItem('user');
+                localStorage.removeItem('userType');
+            }
         },
         setEmail: (state, action) => {
             state.email = action.payload;

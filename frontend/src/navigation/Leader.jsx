@@ -1,7 +1,7 @@
 import { NavLink, useLocation, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { dLogout } from "../../http";
-import { setAuth } from "../../store/auth-slice";
+import { dLogout } from "../http";
+import { setAuth } from "../store/auth-slice";
 import swal from 'sweetalert';
 
 const Leader = () =>

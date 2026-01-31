@@ -1,8 +1,8 @@
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom"
-import Admin from './Navigation/Admin';
-import Leader from './Navigation/Leader';
-import Employee from './Navigation/Employee';
+import Admin from './Admin';
+import Leader from './Leader';
+import Employee from './Employee';
 
 const SideBar = () => {
 
