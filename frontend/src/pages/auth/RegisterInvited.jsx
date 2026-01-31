@@ -19,6 +19,7 @@ const RegisterInvited = () => {
         fatherName: '',
         motherName: '',
         presentAddress: '',
+        permanentAddress: '',
         village: '',
         union: '',
         district: '',
@@ -196,6 +197,11 @@ const RegisterInvited = () => {
                                     <div className="form-group">
                                         <label>Present Address</label>
                                         <input onChange={inputEvent} value={formData.presentAddress} type="text" className="form-control" name="presentAddress" />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Permanent Address</label>
+                                        <input onChange={inputEvent} value={formData.permanentAddress} type="text" className="form-control" name="permanentAddress" />
                                     </div>
 
                                     <div className="row">

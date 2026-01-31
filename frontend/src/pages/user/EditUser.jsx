@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useParams, useHistory } from "react-router";
 import { toast } from "react-toastify";
 import HeaderSection from "../../components/HeaderSection";
@@ -7,6 +8,9 @@ import { getFileUrl } from "../../utils/fileUtil";
 import Modal from '../../components/modal/Modal';
 
 const EditUser = () => {
+    const { user: currentUser } = useSelector((state) => state.authSlice);
+    const isAdmin = ['super_admin', 'sub_admin'].includes(currentUser?.type);
+
     const initialState = {
         name: '',
         email: '',
@@ -19,6 +23,8 @@ const EditUser = () => {
         fatherName: '',
         motherName: '',
         presentAddress: '',
+        permanentAddress: '',
+        employeeId: '',
         village: '',
         union: '',
         district: '',
@@ -252,8 +258,24 @@ const EditUser = () => {
                                 </div>
                             </div>
 
+                            {isAdmin && (
+                                <div className="col-md-12 mb-4">
+                                    <label className="font-weight-bold text-dark mb-2">Unique Employee ID (RACO-YYYY-RAND)</label>
+                                    <div className="input-group search-element">
+                                        <div className="input-group-prepend">
+                                            <div className="input-group-text bg-light-soft border-right-0" style={{ borderRadius: '12px 0 0 12px' }}>
+                                                <i className="fas fa-id-badge text-primary opacity-50"></i>
+                                            </div>
+                                        </div>
+                                        <input onChange={inputEvent} value={formData.employeeId} type="text" name='employeeId' 
+                                               className="form-control border-left-0" style={{ borderRadius: '0 12px 12px 0', height: '50px' }} />
+                                    </div>
+                                    <small className="text-muted ml-2">Format: RACO-YEAR-NUMBER (Must be unique)</small>
+                                </div>
+                            )}
+
                             <div className="col-md-4 mb-4">
-                                <label className="font-weight-bold text-dark mb-2">Display Name</label>
+                                <label className="font-weight-bold text-dark mb-2">Name</label>
                                 <div className="input-group search-element">
                                     <div className="input-group-prepend">
                                         <div className="input-group-text bg-light-soft border-right-0" style={{ borderRadius: '12px 0 0 12px' }}>
@@ -266,7 +288,7 @@ const EditUser = () => {
                             </div>
 
                             <div className="col-md-4 mb-4">
-                                <label className="font-weight-bold text-dark mb-2">System Email</label>
+                                <label className="font-weight-bold text-dark mb-2">Email</label>
                                 <div className="input-group search-element">
                                     <div className="input-group-prepend">
                                         <div className="input-group-text bg-light-soft border-right-0" style={{ borderRadius: '12px 0 0 12px' }}>
@@ -279,7 +301,7 @@ const EditUser = () => {
                             </div>
 
                             <div className="col-md-4 mb-4">
-                                <label className="font-weight-bold text-dark mb-2">Unique Username</label>
+                                <label className="font-weight-bold text-dark mb-2">Username</label>
                                 <div className="input-group search-element">
                                     <div className="input-group-prepend">
                                         <div className="input-group-text bg-light-soft border-right-0" style={{ borderRadius: '12px 0 0 12px' }}>
@@ -377,20 +399,20 @@ const EditUser = () => {
                             </div>
 
                             <div className="col-md-12 mb-4">
-                                <label className="font-weight-bold text-dark mb-2">Permanent Domicile Address</label>
+                                <label className="font-weight-bold text-dark mb-2">Permanent  Address</label>
                                 <div className="input-group search-element">
                                     <div className="input-group-prepend">
                                         <div className="input-group-text bg-light-soft border-right-0" style={{ borderRadius: '12px 0 0 12px' }}>
                                             <i className="fas fa-map-marker-alt text-primary opacity-50"></i>
                                         </div>
                                     </div>
-                                    <input onChange={inputEvent} value={formData.address} type="text" name='address' 
+                                    <input onChange={inputEvent} value={formData.permanentAddress || formData.address} type="text" name='permanentAddress' 
                                            className="form-control border-left-0" style={{ borderRadius: '0 12px 12px 0', height: '50px' }} />
                                 </div>
                             </div>
 
                             <div className="col-md-12 mb-4">
-                                <label className="font-weight-bold text-dark mb-2">Current Residence Address</label>
+                                <label className="font-weight-bold text-dark mb-2">Present Address</label>
                                 <div className="input-group search-element">
                                     <div className="input-group-prepend">
                                         <div className="input-group-text bg-light-soft border-right-0" style={{ borderRadius: '12px 0 0 12px' }}>
@@ -403,7 +425,7 @@ const EditUser = () => {
                             </div>
 
                             <div className="col-md-6 mb-4">
-                                <label className="font-weight-bold text-dark mb-2">Paternal Cognomen</label>
+                                <label className="font-weight-bold text-dark mb-2">Father Name</label>
                                 <div className="input-group search-element">
                                     <div className="input-group-prepend">
                                         <div className="input-group-text bg-light-soft border-right-0" style={{ borderRadius: '12px 0 0 12px' }}>
@@ -416,7 +438,7 @@ const EditUser = () => {
                             </div>
 
                             <div className="col-md-6 mb-4">
-                                <label className="font-weight-bold text-dark mb-2">Maternal Cognomen</label>
+                                <label className="font-weight-bold text-dark mb-2">Mother Name</label>
                                 <div className="input-group search-element">
                                     <div className="input-group-prepend">
                                         <div className="input-group-text bg-light-soft border-right-0" style={{ borderRadius: '12px 0 0 12px' }}>
@@ -431,7 +453,7 @@ const EditUser = () => {
                             <div className="col-12 mt-5 text-right">
                                 <button className='btn btn-primary btn-lg rounded-pill px-5 shadow-lg hover-lift font-weight-bold' type='submit' 
                                         style={{ height: '55px' }}>
-                                    <i className="fas fa-check-circle mr-2"></i> Commit Profile Updates
+                                    <i className="fas fa-check-circle mr-2"></i> Update Profile
                                 </button>
                             </div>
                         </form>

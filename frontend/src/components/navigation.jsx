@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useHistory, NavLink } from "react-router-dom";
-import { dLogout, getNotifications, markNotificationRead, backendUrl } from "../http";
+import { dLogout, getNotifications, markNotificationRead, deleteNotification, backendUrl } from "../http";
 import { setAuth } from "../store/auth-slice";
 import { useState, useEffect } from "react";
 import socket from "../socket";
@@ -33,8 +33,11 @@ const Navigation = () => {
     const handleMarkAsRead = async (e, notif) => {
         e.preventDefault();
         try {
-            await markNotificationRead(notif._id);
+            // Delete notification upon clicking
+            await deleteNotification(notif._id);
             fetchNotifications(); // Refresh list
+            
+            // Redirect if link exists
             if (notif.link) {
                 history.push(notif.link);
             }

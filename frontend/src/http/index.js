@@ -175,6 +175,7 @@ export const getLeaderStats = () => api.get('/leader/stats');
 // Notifications
 export const getNotifications = () => api.get('/notifications');
 export const markNotificationRead = (id) => api.patch(`/notifications/${id}/read`);
+export const deleteNotification = (id) => api.delete(`/notifications/${id}`);
 
 // Invitations
 export const inviteUser = data => api.post('/invitation/invite', data);

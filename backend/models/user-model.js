@@ -114,6 +114,7 @@ const userSchema = new Schema({
     fatherName: String,
     motherName: String,
     presentAddress: String,
+    permanentAddress: String,
 
     bloodGroup: String,
     nid: {

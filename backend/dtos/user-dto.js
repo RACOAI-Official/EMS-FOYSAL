@@ -40,6 +40,7 @@ class UserDto {
             this.bloodGroup = user.bloodGroup || 'N/A',
             this.employeeId = user.employeeId || 'N/A',
             this.presentAddress = user.presentAddress || 'N/A',
+            this.permanentAddress = user.permanentAddress || user.address || 'N/A',
 
             this.nid = user.nid || 'N/A',
             this.position = user.position || 'Not Specified'

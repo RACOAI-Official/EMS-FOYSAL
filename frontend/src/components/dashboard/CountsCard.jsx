@@ -1,7 +1,7 @@
 
 const CountsCard = ({ title, icon, count }) => {
   return (
-    <div className="col-lg-3 col-md-6 col-sm-6 col-12">
+    <div className="col-lg-3 col-md-6 col-6">
       <div className="glass-card p-4 mb-4 hover-lift d-flex align-items-center">
         <div className="rounded-circle d-flex align-items-center justify-content-center mr-4" 
              style={{ 

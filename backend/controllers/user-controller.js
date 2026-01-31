@@ -18,7 +18,7 @@ class UserController {
     createUser = async (req, res, next) => {
         try {
             const file = req.file;
-            let { name, email, password, type, address, mobile } = req.body;
+            let { name, email, password, type, address, permanentAddress, mobile } = req.body;
             const username = 'user' + crypto.randomInt(11111111, 999999999);
 
             console.log('=== CREATE USER REQUEST ===');
@@ -57,7 +57,8 @@ class UserController {
                 mobile: Number(mobile),  // Convert to number
                 password,
                 type,
-                address,
+                address: address || permanentAddress,
+                permanentAddress: permanentAddress || address,
                 image: file.path
             }
 
@@ -86,7 +87,7 @@ class UserController {
             if (['super_admin', 'sub_admin'].includes(req.user.type)) {
                 const { id: paramId } = req.params;
                 id = paramId;
-                let { name, username, email, password, type, status, address, mobile } = req.body;
+                let { name, username, email, password, type, status, address, permanentAddress, mobile } = req.body;
                 // Optional progress updates
                 let { progress, progressNote } = req.body;
 
@@ -147,6 +148,7 @@ class UserController {
                 if (password !== undefined) user.password = password;
                 if (newType !== null) user.type = newType;
                 if (address !== undefined) user.address = address;
+                if (permanentAddress !== undefined) user.permanentAddress = permanentAddress;
                 if (progress !== undefined) user.progress = Number(progress);
                 if (progressNote !== undefined) user.progressNote = progressNote;
                 if (removeFromTeam) user.team = null; // Remove from team if type changed
@@ -169,7 +171,7 @@ class UserController {
                 user = {};
 
                 const allowedFields = [
-                    'name', 'username', 'email', 'mobile', 'address',
+                    'name', 'username', 'email', 'mobile', 'address', 'permanentAddress',
                     'fatherName', 'motherName', 'presentAddress',
                     'bloodGroup'
                 ];

@@ -129,7 +129,7 @@ const AddTeam = () =>
                                         className='btn btn-primary btn-lg rounded-pill px-5 shadow-lg font-weight-bold w-100 py-3 transition-all' 
                                         type='submit' 
                                     >
-                                        <i className="fas fa-plus-circle mr-2"></i> Initialize Team
+                                        <i className="fas fa-plus-circle mr-2"></i>Create Team
                                     </button>
                                 </div>
                             </form>

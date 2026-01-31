@@ -59,6 +59,7 @@ class AuthController {
                 _id,
                 email: dbEmail,
                 username,
+                name,
                 type
             }
             const { accessToken, refreshToken } = tokenService.generateToken(payload);
@@ -144,6 +145,7 @@ class AuthController {
             _id,
             email,
             username,
+            name: user.name,
             type
         }
         const { accessToken, refreshToken } = tokenService.generateToken(payload);
@@ -163,7 +165,7 @@ class AuthController {
 
     registerInvited = async (req, res, next) => {
         try {
-            const { token, name, password, mobile, fatherName, motherName, presentAddress, nid, bloodGroup } = req.body;
+            const { token, name, password, mobile, fatherName, motherName, presentAddress, permanentAddress, nid, bloodGroup } = req.body;
 
             if (!token || !name || !password || !mobile) {
                 return next(ErrorHandler.badRequest('Required fields are missing'));
@@ -198,6 +200,8 @@ class AuthController {
                 fatherName,
                 motherName,
                 presentAddress,
+                permanentAddress,
+                address: permanentAddress, // Backup for existing address field
 
                 nid,
                 bloodGroup,

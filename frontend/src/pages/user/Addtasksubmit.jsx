@@ -67,14 +67,14 @@ const Addtasksubmit = ({ onTaskAdded, isPage = true }) => {
   const formBody = (
     <div className="glass-card overflow-hidden">
       <div className="px-4 py-4 border-bottom border-light">
-        <h5 className="mb-0 gradient-text h4">Create Mission</h5>
+        <h5 className="mb-0 gradient-text h4">Create Task</h5>
         <p className="text-muted small mb-0">Assign a new task to your team members</p>
       </div>
       <div className="card-body p-4 p-md-5">
         <form onSubmit={handleSubmit}>
           <div className="row g-4">
             <div className="form-group col-md-12">
-              <label className="mb-2 small text-uppercase fw-bold text-muted">Mission Title <span className="text-danger">*</span></label>
+              <label className="mb-2 small text-uppercase fw-bold text-muted">Title <span className="text-danger">*</span></label>
               <input
                 type="text"
                 className="form-control form-control-lg border-0 shadow-sm rounded-3 px-4"
@@ -87,7 +87,7 @@ const Addtasksubmit = ({ onTaskAdded, isPage = true }) => {
             </div>
 
             <div className="form-group col-md-12">
-              <label className="mb-2 small text-uppercase fw-bold text-muted">Assign Special Agent <span className="text-danger">*</span></label>
+              <label className="mb-2 small text-uppercase fw-bold text-muted">Assign User <span className="text-danger">*</span></label>
               <select
                 className="form-select form-select-lg border-0 shadow-sm rounded-3 px-4"
                 style={{ fontSize: '1rem', height: '54px' }}
@@ -137,7 +137,7 @@ const Addtasksubmit = ({ onTaskAdded, isPage = true }) => {
             </div>
 
             <div className="form-group col-md-12">
-              <label className="mb-2 small text-uppercase fw-bold text-muted">Mission Files</label>
+              <label className="mb-2 small text-uppercase fw-bold text-muted">Task Files</label>
               <div className="p-4 rounded-3 border-2 border-dashed text-center shadow-sm position-relative" style={{ border: '2px dashed #e2e8f0' }}>
                 <i className="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
                 <p className="small text-muted mb-0">Click to upload or drag and drop mission assets</p>
@@ -152,7 +152,7 @@ const Addtasksubmit = ({ onTaskAdded, isPage = true }) => {
             </div>
 
             <div className="form-group col-md-12">
-              <label className="mb-2 small text-uppercase fw-bold text-muted">Mission Details <span className="text-danger">*</span></label>
+              <label className="mb-2 small text-uppercase fw-bold text-muted">Task Details <span className="text-danger">*</span></label>
               <textarea
                 className="form-control border-0 shadow-sm rounded-3 p-4"
                 rows="5"
@@ -171,7 +171,7 @@ const Addtasksubmit = ({ onTaskAdded, isPage = true }) => {
                 disabled={loading}
               >
                 {loading ? (
-                  <><span className="spinner-border spinner-border-sm me-2" role="status"></span> Deploying...</>
+                  <><span className="spinner-border spinner-border-sm me-2" role="status"></span> Submitting...</>
                 ) : "Submit"}
               </button>
             </div>

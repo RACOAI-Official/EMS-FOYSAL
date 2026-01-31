@@ -127,7 +127,7 @@ const InviteUser = () => {
                                         {loading ? (
                                             <><span className="spinner-border spinner-border-sm mr-2"></span> Sending Request...</>
                                         ) : (
-                                            <><i className="fas fa-paper-plane mr-2"></i> Dispatch Invitation</>
+                                            <><i className="fas fa-paper-plane mr-2"></i> Send Invitation</>
                                         )}
                                     </button>
                                     <p className="text-muted small mt-3">An email will be sent to the user with a registration link</p>

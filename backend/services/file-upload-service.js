@@ -49,7 +49,7 @@ const fileFilter = (req, file, cb) => {
     }
 
     if (file.fieldname === 'profile' || file.fieldname === 'image' || file.fieldname === 'problemImage') {
-        const allowedTypes = ['image/png', 'image/jpg', 'image/jpeg'];
+        const allowedTypes = ['image/png', 'image/jpg', 'image/jpeg', 'image/webp', 'image/svg+xml', 'image/gif'];
         if (allowedTypes.includes(file.mimetype)) {
             cb(null, true);
         } else {

@@ -444,6 +444,44 @@ h5 { font-size: clamp(1rem, 1vw + 1rem, 1.25rem); }
   z-index: 890;
 }
 
+/* Notification Dropdown Fix */
+.navbar .dropdown-list {
+  z-index: 1050 !important;
+}
+
+.dark-mode .dropdown-list {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.dark-mode .dropdown-list .dropdown-header {
+  border-bottom: 1px solid var(--border-color) !important;
+  color: var(--text-main) !important;
+  background-color: var(--primary-soft) !important;
+}
+
+.dark-mode .dropdown-list .dropdown-item {
+  border-bottom: 1px solid var(--border-color) !important;
+  color: var(--text-main) !important;
+  background-color: transparent !important;
+}
+
+.dark-mode .dropdown-list .dropdown-item:hover {
+  background-color: var(--primary-glow) !important;
+}
+
+.dark-mode .dropdown-list .dropdown-footer {
+  border-top: 1px solid var(--border-color) !important;
+}
+
+.dark-mode .dropdown-list .dropdown-item .dropdown-item-desc {
+  color: var(--text-main) !important;
+}
+
+.dark-mode .dropdown-list .dropdown-item .dropdown-item-desc .time {
+  color: var(--primary) !important;
+}
+
 .navbar-bg {
   display: none !important;
 }

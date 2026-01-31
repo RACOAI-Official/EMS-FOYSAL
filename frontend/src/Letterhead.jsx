@@ -109,7 +109,7 @@ const Letterhead = ({ children }) => {
     },
     footer: {
       position: 'relative',
-      paddingBottom: '80px',
+      paddingBottom: '30px',
     },
     footerCards: {
       display: 'flex',
