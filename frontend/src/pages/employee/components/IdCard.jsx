@@ -73,8 +73,8 @@ const IdCard = () => {
                     height: 3.375in;
                     background-color: #121212 !important;
                     color: #ffffff !important;
-                    border-radius: 12px;
-                    padding: 28px 22px;
+                    // border-radius: 12px;
+                    padding: 22px 35px 22px 16px;
                     box-sizing: border-box;
                     display: flex;
                     flex-direction: column;
@@ -85,11 +85,11 @@ const IdCard = () => {
 
                 /* Front Page Specifics */
                 .phone-notch {
-                    width: 40px;
+                    width: 50px;
                     height: 8px;
-                    background: #aaaaaa;
-                    margin: -24px auto 15px auto;
-                    border-radius: 8px 8px 0px 0px;
+                    background: #ffffff;
+                    margin: -23px auto 15px 55px;
+                    border-radius: 8px 8px 8px 8px;
                 }
 
                 .user-photo-box {
@@ -127,14 +127,14 @@ const IdCard = () => {
                 }
 
                 .id-arrow {
-                    width: 14px;
-                    height: 14px;
-                    border: 0.5px solid #444;
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 8px;
+                    width: 16px;
+                    height: 16px;
+                    border: 1.5px solid #a19d9d;
+                    border-radius: 60%;
+                    position: absolute;
+                    right: 7px;
+                    bottom: 120px;
+                    font-size: 12px;
                     color: #ffffff !important;
                 }
 
@@ -148,11 +148,11 @@ const IdCard = () => {
 
                 .front-side-divider {
                     position: absolute;
-                    right: 8px;
-                    top: 120px;
-                    width: 1px;
+                    right: 14px;
+                    top: 95px;
+                    width: 2px;
                     height: 50px;
-                    background: rgba(255,255,255,0.15);
+                    background: rgb(255, 251, 251);
                 }
 
                 .front-footer-row {
@@ -165,7 +165,7 @@ const IdCard = () => {
                 .id-label {
                     margin: 0;
                     font-size: 7px;
-                    color: #888888 !important;
+                    color: #b4b4b4 !important;
                     letter-spacing: 0.5px;
                 }
 
@@ -179,13 +179,13 @@ const IdCard = () => {
                 .minor-circle {
                     width: 16px;
                     height: 16px;
-                    border: 1px solid #444;
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 10px;
-                    color: #888888 !important;
+                    border: 1.5px solid #cccccc;
+                    border-radius: 60%;
+                    position: absolute;
+                    right: 7px;
+                    bottom: 40px;
+                    font-size: 12px;
+                    color: #ffffff !important;
                 }
 
                 /* Back Page Specifics */
@@ -322,12 +322,12 @@ const IdCard = () => {
                             <div>
                                 <div className="front-name-row">
                                     <h2>{user.name?.split(' ')[0] || user.name}</h2>
-                                    <div className="id-arrow">→</div>
                                 </div>
                                 <p className="user-role">{user.position || user.type || 'Employee'}</p>
                             </div>
 
                             <div className="front-side-divider"></div>
+                                    <div className="id-arrow">→</div>
 
                             <div className="front-footer-row">
                                 <div>
