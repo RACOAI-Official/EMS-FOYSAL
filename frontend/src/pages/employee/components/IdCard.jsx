@@ -139,8 +139,8 @@ const IdCard = () => {
                 }
 
                 .user-role {
-                    margin: 2px 0 0 0;
-                    font-size: 10px;
+                    margin: -6px 0 0 0;
+                    font-size: 12px;
                     color: #ffffff !important;
                     text-transform: capitalize;
                     font-weight: 300;
@@ -155,13 +155,13 @@ const IdCard = () => {
 
                 .id-label {
                     margin: 0;
-                    font-size: 7px;
+                    font-size: 10px;
                     color: #b4b4b4 !important;
                     letter-spacing: 0.5px;
                 }
 
                 .id-value {
-                    margin: 2px 0 0 0;
+                    margin: -6px 0 0 0;
                     font-size: 11px;
                     font-weight: 600;
                     color: #ffffff !important;
@@ -182,8 +182,8 @@ const IdCard = () => {
                 /* Back Page Specifics */
                 .website-link {
                     margin: 0 0 10px 0;
-                    font-size: 8px;
-                    color: #888888 !important;
+                    font-size: 10px;
+                    color: #ffffff !important;
                     letter-spacing: 0.5px;
                 }
 
@@ -206,7 +206,7 @@ const IdCard = () => {
                 .company-desc {
                     font-size: 8px;
                     line-height: 1.4;
-                    color: #aaaaaa !important;
+                    color: rgb(233, 233, 233) !important;
                     margin: 0 0 12px 0;
                 }
 
@@ -232,27 +232,51 @@ const IdCard = () => {
                 }
 
                 .blood-row {
-                    margin-top: 8px;
+                    font-size: 15px;
+                    margin-top: 10px;
                 }
 
                 .blood-label {
-                    font-size: 7px;
-                    color: #888888 !important;
+                    font-size: 8px;
+                    color: #b8b8b8 !important;
                 }
 
                 .blood-value {
-                    font-size: 7px;
+                    font-size: 10px;
                     color: #ffffff !important;
                     font-weight: bold;
                 }
 
-                .side-divider {
+                // .side-logo {
+                //     position: absolute;
+                //     right: 14px;
+                //     top: 95px;
+                //     width: 2px;
+                //     height: 50px;
+                //     background: rgb(255, 251, 251);
+                // }
+
+                .side-logo {
                     position: absolute;
-                    right: 14px;
-                    top: 95px;
-                    width: 2px;
+                    right: -22px;
+                    top: 80px;
+                    width: 80px;
                     height: 50px;
-                    background: rgb(255, 251, 251);
+
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .side-logo img {
+                    width: 100%;
+                    height: auto;
+
+                    /* Rotation */
+                    transform: rotate(270deg); /* change to 0deg, 180deg, -90deg, etc */
+                    transform-origin: center;
+
+                    opacity: 0.9; /* optional premium feel */
                 }
 
                 .qr-box {
@@ -312,12 +336,22 @@ const IdCard = () => {
 
                             <div>
                                 <div className="front-name-row">
-                                    <h2>{user.name?.split(' ')[0] || user.name}</h2>
+                                    <h2>
+                                        {user.name
+                                            ? user.name.trim().split(/\s+/).slice(-2).join(' ')
+                                            : ''}
+                                        </h2>
                                 </div>
                                 <p className="user-role">{user.position || user.type || 'Employee'}</p>
                             </div>
 
-                            <div className="side-divider"></div>
+                            <div className="side-logo">
+                                <img
+                                    src="/RACOAI_LOGO.png"
+                                    alt="RACO Logo"
+                                />
+                            </div>
+
                             <div className="id-arrow">→</div>
 
                             <div className="front-footer-row">
@@ -331,13 +365,18 @@ const IdCard = () => {
 
                         {/* BACK SIDE */}
                         <div className="premium-id-card">
-                            <div className="side-divider"></div>
+                            <div className="side-logo">
+                                <img
+                                    src="/RACOAI_LOGO.png"
+                                    alt="RACO Logo"
+                                />
+                            </div>
 
                             <p className="website-link">https://racoai.io</p>
 
                             <div style={{ marginBottom: '15px' }}>
                                 <div className="back-title-row">
-                                    <h3>RACO AI</h3>
+                                    {/* <h3>RACO AI</h3> */}
                                     <div className="id-arrow">→</div>
                                 </div>
                                 <p className="company-desc">State-of-the-art machine learning and deep learning solutions tailored for your needs.</p>
@@ -345,14 +384,14 @@ const IdCard = () => {
                                 <div className="return-box">
                                     <p className="return-label">IF FOUND, PLEASE RETURN TO:</p>
                                     <p className="return-address">
-                                        House-40, Road-20,B, Sector-04, Uttara, Dhaka.<br />
+                                        House-40, Shahjalal Avenue, Sector-04, Uttara, Dhaka.<br />
                                         Or Call: 01343831119
                                     </p>
                                 </div>
 
                                 <div className="blood-row">
-                                    <span className="blood-label">BLOOD GROUP: </span>
-                                    <span className="blood-value">{user.bloodGroup || 'N/A'}</span>
+                                    <span className="blood-label">BLOOD GROUP :</span>
+                                    <span className="blood-value">   {user.bloodGroup || 'N/A'}</span>
                                 </div>
                             </div>
 
