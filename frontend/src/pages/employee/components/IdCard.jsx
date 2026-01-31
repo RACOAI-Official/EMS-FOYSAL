@@ -74,7 +74,7 @@ const IdCard = () => {
                     background-color: #121212 !important;
                     color: #ffffff !important;
                     // border-radius: 12px;
-                    padding: 22px 35px 22px 16px;
+                    padding: 16px 35px 22px 16px;
                     box-sizing: border-box;
                     display: flex;
                     flex-direction: column;
@@ -86,9 +86,9 @@ const IdCard = () => {
                 /* Front Page Specifics */
                 .phone-notch {
                     width: 50px;
-                    height: 8px;
+                    height: 15px;
                     background: #ffffff;
-                    margin: -23px auto 15px 55px;
+                    margin: -26px auto 15px 55px;
                     border-radius: 8px 8px 8px 8px;
                 }
 
@@ -116,9 +116,9 @@ const IdCard = () => {
 
                 .front-name-row h2 {
                     margin: 0;
-                    font-size: 18px;
+                    font-size: 14px;
                     font-weight: 700;
-                    letter-spacing: 1px;
+                    letter-spacing: 0.5px;
                     text-transform: uppercase;
                     color: #ffffff !important;
                     white-space: nowrap;
@@ -129,7 +129,7 @@ const IdCard = () => {
                 .id-arrow {
                     width: 16px;
                     height: 16px;
-                    border: 1.5px solid #a19d9d;
+                    border: 1.5px solid #ffffff;
                     border-radius: 60%;
                     position: absolute;
                     right: 7px;
@@ -141,18 +141,9 @@ const IdCard = () => {
                 .user-role {
                     margin: 2px 0 0 0;
                     font-size: 10px;
-                    color: #aaaaaa !important;
+                    color: #ffffff !important;
                     text-transform: capitalize;
                     font-weight: 300;
-                }
-
-                .front-side-divider {
-                    position: absolute;
-                    right: 14px;
-                    top: 95px;
-                    width: 2px;
-                    height: 50px;
-                    background: rgb(255, 251, 251);
                 }
 
                 .front-footer-row {
@@ -255,13 +246,13 @@ const IdCard = () => {
                     font-weight: bold;
                 }
 
-                .back-side-divider {
+                .side-divider {
                     position: absolute;
-                    right: 15px;
-                    top: 180px;
-                    width: 1px;
+                    right: 14px;
+                    top: 95px;
+                    width: 2px;
                     height: 50px;
-                    background: rgba(255,255,255,0.15);
+                    background: rgb(255, 251, 251);
                 }
 
                 .qr-box {
@@ -326,8 +317,8 @@ const IdCard = () => {
                                 <p className="user-role">{user.position || user.type || 'Employee'}</p>
                             </div>
 
-                            <div className="front-side-divider"></div>
-                                    <div className="id-arrow">→</div>
+                            <div className="side-divider"></div>
+                            <div className="id-arrow">→</div>
 
                             <div className="front-footer-row">
                                 <div>
@@ -340,6 +331,8 @@ const IdCard = () => {
 
                         {/* BACK SIDE */}
                         <div className="premium-id-card">
+                            <div className="side-divider"></div>
+
                             <p className="website-link">https://racoai.io</p>
 
                             <div style={{ marginBottom: '15px' }}>
@@ -363,7 +356,6 @@ const IdCard = () => {
                                 </div>
                             </div>
 
-                            <div className="back-side-divider"></div>
 
                             <div className="front-footer-row">
                                 <div className="qr-box">
