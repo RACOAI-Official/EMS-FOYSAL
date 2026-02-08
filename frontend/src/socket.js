@@ -1,20 +1,25 @@
 import { io } from "socket.io-client";
 
 const getSocketUrl = () => {
-  let envUrl = null;
-  try {
-    if (typeof process !== 'undefined' && process.env) {
-      envUrl = process.env.REACT_APP_BASE_URL;
-    }
-  } catch (e) { }
+  const envUrl = process.env.REACT_APP_BASE_URL;
+  
+  console.log('Socket URL from env:', envUrl);
+  
+  // Always use environment variable if set
+  if (envUrl && envUrl.trim() !== '') {
+    return envUrl.trim();
+  }
 
-  if (envUrl) return envUrl;
-
-  // Fallback for local development if env var is missing
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+  // Fallback for local development
+  const host = window.location.hostname;
+  if (host === 'localhost' || host === '127.0.0.1') {
+    console.warn('Socket using localhost fallback');
     return 'http://localhost:5588';
   }
-  return ''; // Fallback to relative URL
+  
+  // Production fallback - hardcoded
+  console.error('REACT_APP_BASE_URL not set for socket! Using hardcoded fallback.');
+  return 'https://emsbackend.racoai.io';
 };
 
 const socket = io(getSocketUrl(), {

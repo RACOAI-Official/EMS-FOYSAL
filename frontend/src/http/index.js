@@ -1,30 +1,55 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
+// const getBackendUrl = () => {
+//     const host = window.location.hostname;
+//     let envUrl = null;
+//     try {
+//         if (typeof process !== 'undefined' && process.env) {
+//             envUrl = process.env.REACT_APP_BASE_URL;
+//         }
+//     } catch (e) { }
+
+//     // If envUrl is explicitly set in .env, use it as the primary source of truth
+//     if (envUrl && envUrl.trim() !== '') {
+//         return envUrl;
+//     }
+
+//     // Fallback logic for local development or when env variable is missing
+//     const port = '5588';
+//     if (host !== 'localhost' && host !== '127.0.0.1') {
+//         return `http://${host}:${port}`;
+//     }
+
+//     return `http://localhost:${port}`;
+// };
+
 const getBackendUrl = () => {
-    const host = window.location.hostname;
-    let envUrl = null;
-    try {
-        if (typeof process !== 'undefined' && process.env) {
-            envUrl = process.env.REACT_APP_BASE_URL;
-        }
-    } catch (e) { }
-
-    // If envUrl is explicitly set in .env, use it as the primary source of truth
+    // Force read from environment variable
+    const envUrl = process.env.REACT_APP_BASE_URL;
+    
+    console.log('Environment variable REACT_APP_BASE_URL:', envUrl);
+    
+    // Always prioritize the environment variable
     if (envUrl && envUrl.trim() !== '') {
-        return envUrl;
+        return envUrl.trim();
     }
 
-    // Fallback logic for local development or when env variable is missing
-    const port = '5588';
-    if (host !== 'localhost' && host !== '127.0.0.1') {
-        return `http://${host}:${port}`;
+    // Development fallback only
+    const host = window.location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1') {
+        console.warn('Using localhost fallback. Set REACT_APP_BASE_URL in .env');
+        return 'http://localhost:5588';
     }
 
-    return `http://localhost:${port}`;
+    // Production fallback - hardcoded as last resort
+    console.error('REACT_APP_BASE_URL not set! Using hardcoded fallback.');
+    return 'https://emsbackend.racoai.io';
 };
 
 export const backendUrl = getBackendUrl();
+console.log('Using Backend URL:', backendUrl);
+
 console.log('Using Backend URL:', backendUrl);
 const baseURL = backendUrl;
 const api = axios.create({

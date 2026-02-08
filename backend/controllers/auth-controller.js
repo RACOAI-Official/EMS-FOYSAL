@@ -140,6 +140,11 @@ class AuthController {
             return res.status(401).json({ success: false, message: 'Unauthorized Access' })
         }
         const user = await userService.findUser({ email });
+        if (!user) {
+            res.clearCookie('refreshToken');
+            res.clearCookie('accessToken');
+            return res.status(401).json({ success: false, message: 'User not found' });
+        }
         if (user?.status === 'banned') return next(ErrorHandler.unAuthorized('Your account has been banned, Please contact to the admin'));
         const payload = {
             _id,
