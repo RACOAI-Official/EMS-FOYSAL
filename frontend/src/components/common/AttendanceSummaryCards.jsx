@@ -65,7 +65,7 @@ const AttendanceSummaryCards = ({ userId = null, dateRange = null, refreshTrigge
                         <i className="fas fa-check-circle fa-lg"></i>
                     </div>
                     <div className="overflow-hidden">
-                        <div className="text-uppercase text-muted font-weight-bold" style={{ fontSize: '0.65rem', letterSpacing: '1px' }}>Present & Holiday</div>
+                        <div className="text-uppercase text-muted text-center font-weight-bold" style={{ fontSize: '0.65rem', letterSpacing: '1px' }}>Present & Holiday</div>
                         <div className="h4 font-weight-bold text-dark mb-0">{summary.presentDays} <small className="text-muted" style={{fontSize: '0.8rem'}}>({percentages.present}%)</small></div>
                         <div className="text-muted" style={{ fontSize: '0.7rem' }}>Incl. {summary.holidayDays} Holidays</div>
                     </div>
@@ -79,7 +79,7 @@ const AttendanceSummaryCards = ({ userId = null, dateRange = null, refreshTrigge
                         <i className="fas fa-times-circle fa-lg"></i>
                     </div>
                     <div className="overflow-hidden">
-                        <div className="text-uppercase text-muted font-weight-bold" style={{ fontSize: '0.65rem', letterSpacing: '1px' }}>Absent Days</div>
+                        <div className="text-uppercase text-muted text-center font-weight-bold" style={{ fontSize: '0.65rem', letterSpacing: '1px' }}>Absent Days</div>
                         <div className="h4 font-weight-bold text-dark mb-0">{summary.absentDays} <small className="text-muted" style={{fontSize: '0.8rem'}}>({percentages.absent}%)</small></div>
                     </div>
                 </div>
@@ -92,7 +92,7 @@ const AttendanceSummaryCards = ({ userId = null, dateRange = null, refreshTrigge
                         <i className="fas fa-calendar-alt fa-lg"></i>
                     </div>
                     <div className="overflow-hidden">
-                        <div className="text-uppercase text-muted font-weight-bold" style={{ fontSize: '0.65rem', letterSpacing: '1px' }}>Leave Days</div>
+                        <div className="text-uppercase text-muted text-center font-weight-bold" style={{ fontSize: '0.65rem', letterSpacing: '1px' }}>Leave Days</div>
                         <div className="h4 font-weight-bold text-dark mb-0">{summary.leaveDays} <small className="text-muted" style={{fontSize: '0.8rem'}}>({percentages.leave}%)</small></div>
                         <div className="text-muted" style={{ fontSize: '0.7rem' }}>Counts as Present</div>
                     </div>
@@ -106,7 +106,7 @@ const AttendanceSummaryCards = ({ userId = null, dateRange = null, refreshTrigge
                         <i className="fas fa-calendar-check fa-lg"></i>
                     </div>
                     <div className="overflow-hidden">
-                        <div className="text-uppercase text-muted font-weight-bold" style={{ fontSize: '0.65rem', letterSpacing: '1px' }}>Annual Progress</div>
+                        <div className="text-uppercase text-muted text-center font-weight-bold" style={{ fontSize: '0.65rem', letterSpacing: '1px' }}>Annual Progress</div>
                         <div className="h4 font-weight-bold text-dark mb-0">{summary.totalDays} <small className="text-muted" style={{fontSize: '0.8rem'}}>({percentages.total}%)</small></div>
                         <div className="text-muted" style={{ fontSize: '0.7rem' }}>Goal: 365 Days</div>
                     </div>

@@ -14,10 +14,10 @@ const CountsCard = ({ title, icon, count }) => {
           <i className={`fas ${icon}`}></i>
         </div>
         <div>
-          <div className="text-uppercase text-muted font-weight-bold" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>
+          <div className="text-uppercase text-muted text-center font-weight-bold" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>
             {title}
           </div>
-          <div className="h2 font-weight-bold mb-0 mt-1">
+          <div className="h2 font-weight-bold text-center mb-0 mt-1">
             {count || 0}
           </div>
         </div>

@@ -22,7 +22,7 @@ class UserDto {
             this.email = user.email,
             this.mobile = user.mobile,
             this.image = user.image && user.image !== 'user.png'
-                ? (user.image.startsWith('http') ? user.image : `${process.env.BASE_URL || 'http://192.168.10.13:5500'}/storage/images/profile/${user.image}`)
+                ? (user.image.startsWith('http') ? user.image : `${process.env.BASE_URL || ''}/storage/images/profile/${user.image}`)
                 : '/assets/icons/user.png',
             this.type = user.type,
             this.address = user.address,
