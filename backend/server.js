@@ -15,19 +15,31 @@ const dbConnection = require('./configs/db-config');
 const app = express();
 const server = http.createServer(app);
 
-const defaultOrigins = ['http://192.168.10.13:3000', 'http://127.0.0.1:3000', 'http://localhost:3000'];
+const normalizeOrigin = (origin = '') => origin.trim().replace(/\/+$/, '');
+
 const configuredOrigins = (process.env.CLIENT_URL || '')
   .split(',')
-  .map((origin) => origin.trim())
+  .map(normalizeOrigin)
   .filter(Boolean);
+
+const defaultOrigins = [
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+];
+
 const allowedOrigins = [...new Set([...defaultOrigins, ...configuredOrigins])];
+
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true;
+  return allowedOrigins.includes(normalizeOrigin(origin));
+};
 
 // ==========================
 // 1️⃣ Middleware
 // ==========================
 const corsOptions = {
   origin(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    if (isAllowedOrigin(origin)) return callback(null, true);
     return callback(new Error(`CORS blocked for origin: ${origin}`));
   },
   credentials: true,               // Allow cookies / auth headers
@@ -97,7 +109,10 @@ app.get('/api/test', (req, res) => res.json({ message: 'API is working' }));
 // ==========================
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin(origin, callback) {
+      if (isAllowedOrigin(origin)) return callback(null, true);
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
     credentials: true
   }
 });
