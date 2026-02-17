@@ -347,7 +347,7 @@ const IdCard = () => {
 
                             <div className="side-logo">
                                 <img
-                                    src="/EE_LOGO_FULL.png"
+                                    src="/new-logo.png"
                                     alt="Easy Employee Logo"
                                 />
                             </div>
@@ -367,7 +367,7 @@ const IdCard = () => {
                         <div className="premium-id-card">
                             <div className="side-logo">
                                 <img
-                                    src="/EE_LOGO_FULL.png"
+                                    src="/new-logo.png"
                                     alt="Easy Employee Logo"
                                 />
                             </div>

@@ -87,6 +87,11 @@ app.use('/api/notifications', notificationRoute);
 app.use('/api/invitations', invitationRoute);
 
 // Test route
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: "EMS Backend Running Successfully"
+  });
+});
 app.get('/api/test', (req, res) => res.json({ message: 'API is working' }));
 
 // ==========================

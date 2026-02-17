@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom"
 import Admin from './Admin';
 import Leader from './Leader';
 import Employee from './Employee';
-import logo from "../assets/icons/logo.png";
+import logo from "../assets/icons/new-logo.png";
 
 const SideBar = () => {
 

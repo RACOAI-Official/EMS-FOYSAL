@@ -3,7 +3,7 @@ import {useSelector,useDispatch} from 'react-redux';
 import { setEmail } from "../../store/auth-slice";
 import { forgotPassword } from "../../http";
 import { toast } from "react-toastify";
-import logo from "../../assets/icons/logo.png";
+import logo from "../../assets/icons/new-logo.png";
 
 const ForgotPassword = ({onNext}) =>
 {

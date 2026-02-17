@@ -3,7 +3,7 @@ import { useHistory } from "react-router";
 import { useSelector } from "react-redux";
 import {resetPassword} from "../../http/index";
 import { toast } from "react-toastify";
-import logo from "../../assets/icons/logo.png";
+import logo from "../../assets/icons/new-logo.png";
 
 const ResetPassword = () =>
 {

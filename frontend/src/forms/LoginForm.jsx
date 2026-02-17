@@ -4,7 +4,7 @@ import { doLogin } from "../http";
 import { useDispatch } from "react-redux";
 import {setAuth} from '../store/auth-slice';
 import { toast } from "react-toastify";
-import logo from "../assets/icons/logo.png";
+import logo from "../assets/icons/new-logo.png";
 
 const LoginForm = () =>
 {  

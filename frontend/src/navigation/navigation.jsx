@@ -6,7 +6,7 @@ import { setAuth } from "../store/auth-slice";
 import { useState, useEffect } from "react";
 import socket from "../socket";
 import { useTheme } from "../store/ThemeContext";
-import logo from "../assets/icons/logo.png";
+import logo from "../assets/icons/new-logo.png";
 
 
 const Navigation = () => {

@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import '../../assets/css/timeline.css'
-import '../../assets/css/bootstrap.min.css'
 
 const Employee = () => {
   const {user} = useSelector(state => state.authSlice);

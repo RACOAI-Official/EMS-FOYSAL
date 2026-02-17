@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { verifyInvitation, registerInvited } from "../../http";
-import logo from "../../assets/icons/logo.png";
+import logo from "../../assets/icons/new-logo.png";
 
 const RegisterInvited = () => {
     const { token } = useParams();

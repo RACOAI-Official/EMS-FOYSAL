@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from './assets/icons/logo.png';
+import logo from './assets/icons/new-logo.png';
 const Letterhead = ({ children }) => {
   // Configurable Data
   const companyUrl = "https://easyemployee.io";
