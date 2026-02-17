@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getUser, backendUrl } from "../../../http";
+import { getUser } from "../../../http";
 import HeaderSection from "../../../components/HeaderSection";
 import { getFileUrl } from "../../../utils/fileUtil";
 import { QRCodeSVG as QRCode } from 'qrcode.react';
@@ -347,8 +347,8 @@ const IdCard = () => {
 
                             <div className="side-logo">
                                 <img
-                                    src="/RACOAI_LOGO.png"
-                                    alt="RACO Logo"
+                                    src="/EE_LOGO_FULL.png"
+                                    alt="Easy Employee Logo"
                                 />
                             </div>
 
@@ -367,19 +367,19 @@ const IdCard = () => {
                         <div className="premium-id-card">
                             <div className="side-logo">
                                 <img
-                                    src="/RACOAI_LOGO.png"
-                                    alt="RACO Logo"
+                                    src="/EE_LOGO_FULL.png"
+                                    alt="Easy Employee Logo"
                                 />
                             </div>
 
-                            <p className="website-link">https://racoai.io</p>
+                            <p className="website-link">https://easyemployee.io</p>
 
                             <div style={{ marginBottom: '15px' }}>
                                 <div className="back-title-row">
-                                    {/* <h3>RACO AI</h3> */}
+                                    {/* <h3>Easy Employee</h3> */}
                                     <div className="id-arrow">→</div>
                                 </div>
-                                <p className="company-desc">State-of-the-art machine learning and deep learning solutions tailored for your needs.</p>
+                                <p className="company-desc">State-of-the-art employee management solutions tailored for your needs.</p>
                                 
                                 <div className="return-box">
                                     <p className="return-label">IF FOUND, PLEASE RETURN TO:</p>
@@ -399,7 +399,7 @@ const IdCard = () => {
                             <div className="front-footer-row">
                                 <div className="qr-box">
                                     <QRCode 
-                                        value="https://racoai.io"
+                                        value="https://easyemployee.io"
                                         size={50}
                                         level="H"
                                     />
@@ -408,8 +408,8 @@ const IdCard = () => {
                                 <div className="contact-box">
                                     <p className="contact-label">CONTACT</p>
                                     <p className="contact-details">
-                                        {user.mobile || '+8801343831119'}<br />
-                                        {user.email || 'raco-operationsbd@racoai.io'}
+                                        {user.mobile || '+880123456789'}<br />
+                                        {user.email || 'operations@easyemployee.io'}
                                     </p>
                                 </div>
                             </div>

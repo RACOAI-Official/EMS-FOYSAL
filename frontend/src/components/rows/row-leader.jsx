@@ -59,6 +59,11 @@ const RowLeader = ({ index, data, refresh }) => {
                     <i className="fas fa-shield-alt mr-1 opacity-75"></i>
                     {data.position || 'Department Leader'}
                 </div>
+                {data.empire && (
+                    <div className="text-muted small mt-1" style={{ fontSize: '0.65rem' }}>
+                        <i className="fas fa-building mr-1"></i> {data.empire.name}
+                    </div>
+                )}
             </td>
             <td>
                 <div className="text-dark font-weight-bold small d-flex align-items-center">

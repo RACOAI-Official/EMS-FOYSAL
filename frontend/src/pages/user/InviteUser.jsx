@@ -1,14 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import HeaderSection from "../../components/HeaderSection";
-import { inviteUser } from "../../http";
+import { inviteUser, getEmpires } from "../../http";
 
 const InviteUser = () => {
     const { user: currentUser } = useSelector((state) => state.authSlice);
-    const initialState = { email: '', type: 'Employee', position: '' };
+    const initialState = { email: '', type: 'Employee', position: '', empire: '' };
     const [formData, setFormData] = useState(initialState);
     const [loading, setLoading] = useState(false);
+    const [empires, setEmpires] = useState([]);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const res = await getEmpires();
+                if (res.success) setEmpires(res.data);
+            } catch (err) {
+                console.error("Failed to fetch empires", err);
+            }
+        })();
+    }, []);
 
     const positions = [
         'AI Engineer', 'AI Developer', 
@@ -36,17 +47,16 @@ const InviteUser = () => {
                 toast.success(message || 'Invitation sent successfully');
                 setFormData(initialState);
             } else {
-                toast.error(message || 'Failed to send invitation');
+                toast.error(message || 'This user has been already registered.');
             }
         } catch (error) {
-            toast.error(error?.response?.data?.message || 'Failed to send invitation');
+            toast.error(error?.response?.data?.message || 'This user has been already registered.');
         } finally {
             setLoading(false);
         }
     };
 
     const isSuperAdmin = currentUser?.type === 'super_admin';
-    const isSubAdmin = currentUser?.type === 'sub_admin';
 
     return (
         <div className="main-content">
@@ -113,6 +123,21 @@ const InviteUser = () => {
                                             <option value="">Select Position</option>
                                             {positions.map((pos) => (
                                                 <option key={pos} value={pos}>{pos}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="form-group col-md-12 mb-4">
+                                    <label className="text-muted small font-weight-bold mb-2 uppercase">Assign Employer (Empire)</label>
+                                    <div className="input-group shadow-sm">
+                                        <div className="input-group-prepend">
+                                            <div className="input-group-text bg-light border-0"><i className="fas fa-building text-success"></i></div>
+                                        </div>
+                                        <select name='empire' onChange={inputEvent} value={formData.empire} className="form-control border-0 bg-light rounded-right h-100 py-2">
+                                            <option value="">Select Employer (Optional)</option>
+                                            {empires.map((emp) => (
+                                                <option key={emp._id} value={emp._id}>{emp.name}</option>
                                             ))}
                                         </select>
                                     </div>

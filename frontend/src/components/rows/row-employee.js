@@ -62,6 +62,11 @@ const RowEmployee = ({ index, data, refresh }) => {
                     <span className="badge bg-primary-soft text-primary px-3 rounded-pill font-weight-bold" style={{ fontSize: '0.7rem' }}>
                         {data.position || 'Organization Member'}
                     </span>
+                    {data.empire && (
+                        <div className="text-muted small mt-1" style={{ fontSize: '0.65rem' }}>
+                            <i className="fas fa-building mr-1"></i> {data.empire.name}
+                        </div>
+                    )}
                 </td>
                 <td>
                     <div className="small text-dark fw-medium">{data.email}</div>

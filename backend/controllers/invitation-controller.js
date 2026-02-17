@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const InvitationModel = require('../models/invitation-model');
+const UserModel = require('../models/user-model');
 const ErrorHandler = require('../utils/error-handler');
 const mailService = require('../services/mail-service');
 
@@ -7,9 +8,21 @@ class InvitationController {
   inviteUser = async (req, res, next) => {
     try {
       const { email, type, position } = req.body;
+      const normalizedEmail = String(email || '').trim().toLowerCase();
 
-      if (!email || !type || !position) {
+      if (!normalizedEmail || !type || !position) {
         return next(ErrorHandler.badRequest('Email, User Type, and Position are required'));
+      }
+
+      // Block re-invite if this email is already registered as a user.
+      const existingUser = await UserModel.findOne({
+        email: new RegExp(`^${normalizedEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i')
+      }).select('_id email');
+
+      if (existingUser) {
+        return next(
+          ErrorHandler.conflict(`${normalizedEmail}, This user has been already registered.`)
+        );
       }
 
       // Role-based invitation restriction
@@ -28,33 +41,44 @@ class InvitationController {
         }
       }
 
-      // Check if invitation already exists
-      const existingInvitation = await InvitationModel.findOne({ email });
-      if (existingInvitation && existingInvitation.status === 'pending') {
-        return next(ErrorHandler.badRequest('Invitation already sent to this email'));
-      }
-
       // Generate unique token
       const token = crypto.randomBytes(32).toString('hex');
       const expiresAt = new Date();
       expiresAt.setHours(expiresAt.getHours() + 24); // 24 hours expiry
 
-      const invitation = await InvitationModel.create({
-        email,
-        type: type.toLowerCase(),
-        position,
-        token,
-        expiresAt
-      });
+      // Re-invite flow:
+      // If invitation exists for this email, refresh token + expiry and mark as pending.
+      // This allows sending invitation multiple times to the same email.
+      let invitation = await InvitationModel.findOne({ email: normalizedEmail });
+
+      if (invitation) {
+        invitation.type = type.toLowerCase();
+        invitation.position = position;
+        invitation.token = token;
+        invitation.expiresAt = expiresAt;
+        invitation.status = 'pending';
+        invitation.empire = req.body.empire || null;
+        invitation = await invitation.save();
+      } else {
+        invitation = await InvitationModel.create({
+          email: normalizedEmail,
+          type: type.toLowerCase(),
+          position,
+          token,
+          expiresAt,
+          empire: req.body.empire || null
+        });
+      }
 
       // Send Email
       const registrationLink = `${process.env.CLIENT_URL}/register/${token}`;
       try {
-        await mailService.sendInvitationMail(email, type, registrationLink);
+        await mailService.sendInvitationMail(normalizedEmail, type, registrationLink);
       } catch (mailError) {
         console.error("Mail Error:", mailError);
-        // Delete the invitation if email fails so they can retry
-        await InvitationModel.findByIdAndDelete(invitation._id);
+        // Keep record so admin can retry; mark expired to avoid accidental use.
+        invitation.status = 'expired';
+        await invitation.save();
         return next(ErrorHandler.serverError(`Failed to send email: ${mailError.message}`));
       }
 
@@ -71,7 +95,7 @@ class InvitationController {
   verifyInvitation = async (req, res, next) => {
     try {
       const { token } = req.params;
-      const invitation = await InvitationModel.findOne({ token });
+      const invitation = await InvitationModel.findOne({ token }).populate('empire');
 
       if (!invitation) {
         return next(ErrorHandler.notFound('Invalid invitation link'));
@@ -93,8 +117,35 @@ class InvitationController {
         data: {
           email: invitation.email,
           type: invitation.type,
-          position: invitation.position
+          position: invitation.position,
+          empire: invitation.empire
         }
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getInvitations = async (req, res, next) => {
+    try {
+      const invitations = await InvitationModel.find().sort({ createdAt: -1 });
+      res.json({
+        success: true,
+        data: invitations
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  deleteInvitation = async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const invitation = await InvitationModel.findByIdAndDelete(id);
+      if (!invitation) return next(ErrorHandler.notFound('Invitation not found'));
+      res.json({
+        success: true,
+        message: 'Invitation deleted'
       });
     } catch (error) {
       next(error);

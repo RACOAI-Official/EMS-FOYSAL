@@ -11,7 +11,8 @@ import logo from "../assets/icons/logo.png";
 
 const Navigation = () => {
     const { theme, toggleTheme } = useTheme();
-    const { name, image, id, _id } = useSelector((state) => state.authSlice.user);
+    const user = useSelector((state) => state.authSlice.user) || {};
+    const { name, image, id, _id } = user;
     const userId = id || _id;
     const dispatch = useDispatch();
     const history = useHistory();
@@ -57,28 +58,33 @@ const Navigation = () => {
     }
 
     useEffect(() => {
+        if (!userId) {
+            socket.off('connect');
+            socket.off('notification');
+            if (socket.connected) socket.disconnect();
+            return;
+        }
+
         fetchNotifications();
 
-        if (userId) {
-            socket.connect();
-            
-            const handleConnect = () => {
-                console.log('Connected to socket server');
-                socket.emit('join', userId);
-            };
+        socket.connect();
+        
+        const handleConnect = () => {
+            console.log('Connected to socket server');
+            socket.emit('join', userId);
+        };
 
-            const handleNotification = (notif) => {
-                console.log('New notification received:', notif);
-                setNotifications(prev => [notif, ...prev]);
-            };
+        const handleNotification = (notif) => {
+            console.log('New notification received:', notif);
+            setNotifications(prev => [notif, ...prev]);
+        };
 
-            socket.on('connect', handleConnect);
-            socket.on('notification', handleNotification);
+        socket.on('connect', handleConnect);
+        socket.on('notification', handleNotification);
 
-            // Re-emit join on reconnect
-            if (socket.connected) {
-                socket.emit('join', userId);
-            }
+        // Re-emit join on reconnect
+        if (socket.connected) {
+            socket.emit('join', userId);
         }
 
         return () => {
@@ -165,8 +171,8 @@ const Navigation = () => {
                         <li><NavLink to='/' className="nav-link nav-link-lg d-none"><i className="fas fa-search"></i></NavLink></li>
                     </ul>
                     <div className="d-flex align-items-center mr-3" style={{ whiteSpace: 'nowrap' }}>
-                        <img src={logo} alt="RACO AI Logo" style={{ height: '35px', marginRight: '10px' }} />
-                        <span style={{ fontSize: '18px', fontWeight: '600', color: theme === 'dark' ? '#fff' : '#333' }}>RACO AI</span>
+                        <img src={logo} alt="Easy Employee Logo" style={{ height: '35px', marginRight: '10px' }} />
+                        <span style={{ fontSize: '18px', fontWeight: '600', color: theme === 'dark' ? '#fff' : '#333' }}>RACO AI EMS</span>
                     </div>
                     <div className="search-element input-group mx-auto d-none d-lg-flex" style={{ maxWidth: '400px' }}>
                         <input 
@@ -254,7 +260,7 @@ const Navigation = () => {
                         </div>
                     </li>
                     <li className="dropdown"><a href='#' data-bs-toggle="dropdown" className="nav-link dropdown-toggle nav-link-lg nav-link-user" style={{ color: 'black' }}>
-                        <img alt="image" src={image && !image.startsWith('http') ? `${backendUrl}/storage/${image}` : image} className="rounded-circle mr-1" />
+                        <img alt="image" src={image && (image.startsWith('http') || image.startsWith('data:') || image.startsWith('/')) ? image : `${backendUrl}/storage/${image}`} className="rounded-circle mr-1" />
                         <div className="d-sm-none d-lg-inline-block">Hi, {name}</div></a>
                         <div className="dropdown-menu dropdown-menu-end">
                             <div className="dropdown-title">Logged in 5 min ago</div>

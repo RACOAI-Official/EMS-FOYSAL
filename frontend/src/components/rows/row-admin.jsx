@@ -31,6 +31,11 @@ const RowAdmin = ({index,data}) =>
                 <span className="badge bg-primary-soft text-primary rounded-pill px-3 py-1 font-weight-bold" style={{ fontSize: '0.7rem' }}>
                     {data.position || 'System Admin'}
                 </span>
+                {data.empire && (
+                    <div className="text-muted small mt-1" style={{ fontSize: '0.65rem' }}>
+                        <i className="fas fa-building mr-1"></i> {data.empire.name}
+                    </div>
+                )}
             </td>
             <td className="text-center">
                 <span className={`badge rounded-pill px-3 py-1 font-weight-bold ${data.status === 'Active' ? 'bg-success-soft text-success' : 'bg-secondary-soft text-secondary'}`} style={{ fontSize: '0.7rem' }}>

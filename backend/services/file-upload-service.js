@@ -1,6 +1,6 @@
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
-const CloudinaryStorage  = require('multer-storage-cloudinary');
+const CloudinaryStorage = require('multer-storage-cloudinary');
 
 // Cloudinary Configuration
 cloudinary.config({
@@ -8,10 +8,12 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
+console.log('>>> [Cloudinary] Configured for:', process.env.CLOUDINARY_CLOUD_NAME);
 
 const storageEngine = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: async (req, file) => {
+        console.log('>>> [Multer/Cloudinary] Starting upload for field:', file.fieldname);
         let folder = 'ems/other';
 
         if (file.fieldname === 'profile') {
@@ -33,11 +35,13 @@ const storageEngine = new CloudinaryStorage({
         const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
         const public_id = file.fieldname + "-" + uniqueSuffix;
 
-        return {
+        const result = {
             folder: folder,
             public_id: public_id,
-            resource_type: 'auto', // Important for non-image files like PDF
+            resource_type: 'auto',
         };
+        console.log('>>> [Multer/Cloudinary] Params generated, passing to Cloudinary:', result);
+        return result;
     }
 });
 

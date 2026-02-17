@@ -22,7 +22,7 @@ class UserDto {
             this.email = user.email,
             this.mobile = user.mobile,
             this.image = user.image && user.image !== 'user.png'
-                ? (user.image.startsWith('http') ? user.image : `${process.env.BASE_URL}/storage/images/profile/${user.image}`)
+                ? (user.image.startsWith('http') ? user.image : `${process.env.BASE_URL || 'http://192.168.10.13:5500'}/storage/images/profile/${user.image}`)
                 : '/assets/icons/user.png',
             this.type = user.type,
             this.address = user.address,
@@ -30,7 +30,7 @@ class UserDto {
             this.team = user.team && new TeamDto(Array.isArray(user.team) && user.team.length > 0 ? user.team[0] : user.team),
             this.progress = typeof user.progress === 'number' ? user.progress : 0,
             this.progressNote = user.progressNote || '',
-            this.empire = user.empire,
+            this.empire = user.empire && typeof user.empire === 'object' ? { id: user.empire._id, name: user.empire.name } : user.empire,
             this.designation = user.designation,
             this.project = user.project,
             this.totalMembers = user.totalMembers || 0,
@@ -43,7 +43,10 @@ class UserDto {
             this.permanentAddress = user.permanentAddress || user.address || 'N/A',
 
             this.nid = user.nid || 'N/A',
-            this.position = user.position || 'Not Specified'
+            this.position = user.position || 'Not Specified',
+            this.village = user.village || 'N/A',
+            this.union = user.union || 'N/A',
+            this.district = user.district || 'N/A'
     }
 
 }

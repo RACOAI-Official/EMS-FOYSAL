@@ -13,7 +13,7 @@ export const getFileUrl = (path, defaultAsset = '/assets/icons/user.png') => {
     return defaultAsset;
   }
 
-  if (path.startsWith('http') || path.startsWith('data:')) {
+  if (path.startsWith('http') || path.startsWith('data:') || path.startsWith('/')) {
     return path;
   }
 

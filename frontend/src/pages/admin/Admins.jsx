@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
-import HeaderSection from "../../components/HeaderSection";
 import RowAdmin from "../../components/rows/row-admin";
 import { getAdminUsers } from "../../http";
 
 const AdminsPage = () =>
 {
     const [loading,setLoading] = useState(true);
-    const [users,setUsers] = useState({});
+    const [users,setUsers] = useState([]);
 
     // Fetch data on mount and whenever component updates
     const fetchAdmins = async () => {
         setLoading(true);
         const res = await getAdminUsers();
-        if(res.success)
+        if(res.success && Array.isArray(res.data))
         {
             setUsers(res.data);
         }

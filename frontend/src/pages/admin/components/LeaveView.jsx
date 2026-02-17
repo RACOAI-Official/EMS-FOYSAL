@@ -28,10 +28,15 @@ const LeaveView = () => {
     const fetchEmployees = async () => {
       const emps = await getEmployees();
       const leaders = await getLeaders();
-      emps.data.forEach(employee => empObj[employee.id] = [employee.name, employee.email]);
-      leaders.data.forEach(leader => empObj[leader.id] = [leader.name, leader.email]);
+      
+      const employeesArr = emps?.success && Array.isArray(emps.data) ? emps.data : [];
+      const leadersArr = leaders?.success && Array.isArray(leaders.data) ? leaders.data : [];
+
+      employeesArr.forEach(employee => empObj[employee.id] = [employee.name, employee.email]);
+      leadersArr.forEach(leader => empObj[leader.id] = [leader.name, leader.email]);
+      
       setEmployeeMap(empObj);
-      setEmployees([...emps.data, ...leaders.data]);
+      setEmployees([...employeesArr, ...leadersArr]);
     }
 
     fetchData();
@@ -73,7 +78,6 @@ const LeaveView = () => {
     e.stopPropagation(); // Prevent row click navigation
 
     const applicantName = employeeMap && employeeMap[application.applicantID] ? employeeMap[application.applicantID][0] : 'N/A';
-    const applicantEmail = employeeMap && employeeMap[application.applicantID] ? employeeMap[application.applicantID][1] : 'N/A';
 
     const tableColumn = ["Field", "Information"];
     const tableRows = [

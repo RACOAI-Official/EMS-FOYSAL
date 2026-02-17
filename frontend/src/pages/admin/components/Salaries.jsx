@@ -40,7 +40,7 @@ const Salaries = () => {
           setSelectedYear(currentYear.toString());
       }
 
-  }, [selectedEmployee, employees]);
+  }, [selectedEmployee, employees, employeeMap, selectedYear]);
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
@@ -57,10 +57,15 @@ const Salaries = () => {
     const fetchEmployees = async () => {
       const emps = await getEmployees();
       const leaders = await getLeaders();
-      emps.data.forEach(employee => empObj[employee.id] = [employee.name, employee.email]);
-      leaders.data.forEach(leader => empObj[leader.id] = [leader.name, leader.email]);
+
+      const employeesArr = emps?.success && Array.isArray(emps.data) ? emps.data : [];
+      const leadersArr = leaders?.success && Array.isArray(leaders.data) ? leaders.data : [];
+      
+      employeesArr.forEach(employee => empObj[employee.id] = [employee.name, employee.email]);
+      leadersArr.forEach(leader => empObj[leader.id] = [leader.name, leader.email]);
+      
       setEmployeeMap(empObj);
-      setEmployees([...emps.data, ...leaders.data]);
+      setEmployees([...employeesArr, ...leadersArr]);
     }
 
     fetchData();

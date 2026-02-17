@@ -19,6 +19,11 @@ class ErrorHandler extends Error{
        return new ErrorHandler(message,400);
     }
 
+    static conflict = (message='Conflict') =>
+    {
+        return new ErrorHandler(message,409);
+    }
+
     static notFound = (message='Resourse Not Found') =>
     {
         return new ErrorHandler(message,404);
@@ -29,9 +34,19 @@ class ErrorHandler extends Error{
         return new ErrorHandler(message,401);
     }
     
+    // alias with different casing used across the codebase
+    static unauthorized = (message='Unauthorized Access') => {
+        return ErrorHandler.unAuthorized(message);
+    }
+    
     static notAllowed = (message='Not Allowed')=>
     {
         return new ErrorHandler(message,403);
+    }
+
+    // alias for forbidden
+    static forbidden = (message='Not Allowed') => {
+        return ErrorHandler.notAllowed(message);
     }
 
 

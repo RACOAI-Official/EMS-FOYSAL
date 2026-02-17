@@ -10,11 +10,27 @@ const mailService = require('../services/mail-service');
 const InvitationModel = require('../models/invitation-model');
 const { generateEmployeeId } = require('../utils/id-generator');
 
-class AuthController {
+const cookieSameSite = process.env.COOKIE_SAME_SITE || (process.env.NODE_ENV === 'production' ? 'none' : 'lax');
+const isSecureCookie = cookieSameSite === 'none' || process.env.NODE_ENV === 'production';
+const baseCookieOptions = {
+    httpOnly: true,
+    sameSite: cookieSameSite,
+    secure: isSecureCookie,
+    path: '/'
+};
+const authCookieMaxAge = 1000 * 60 * 60 * 24 * 30;
+const authCookieOptions = {
+    ...baseCookieOptions,
+    maxAge: authCookieMaxAge
+};
 
+const escapeRegex = (value = '') => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+class AuthController {
     login = async (req, res, next) => {
         try {
             const { email, emailOrUsername, password } = req.body;
+            console.log('Login Request Body:', req.body);
             console.log('Login attempt with:', { email: email || emailOrUsername, password: '***' });
 
             const identifier = (emailOrUsername || email || '').trim();
@@ -25,10 +41,12 @@ class AuthController {
             }
 
             let data;
-            if (validator.isEmail(identifier))
-                data = { email: identifier }
-            else
+            if (validator.isEmail(identifier)) {
+                const normalizedEmail = validator.normalizeEmail(identifier) || identifier.toLowerCase();
+                data = { email: new RegExp(`^${escapeRegex(normalizedEmail)}$`, 'i') };
+            } else {
                 data = { username: identifier };
+            }
 
             console.log('Finding user with:', data);
             const user = await userService.findUser(data);
@@ -69,14 +87,8 @@ class AuthController {
             await tokenService.storeRefreshToken(_id, refreshToken);
             console.log('Refresh token stored');
 
-            res.cookie('accessToken', accessToken, {
-                maxAge: 1000 * 60 * 60 * 24 * 30,
-                httpOnly: true
-            });
-            res.cookie('refreshToken', refreshToken, {
-                maxAge: 1000 * 60 * 60 * 24 * 30,
-                httpOnly: true
-            })
+            res.cookie('accessToken', accessToken, authCookieOptions);
+            res.cookie('refreshToken', refreshToken, authCookieOptions);
 
             console.log('Cookies set, sending response');
             user.status = 'active';
@@ -90,9 +102,13 @@ class AuthController {
 
     forgot = async (req, res, next) => {
         const { email: requestEmail } = req.body;
+        console.log('Forgot password request for:', requestEmail);
         if (!requestEmail) return next(ErrorHandler.badRequest());
         if (!validator.isEmail(requestEmail)) return next(ErrorHandler.badRequest('Inavlid Email Address'));
-        const user = await userService.findUser({ email: requestEmail });
+        const normalizedEmail = validator.normalizeEmail(requestEmail) || requestEmail.toLowerCase();
+        console.log('Normalized email:', normalizedEmail);
+        const user = await userService.findUser({ email: new RegExp(`^${escapeRegex(normalizedEmail)}$`, 'i') });
+        console.log('User found for forgot password:', user ? user.email : 'No user found');
         if (!user) return next(ErrorHandler.notFound('Invalid Email Address'));
         const { _id: userId, name, email } = user;
         const otp = otpService.generateOtp();
@@ -106,7 +122,8 @@ class AuthController {
     reset = async (req, res, next) => {
         const { email, otp, password } = req.body;
         if (!email || !otp || !password) return next(ErrorHandler.badRequest());
-        const user = await userService.findUser({ email });
+        const normalizedEmail = validator.normalizeEmail(email) || email.toLowerCase();
+        const user = await userService.findUser({ email: new RegExp(`^${escapeRegex(normalizedEmail)}$`, 'i') });
         if (!user) return next(ErrorHandler.notFound('No Account Found'));
         const { _id: userId } = user;
         const type = process.env.TYPE_FORGOT_PASSWORD || 2;
@@ -123,26 +140,29 @@ class AuthController {
         const { _id } = req.user;
         const response = await tokenService.removeRefreshToken(_id, refreshToken);
         await userService.updateUser(_id, { status: 'deactive' });
-        res.clearCookie('refreshToken');
-        res.clearCookie('accessToken');
+        res.clearCookie('refreshToken', baseCookieOptions);
+        res.clearCookie('accessToken', baseCookieOptions);
         return (response.modifiedCount === 1) ? res.json({ success: true, message: 'Logout Successfully' }) : next(ErrorHandler.unAuthorized());
     }
 
     refresh = async (req, res, next) => {
+        console.log('[AuthController.refresh] Cookies received:', req.cookies);
         const { refreshToken: refreshTokenFromCookie } = req.cookies;
-        if (!refreshTokenFromCookie) return next(ErrorHandler.unAuthorized());
+        if (!refreshTokenFromCookie) {
+            return res.status(401).json({ success: false, message: 'Unauthorized Access' });
+        }
         const userData = await tokenService.verifyRefreshToken(refreshTokenFromCookie);
         const { _id, email, username, type } = userData;
         const token = await tokenService.findRefreshToken(_id, refreshTokenFromCookie);
         if (!token) {
-            res.clearCookie('refreshToken');
-            res.clearCookie('accessToken');
+            res.clearCookie('refreshToken', baseCookieOptions);
+            res.clearCookie('accessToken', baseCookieOptions);
             return res.status(401).json({ success: false, message: 'Unauthorized Access' })
         }
         const user = await userService.findUser({ email });
         if (!user) {
-            res.clearCookie('refreshToken');
-            res.clearCookie('accessToken');
+            res.clearCookie('refreshToken', baseCookieOptions);
+            res.clearCookie('accessToken', baseCookieOptions);
             return res.status(401).json({ success: false, message: 'User not found' });
         }
         if (user?.status === 'banned') return next(ErrorHandler.unAuthorized('Your account has been banned, Please contact to the admin'));
@@ -151,18 +171,12 @@ class AuthController {
             email,
             username,
             name: user.name,
-            type
+            type: user.type
         }
         const { accessToken, refreshToken } = tokenService.generateToken(payload);
         await tokenService.updateRefreshToken(_id, refreshTokenFromCookie, refreshToken);
-        res.cookie('accessToken', accessToken, {
-            maxAge: 1000 * 60 * 60 * 24 * 30,
-            httpOnly: true
-        })
-        res.cookie('refreshToken', refreshToken, {
-            maxAge: 1000 * 60 * 60 * 24 * 30,
-            httpOnly: true
-        })
+        res.cookie('accessToken', accessToken, authCookieOptions);
+        res.cookie('refreshToken', refreshToken, authCookieOptions);
         user.status = 'active';
         await user.save();
         res.json({ success: true, message: 'Secure access has been granted', user: new UserDto(user) })
@@ -212,6 +226,7 @@ class AuthController {
                 bloodGroup,
                 employeeId,
                 image,
+                empire: invitation.empire || null,
                 status: 'active'
             });
 

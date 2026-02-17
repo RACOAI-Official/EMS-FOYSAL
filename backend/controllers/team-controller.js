@@ -228,11 +228,24 @@ class TeamController {
         const employee = await userService.findCount({ type: 'employee' });
         const leader = await userService.findCount({ type: 'leader' });
         const team = await teamService.findCount({});
+
+        // New counts
+        const InvitationModel = require('../models/invitation-model');
+        const ProgressModel = require('../models/progress-model');
+        const EmployerModel = require('../models/employer-model');
+
+        const invitations = await InvitationModel.countDocuments({});
+        const progresses = await ProgressModel.countDocuments({});
+        const employers = await EmployerModel.countDocuments({});
+
         const data = {
             admin,
             employee,
             leader,
-            team
+            team,
+            invitations,
+            progresses,
+            employers
         }
         res.json({ success: true, message: 'Counts Found', data })
     }

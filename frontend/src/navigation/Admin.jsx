@@ -48,6 +48,9 @@ const Admin = () => {
       <li><NavLink className="nav-link" to="/assignSalary"><i className="fas fa-pen"></i> <span>Assign Salary</span></NavLink></li>
       <li><NavLink className="nav-link" to="/salaries"><i className="fas fa-piggy-bank"></i> <span>Salaries</span></NavLink></li>
       <li><NavLink className="nav-link" to="/admin/problems"><i className="fas fa-exclamation-triangle"></i> <span>User Problems</span></NavLink></li>
+      <li><NavLink className="nav-link" to="/admin/progress"><i className="fas fa-chart-line"></i> <span>Progress Logs</span></NavLink></li>
+      <li><NavLink className="nav-link" to="/admin/invitations"><i className="fas fa-history"></i> <span>Invitations</span></NavLink></li>
+      <li><NavLink className="nav-link" to="/admin/empires"><i className="fas fa-building"></i> <span>Employers</span></NavLink></li>
 
 
       <li className="menu-header">Starter</li>

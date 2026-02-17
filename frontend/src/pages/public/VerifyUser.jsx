@@ -57,7 +57,7 @@ const VerifyUser = () => {
                                     <i className="fas fa-check-circle" style={{ fontSize: '48px', color: '#fff' }}></i>
                                 </div>
                                 <h4 className="mb-0">Verified Employee</h4>
-                                <small style={{ opacity: 0.8 }}>RACO AI Verification System</small>
+                                <small style={{ opacity: 0.8 }}>Easy Employee Verification System</small>
                             </div>
                             <div className="card-body text-center" style={{ marginTop: '-40px', paddingTop: '0' }}>
                                 <div className="mb-4">
@@ -76,7 +76,6 @@ const VerifyUser = () => {
                                 
                                 <h3 style={{ color: '#333', fontWeight: '700' }}>{user.name}</h3>
                                 <p className="text-muted mb-4">{user.designation || user.type || 'Employee'} • {user.employeeId}</p>
-
                                 <div className="text-left w-100 px-3">
                                     <div className="list-group list-group-flush">
                                         <div className="list-group-item d-flex justify-content-between align-items-center px-0">
@@ -110,7 +109,6 @@ const VerifyUser = () => {
                                         </div>
                                     </div>
                                 </div>
-
                                 <div className="mt-4 pt-4 border-top">
                                     <div className="badge badge-success px-4 py-2" style={{ fontSize: '14px', borderRadius: '30px' }}>
                                         <i className="fas fa-shield-alt mr-2"></i> 
@@ -120,7 +118,7 @@ const VerifyUser = () => {
                             </div>
                         </div>
                         <div className="text-center mt-3 text-muted">
-                            <small>© {new Date().getFullYear()} RACO AI. All Verification Rights Reserved.</small>
+                            <small>© {new Date().getFullYear()} Easy Employee. All Verification Rights Reserved.</small>
                         </div>
                     </div>
                 </div>

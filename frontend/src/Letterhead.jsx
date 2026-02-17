@@ -2,7 +2,7 @@ import React from 'react';
 import logo from './assets/icons/logo.png';
 const Letterhead = ({ children }) => {
   // Configurable Data
-  const companyUrl = "https://racoai.io";
+  const companyUrl = "https://easyemployee.io";
   const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(companyUrl)}`;
 
   const styles = {
@@ -187,6 +187,7 @@ const Letterhead = ({ children }) => {
           @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
           
           @page {
+            size: A4;
             margin: 0;
           }
 
@@ -204,78 +205,71 @@ const Letterhead = ({ children }) => {
               margin: 0 !important;
               background-color: white !important;
               display: block !important;
+              min-height: 100vh !important;
             }
 
             .letterhead-container {
               width: 100% !important;
-              min-height: 100vh !important;
-              height: auto !important;
+              min-height: 29.7cm !important;
+              height: 29.7cm !important;
+              display: flex !important;
+              flex-direction: column !important;
               box-shadow: none !important;
               margin: 0 !important;
               padding: 0 !important;
               position: relative !important;
               background-color: white !important;
-            }
-
-            /* Fixed Header Section */
-            .top-accent, .top-accent-after, .letterhead-header {
-              position: fixed !important;
-              top: 0 !important;
-              left: 0 !important;
-              z-index: 100 !important;
+              overflow: hidden !important;
             }
 
             .top-accent {
               width: 300px !important;
+              height: 150px !important;
+              top: 0 !important;
+              left: 0 !important;
             }
 
             .top-accent-after {
               left: 155px !important;
-              width: calc(100% - 155px) !important;
+              top: 0 !important;
+              width: calc(100% - 142px) !important;
+              height: 28px !important;
             }
 
             .letterhead-header {
-              width: 100% !important;
-              padding: 20px 60px !important;
-              box-sizing: border-box !important;
-            }
-
-            /* Fixed Footer Section */
-            .letterhead-footer, .bottom-accent, .bottom-accent-after {
-              position: fixed !important;
-              bottom: 0 !important;
-              left: 0 !important;
-              width: 100% !important;
-              z-index: 100 !important;
+              padding: 60px 60px 20px 60px !important;
             }
 
             .letterhead-footer {
+              position: fixed !important;
+              left: 0 !important;
+              bottom: 0 !important;
+              width: 100% !important;
               padding-bottom: 30px !important;
-              background-color: transparent !important;
+              z-index: 20 !important;
+            }
+
+            .letterhead-footer-cards {
+              padding-bottom: 36px !important;
             }
 
             .bottom-accent {
               left: auto !important;
               right: 0 !important;
               width: 350px !important;
+              height: 120px !important;
             }
 
             .bottom-accent-after {
               left: auto !important;
               right: 155px !important;
-              width: calc(100% - 155px) !important;
+              width: calc(100% - 142px) !important;
+              height: 28px !important;
             }
 
-            /* Content Area Spacing */
             .letterhead-body {
-              padding-top: 180px !important;
-              padding-bottom: 200px !important;
-              padding-left: 80px !important;
-              padding-right: 80px !important;
-              margin: 0 !important;
-              display: block !important;
-              width: 100% !important;
-              box-sizing: border-box !important;
+              padding: 40px 80px 170px 80px !important;
+              flex-grow: 1 !important;
             }
 
             .no-print {
@@ -295,20 +289,20 @@ const Letterhead = ({ children }) => {
               {/* Refined Company Logo */}
               <div style={styles.logoIcon}>
                 <span style={{ marginTop: '-4px' }}>
-                  <img src={logo} alt="Logo" style={{ width: '50px', height: '50px' ,objectFit: 'cover',objectPosition: 'center',borderRadius: '50%'}} />
+                  <img src={logo} alt="Logo" style={{ width: '50px', height: '50px' ,objectFit: 'contain',objectPosition: 'center',borderRadius: 0}} />
                 </span>
               </div>
               <div>
-                <h1 style={styles.brandTextH1}>RACO AI</h1>
-                <p style={styles.brandTextP}>Limitless Intelligence</p>
+                <h1 style={styles.brandTextH1}>RACO AI EMS</h1>
+                <p style={styles.brandTextP}>Precision Management</p>
               </div>
             </div>
 
-            {/* Dynamic QR Code for racoai.io */}
+            {/* Dynamic QR Code for easyemployee.io */}
             <div className="qr-code">
               <img 
                 src={qrCodeUrl} 
-                alt="RACO AI QR Code" 
+                alt="Easy Employee QR Code" 
                 style={styles.qrCodeImg} 
               />
             </div>
@@ -320,7 +314,7 @@ const Letterhead = ({ children }) => {
         </main>
 
         <footer style={styles.footer} className="letterhead-footer">
-          <div style={styles.footerCards}>
+          <div style={styles.footerCards} className="letterhead-footer-cards">
             <div style={styles.card}>
               <span style={styles.icon}><i className="fas fa-phone"></i></span>
               <div>
@@ -331,7 +325,7 @@ const Letterhead = ({ children }) => {
 
             <div style={styles.card}>
               <span style={styles.icon}><i className="fas fa-globe"></i></span>
-              <div>www.racoai.com</div>
+              <div>www.easyemployee.io</div>
             </div>
 
             <div style={styles.card}>

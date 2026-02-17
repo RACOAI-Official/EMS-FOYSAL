@@ -33,7 +33,7 @@ const problemSchema = new Schema({
   },
   empire: {
     type: Schema.Types.ObjectId,
-    ref: 'Empire'
+    ref: 'Employer'
   },
   status: {
     type: String,

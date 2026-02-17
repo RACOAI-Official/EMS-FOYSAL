@@ -1,0 +1,19 @@
+[
+  {
+    "email": "recotest850@gmail.com",
+    "invitation": null,
+    "user": {
+      "id": "6991d5b433f89592eb88d2d3"
+    },
+    "collision": false
+  },
+  {
+    "email": "sohrabkhansayeam@gmail.com",
+    "invitation": {
+      "status": "pending",
+      "id": "6991d983b9d184a4d3022609"
+    },
+    "user": null,
+    "collision": false
+  }
+]

@@ -1,8 +1,7 @@
-const ErrorHandler = require('../utils/error-handler');
-const bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 const userService = require('../services/user-service');
 const UserDto = require('../dtos/user-dto');
-const mongoose = require('mongoose');
 const crypto = require('crypto');
 const teamService = require('../services/team-service');
 const attendanceService = require('../services/attendance-service');
@@ -11,6 +10,7 @@ const fs = require('fs');
 const path = require('path');
 const fileService = require('../services/file-service');
 const InvitationModel = require('../models/invitation-model'); // Import Invitation Model
+const ErrorHandler = require('../utils/error-handler');
 
 
 class UserController {
@@ -75,18 +75,21 @@ class UserController {
     }
 
     updateUser = async (req, res, next) => {
+        console.log('>>> [UserController.updateUser] Entered controller handle');
         try {
             const file = req.file;
-            const filename = file && file.path;
+            const filename = file ? (file.path || file.url || file.secure_url) : null;
             let user, id;
             console.log('Update User Request');
             console.log('File:', file);
             console.log('Filename:', filename);
             console.log('User Type:', req.user.type);
 
-            if (['super_admin', 'sub_admin'].includes(req.user.type)) {
-                const { id: paramId } = req.params;
-                id = paramId;
+            const isAdminRequest = ['super_admin', 'sub_admin'].includes(req.user.type);
+            const targetId = req.params.id;
+
+            if (isAdminRequest && targetId) {
+                id = targetId;
                 let { name, username, email, password, type, status, address, permanentAddress, mobile } = req.body;
                 // Optional progress updates
                 let { progress, progressNote } = req.body;
@@ -137,70 +140,60 @@ class UserController {
                 } else if (newType && currentType) {
                     console.log('Type is not changing, skipping password check');
                 }
-
-                // Build update object - only include fields that are provided
-                user = {};
-                if (name !== undefined) user.name = name;
-                if (email !== undefined) user.email = email;
-                if (status !== undefined) user.status = status ? status.toLowerCase() : status;
-                if (username !== undefined) user.username = username;
-                if (mobile !== undefined) user.mobile = mobile;
-                if (password !== undefined) user.password = password;
-                if (newType !== null) user.type = newType;
-                if (address !== undefined) user.address = address;
-                if (permanentAddress !== undefined) user.permanentAddress = permanentAddress;
-                if (progress !== undefined) user.progress = Number(progress);
-                if (progressNote !== undefined) user.progressNote = progressNote;
-                if (removeFromTeam) user.team = null; // Remove from team if type changed
-
-                // New profile fields
-                if (req.body.fatherName !== undefined) user.fatherName = req.body.fatherName;
-                if (req.body.motherName !== undefined) user.motherName = req.body.motherName;
-                if (req.body.presentAddress !== undefined) user.presentAddress = req.body.presentAddress;
-
-                if (req.body.bloodGroup !== undefined) user.bloodGroup = req.body.bloodGroup;
-                if (req.body.employeeId !== undefined) user.employeeId = req.body.employeeId;
-                // Only update image if a new file was uploaded
-                if (filename) {
-                    user.image = filename;
-                }
             }
             else {
                 // Self update
                 id = req.user._id;
-                user = {};
+                console.log('Performing self-update for user:', id);
+            }
 
-                const allowedFields = [
-                    'name', 'username', 'email', 'mobile', 'address', 'permanentAddress',
-                    'fatherName', 'motherName', 'presentAddress',
-                    'bloodGroup'
-                ];
+            // Build update object - only include fields that are provided
+            user = {};
 
-                allowedFields.forEach(field => {
-                    if (req.body[field] !== undefined) {
+            // Define all possible fields we want to sync from req.body
+            const syncFields = [
+                'name', 'username', 'email', 'mobile', 'password', 'type',
+                'address', 'permanentAddress', 'status', 'progress', 'progressNote',
+                'fatherName', 'motherName', 'presentAddress', 'bloodGroup',
+                'employeeId', 'empire', 'village', 'union', 'district', 'position'
+            ];
+
+            syncFields.forEach(field => {
+                if (req.body[field] !== undefined) {
+                    // Handle specific type conversions if needed
+                    if (field === 'progress' && req.body[field] !== '') {
+                        user[field] = Number(req.body[field]);
+                    } else if (field === 'type' && !id && !isAdminRequest) {
+                        // Skip type update for self-update if not admin (though it's blocked earlier anyway)
+                    } else if (field === 'type' && req.body[field]) {
+                        user[field] = req.body[field].trim().toLowerCase();
+                    } else if (field === 'status' && req.body[field]) {
+                        user[field] = req.body[field].trim().toLowerCase();
+                    } else if (field === 'password' && req.body[field]) {
+                        // Password hashing will happen below or via pre-save hook
+                        // Actually, we hash it manually if it's sent
+                    } else if (field === 'empire' && req.body[field] === '') {
+                        user[field] = null;
+                    } else {
                         user[field] = req.body[field];
                     }
-                });
-
-                if (req.body.progress !== undefined) user.progress = Number(req.body.progress);
-                if (req.body.progressNote !== undefined) user.progressNote = req.body.progressNote;
-
-                // Handle password update with manual hashing
-                if (req.body.password) {
-                    const salt = await bcrypt.genSalt(10);
-                    user.password = await bcrypt.hash(req.body.password, salt);
                 }
+            });
 
-                // Only update image if a new file was uploaded
-                if (filename) {
-                    user.image = filename;
-                }
+            if (user.password) {
+                const salt = await bcrypt.genSalt(10);
+                user.password = await bcrypt.hash(user.password, salt);
             }
-            console.log('Update data:', user);
+
+            if (filename) {
+                user.image = filename;
+            }
+            console.log('Update data final:', user);
+            console.log('Request File:', req.file);
             const userResp = await userService.updateUser(id, user);
-            console.log('Update response:', userResp);
+            console.log('Update response:', JSON.stringify(new UserDto(userResp), null, 2));
             if (!userResp) return next(ErrorHandler.serverError('Failed To Update Account'));
-            console.log('✅ MongoDB Persistence Confirmed - Updated user type:', userResp.type);
+            console.log('✅ MongoDB Persistence Confirmed - Updated image:', userResp.image);
             res.json({ success: true, message: 'Account Updated', user: new UserDto(userResp) });
         } catch (error) {
             console.error('=== UPDATE USER ERROR ===', error);
@@ -707,12 +700,21 @@ class UserController {
 
             const attendanceSummaryService = require('../services/attendance-summary-service');
 
+            const targetUserId = userId || req.user?._id;
+            if (!targetUserId) {
+                return next(ErrorHandler.unAuthorized('Unauthorized Access'));
+            }
+
+            if (userId && !mongoose.Types.ObjectId.isValid(userId)) {
+                return next(ErrorHandler.badRequest('Invalid User Id'));
+            }
+
             const dateRange = {};
             if (startDate) dateRange.startDate = new Date(startDate);
             if (endDate) dateRange.endDate = new Date(endDate);
 
             const summary = await attendanceSummaryService.getAttendanceSummary(
-                userId || req.user._id,
+                targetUserId,
                 Object.keys(dateRange).length > 0 ? dateRange : null
             );
 

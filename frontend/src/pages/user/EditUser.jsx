@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useParams, useHistory } from "react-router";
 import { toast } from "react-toastify";
 import HeaderSection from "../../components/HeaderSection";
-import { updateUser, getUser, backendUrl } from "../../http";
+import { updateUser, getUser, backendUrl, getEmpires } from "../../http";
 import { getFileUrl } from "../../utils/fileUtil";
 import Modal from '../../components/modal/Modal';
 
@@ -41,6 +41,7 @@ const EditUser = () => {
  // Track original data
 
     const [userType, setUserType] = useState('User');
+    const [empires, setEmpires] = useState([]);
 
     const { id } = useParams();
     const history = useHistory();
@@ -55,6 +56,11 @@ const EditUser = () => {
                 
                 let img = getFileUrl(res.data.image);
                 setImagePreview(img);
+            }
+
+            const empRes = await getEmpires();
+            if (empRes.success) {
+                setEmpires(empRes.data);
             }
         })();
     }, [id])
@@ -260,7 +266,7 @@ const EditUser = () => {
 
                             {isAdmin && (
                                 <div className="col-md-12 mb-4">
-                                    <label className="font-weight-bold text-dark mb-2">Unique Employee ID (RACO-YYYY-RAND)</label>
+                                    <label className="font-weight-bold text-dark mb-2">Unique Employee ID (EE-YYYY-RAND)</label>
                                     <div className="input-group search-element">
                                         <div className="input-group-prepend">
                                             <div className="input-group-text bg-light-soft border-right-0" style={{ borderRadius: '12px 0 0 12px' }}>
@@ -270,7 +276,7 @@ const EditUser = () => {
                                         <input onChange={inputEvent} value={formData.employeeId} type="text" name='employeeId' 
                                                className="form-control border-left-0" style={{ borderRadius: '0 12px 12px 0', height: '50px' }} />
                                     </div>
-                                    <small className="text-muted ml-2">Format: RACO-YEAR-NUMBER (Must be unique)</small>
+                                    <small className="text-muted ml-2">Format: EE-YEAR-NUMBER (Must be unique)</small>
                                 </div>
                             )}
 
@@ -366,6 +372,17 @@ const EditUser = () => {
                                         className="form-control search-element px-4 font-weight-bold text-dark" style={{ borderRadius: '12px', height: '55px', border: 'none', background: '#f8f9fa' }}>
                                     <option value="active">Active Authority</option>
                                     <option value="banned">Banned/Suspended</option>
+                                </select>
+                            </div>
+
+                            <div className="col-md-6 mb-4">
+                                <label className="font-weight-bold text-dark mb-2">Employer (Empire)</label>
+                                <select name='empire' onChange={inputEvent} value={formData.empire?.id || formData.empire || ''} 
+                                        className="form-control search-element px-4 font-weight-bold text-dark" style={{ borderRadius: '12px', height: '55px', border: 'none', background: '#f8f9fa' }}>
+                                    <option value="">No Employer Assigned</option>
+                                    {empires.map((emp) => (
+                                        <option key={emp._id} value={emp._id}>{emp.name}</option>
+                                    ))}
                                 </select>
                             </div>
 

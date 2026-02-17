@@ -1,3 +1,11 @@
-module.exports = asyncMiddleware => (req, res, next) => {
-    Promise.resolve(asyncMiddleware(req, res, next)).catch(next);
-}
+const asyncHandler = (handler) => {
+  return async (req, res, next) => {
+    try {
+      await handler(req, res, next);
+    } catch (err) {
+      next(err);
+    }
+  };
+};
+
+module.exports = asyncHandler;

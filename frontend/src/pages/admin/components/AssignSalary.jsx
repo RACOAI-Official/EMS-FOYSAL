@@ -28,7 +28,9 @@ const AssignSalary = () =>
     const fetchEmployees = async () => {
         const emps = await getEmployees();
         const leaders = await getLeaders();
-        setEmployees([...emps.data,...leaders.data]);
+        const employeesArr = emps?.success && Array.isArray(emps.data) ? emps.data : [];
+        const leadersArr = leaders?.success && Array.isArray(leaders.data) ? leaders.data : [];
+        setEmployees([...employeesArr, ...leadersArr]);
     }
     fetchEmployees();
 

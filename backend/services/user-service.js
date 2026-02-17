@@ -1,7 +1,7 @@
 const UserModel = require('../models/user-model');
 const LeaveModel = require('../models/leave-model');
 const UserSalaryModel = require('../models/user-salary');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 class UserService {
 
@@ -13,9 +13,9 @@ class UserService {
 
     findCount = async filter => await UserModel.find(filter).countDocuments();
 
-    findUser = async filter => await UserModel.findOne(filter);
+    findUser = async filter => await UserModel.findOne(filter).populate('empire');
 
-    findUsers = async filter => await UserModel.find(filter).populate('team');
+    findUsers = async filter => await UserModel.find(filter).populate('team').populate('empire');
 
     verifyPassword = async (password, hashPassword) => await bcrypt.compare(password, hashPassword);
 
@@ -70,22 +70,22 @@ class UserService {
 
     // Find all users by specific type
     findUsersByType = async (type) => {
-        return await UserModel.find({ type: type.toLowerCase() }).populate('team');
+        return await UserModel.find({ type: type.toLowerCase() }).populate('team').populate('empire');
     }
 
     // Find all admins
     findAdmins = async () => {
-        return await UserModel.find({ type: { $in: ['super_admin', 'sub_admin'] } }).populate('team');
+        return await UserModel.find({ type: { $in: ['super_admin', 'sub_admin'] } }).populate('team').populate('empire');
     }
 
     // Find all leaders
     findAllLeaders = async () => {
-        return await UserModel.find({ type: 'leader' }).populate('team');
+        return await UserModel.find({ type: 'leader' }).populate('team').populate('empire');
     }
 
     // Find all employees
     findAllEmployees = async () => {
-        return await UserModel.find({ type: 'employee' }).populate('team');
+        return await UserModel.find({ type: 'employee' }).populate('team').populate('empire');
     }
 
     createLeaveApplication = async data => LeaveModel.create(data);

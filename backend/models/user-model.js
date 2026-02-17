@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -52,7 +52,7 @@ const userSchema = new Schema({
     },
     empire: {
         type: Schema.Types.ObjectId,
-        ref: 'Empire'
+        ref: 'Employer'
     },
     designation: {
         type: String,
@@ -115,6 +115,9 @@ const userSchema = new Schema({
     motherName: String,
     presentAddress: String,
     permanentAddress: String,
+    village: String,
+    union: String,
+    district: String,
 
     bloodGroup: String,
     nid: {
@@ -124,7 +127,7 @@ const userSchema = new Schema({
     },
     companyName: {
         type: String,
-        default: 'RACOAI'
+        default: 'Easy Employee'
     },
 }, {
     timestamps: true

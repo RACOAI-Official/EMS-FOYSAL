@@ -4,20 +4,20 @@ const userController = require('../controllers/user-controller');
 const teamController = require('../controllers/team-controller');
 const leaderController = require('../controllers/leader-controller');
 const progressController = require('../controllers/progress-controller');
-const upload = require('../services/file-upload-service');
+const upload = require('../middlewares/multer-cloudinary-config');
+const { auth } = require('../middlewares/auth-middleware');
 
-router.patch('/user', upload.single('profile'), asyncMiddleware(userController.updateUser));      // Update Self Profile
-router.get('/team', asyncMiddleware(leaderController.getTeam));                                  // Team
+router.use(auth);
+
+router.patch('/user', upload.single('image'), asyncMiddleware(userController.updateUser));
+router.get('/team', asyncMiddleware(leaderController.getTeam));
 router.get('/team/members', asyncMiddleware(leaderController.getTeamMembers));
 router.get('/stats', asyncMiddleware(leaderController.getDashboardStats));
-// Team Members
+router.get('/leaderboard', asyncMiddleware(leaderController.getLeaderboard));
 
-// Progress updates
 router.patch('/team/progress', asyncMiddleware(async (req, res, next) => {
-    // Leader updates their own team's progress
     const teamService = require('../services/team-service');
     const ErrorHandler = require('../utils/error-handler');
-    const mongoose = require('mongoose');
     try {
         const { progress, progressNote } = req.body;
         const team = await teamService.findTeam({ leader: req.user._id });
@@ -36,11 +36,9 @@ router.patch('/team/progress', asyncMiddleware(async (req, res, next) => {
     }
 }));
 
-// Progress (self only)
 router.post('/progress', asyncMiddleware(progressController.submitSelfProgress));
 router.get('/progress', asyncMiddleware(progressController.getSelfProgress));
 
-// Member Progress
 router.patch('/progress/member/:id', async (req, res, next) => {
     const { id } = req.params;
     const Team = require('../models/team-model');
@@ -48,25 +46,18 @@ router.patch('/progress/member/:id', async (req, res, next) => {
     const ErrorHandler = require('../utils/error-handler');
 
     try {
-        // Find leader's team
         const team = await Team.findOne({ leader: req.user._id });
         if (!team) return next(ErrorHandler.notFound('You are not leading any team'));
-
-        // Verify target user is in leader's team
         const member = await User.findById(id);
         if (!member || !member.team.includes(team._id)) {
             return next(ErrorHandler.unauthorized('You can only update progress for your own team members'));
         }
-
-        // Proceed to controller
         return userController.updateUserProgress(req, res, next);
     } catch (err) {
         next(err);
     }
 });
 
-// Attendance summary (self)
 router.get('/attendance-summary', asyncMiddleware(userController.getAttendanceSummary));
-
 
 module.exports = router;

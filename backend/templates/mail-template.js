@@ -1,4 +1,4 @@
-const websiteName = 'RACO AI';
+const websiteName = process.env.WEBSITE_NAME || 'Easy Employee';
 
 class MailTemplate {
     forgotPassword = (name, otp) => {

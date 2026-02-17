@@ -36,6 +36,10 @@ const invitationSchema = new Schema({
   expiresAt: {
     type: Date,
     required: true
+  },
+  empire: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Employer'
   }
 }, {
   timestamps: true

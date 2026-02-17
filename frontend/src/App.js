@@ -59,6 +59,9 @@ import Profile from './pages/user/Profile';
 import NotFound from "./pages/NotFound";
 import Letterhead from './Letterhead';
 import PrintReport from './components/common/PrintReport';
+import Invitations from './pages/admin/Invitations';
+import Progress from './pages/admin/Progress';
+import Empires from './pages/admin/Empires';
 
 
 
@@ -156,6 +159,15 @@ const App = () => {
         </AdminRoute>
         <AdminRoute exact path='/salaries'>
           <Salaries />
+        </AdminRoute>
+        <AdminRoute exact path='/admin/invitations'>
+          <Invitations />
+        </AdminRoute>
+        <AdminRoute exact path='/admin/progress'>
+          <Progress />
+        </AdminRoute>
+        <AdminRoute exact path='/admin/empires'>
+          <Empires />
         </AdminRoute>
         <AdminRoute exact path='/leaves/:id'>
           <Leave />

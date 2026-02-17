@@ -1,13 +1,12 @@
-const router = require('express').Router();
-const User = require('../models/user-model');
-const userController = require('../controllers/user-controller');
+const express = require('express');
+const router = express.Router();
 const asyncMiddleware = require('../middlewares/async-middleware');
+const userController = require('../controllers/user-controller');
+const upload = require('../middlewares/multer-cloudinary-config');
+const { auth } = require('../middlewares/auth-middleware');
 
-// Get employees and teams for dropdown based on requester role
-router.get('/', asyncMiddleware(userController.getUserListData));
-
-router.get('/search', asyncMiddleware(userController.globalSearch.bind(userController)));
-router.get('/leaderboard-data', asyncMiddleware(userController.getLeaderboardData));
-router.get('/:id', asyncMiddleware(userController.getUserNoFilter));
+router.post('/create', upload.single('image'), asyncMiddleware(userController.createUser));
+router.patch('/update-self', auth, upload.single('image'), asyncMiddleware(userController.updateUser));
+router.patch('/:id', auth, upload.single('image'), asyncMiddleware(userController.updateUser));
 
 module.exports = router;

@@ -1,6 +1,6 @@
  import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getCounts, getAdminTasks, deleteTask, downloadTaskPDF, getDropdownUsers, backendUrl } from "../../http";
+import { getCounts, getAdminTasks, deleteTask, downloadTaskPDF, getDropdownUsers } from "../../http";
 import { getFileUrl } from "../../utils/fileUtil";
 import { setCount } from "../../store/main-slice";
 import CountsCard from "./CountsCard";
@@ -98,6 +98,9 @@ const Admin = () => {
         <CountsCard title="Total Leader" icon="fa-user" count={leader} />
         <CountsCard title="Total Admin" icon="fa-user" count={admin} />
         <CountsCard title="Total Team" icon="fa-user" count={team} />
+        <CountsCard title="Invitations" icon="fa-envelope" count={counts.invitations || 0} />
+        <CountsCard title="Progress Logs" icon="fa-chart-line" count={counts.progresses || 0} />
+        <CountsCard title="Employers" icon="fa-building" count={counts.empires || 0} />
       </div>
 
       <div className="row">

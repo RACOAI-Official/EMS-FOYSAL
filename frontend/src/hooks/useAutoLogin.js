@@ -1,6 +1,5 @@
 import axios from "axios";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setAuth } from "../store/auth-slice";
 import { backendUrl } from "../http/index";
@@ -8,27 +7,40 @@ import { backendUrl } from "../http/index";
 export const useAutoLogin = () => {
     const [loading, setLoading] = useState(true);
     const dispatch = useDispatch();
+
     useEffect(() => {
-        (async () => {
+        const checkAuth = async () => {
             try {
-                const res = await axios.get(`${backendUrl}/api/auth/refresh`, {
+                // Attempt to refresh the session once on mount.
+                // We use a direct axios call here to avoid circular dependencies 
+                // or interceptor conflicts during the initial load.
+                const { data } = await axios.get(`${backendUrl}/api/auth/refresh`, {
                     withCredentials: true,
                 });
-                if (res.status === 200) {
-                    if (res.data.success)
-                        dispatch(setAuth(res.data.user));
-                    setLoading(false)
+
+                if (data.success) {
+                    dispatch(setAuth(data.user));
                 }
-                else
-                    setLoading(false)
+            } catch (err) {
+                // Clear stale local auth state when refresh fails.
+                dispatch(setAuth(null));
 
-            }
-            catch (err) {
-                console.log(err)
-                setLoading(false)
-            }
+                // If this fails (401, 403, Network Error), the user is simply not logged in.
+                // We do NOT retry or redirect here. We just finish loading.
+                // This prevents infinite loops on the login page.
 
-        })();
-    }, [])
+                // Only log if it's not a 401 (which is expected when not logged in)
+                if (err.response?.status !== 401) {
+                    console.log("Auto-login attempt failed:", err.message);
+                }
+                // 401 errors are normal when not logged in - no need to log or throw
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        checkAuth();
+    }, [dispatch]);
+
     return loading;
-}
+};

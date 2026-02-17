@@ -9,31 +9,37 @@ const ProgressLeaderboard = ({ mode = "users", type = null, includeLeaders = fal
     const [loading, setLoading] = useState(true);
     const { user } = useSelector(state => state.authSlice);
 
+    const isMounted = React.useRef(true);
+
     useEffect(() => {
-        let isMounted = true;
-        fetchData(isMounted);
+        return () => {
+            isMounted.current = false;
+        };
+    }, []);
+
+    useEffect(() => {
+        fetchData();
         
         // Real-time listener
         if (socket) {
             socket.on('progress-update', (data) => {
-                if (isMounted) {
+                if (isMounted.current) {
                     console.log('Real-time progress update received:', data);
-                    fetchData(isMounted);
+                    fetchData();
                 }
             });
         }
 
         return () => {
-            isMounted = false;
             if (socket) socket.off('progress-update');
         };
     }, [mode, type, includeLeaders]);
 
-    const fetchData = async (isMounted = true) => {
+    const fetchData = async () => {
         try {
-            setLoading(true);
+            if (isMounted.current) setLoading(true);
             const res = await getLeaderboardData(mode, type);
-            if (res.success && isMounted) {
+            if (res.success && isMounted.current) {
                 let allData = res.data;
 
                 // Client-side filtering/sorting refinement
@@ -41,12 +47,12 @@ const ProgressLeaderboard = ({ mode = "users", type = null, includeLeaders = fal
                     .filter(u => (u.progress || 0) > 0 || (mode === 'teams')) 
                     .sort((a, b) => (b.progress || 0) - (a.progress || 0));
 
-                setLeaderboard(sorted);
+                if (isMounted.current) setLeaderboard(sorted);
             }
         } catch (error) {
             console.error('Error fetching leaderboard:', error);
         } finally {
-            if (isMounted) setLoading(false);
+            if (isMounted.current) setLoading(false);
         }
     };
 
@@ -56,6 +62,31 @@ const ProgressLeaderboard = ({ mode = "users", type = null, includeLeaders = fal
         if (rank === 2) return '🥈';
         if (rank === 3) return '🥉';
         return rank;
+    };
+
+    const getDisplayName = (item) => {
+        if (!item) return 'Unknown';
+        if (typeof item.name === 'string') {
+            const raw = item.name.trim();
+
+            // Handle accidentally serialized Mongo/Mongoose object text
+            // Example: "{ _id: new ObjectId(...), name: 'RACO PULSE', ... }"
+            if (raw.startsWith('{') && raw.includes('name:')) {
+                const singleQuoteMatch = raw.match(/name:\s*'([^']+)'/);
+                if (singleQuoteMatch?.[1]) return singleQuoteMatch[1];
+
+                const doubleQuoteMatch = raw.match(/name:\s*\"([^\"]+)\"/);
+                if (doubleQuoteMatch?.[1]) return doubleQuoteMatch[1];
+            }
+
+            return raw;
+        }
+        if (item.name && typeof item.name === 'object') {
+            if (typeof item.name.name === 'string') return item.name.name;
+            if (item.name._doc && typeof item.name._doc.name === 'string') return item.name._doc.name;
+            if (typeof item.name.title === 'string') return item.name.title;
+        }
+        return 'Unknown';
     };
 
     if (loading) {
@@ -130,7 +161,7 @@ const ProgressLeaderboard = ({ mode = "users", type = null, includeLeaders = fal
                                                 />
                                                 <div>
                                                     <div className={`font-weight-bold ${isCurrentUser ? 'text-primary' : ''} small`}>
-                                                        {item.name}
+                                                        {getDisplayName(item)}
                                                     </div>
                                                     {mode === "users" && includeLeaders && (
                                                         <small className="text-muted text-uppercase" style={{ fontSize: '0.6rem', letterSpacing: '0.5px' }}>

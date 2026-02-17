@@ -3,39 +3,39 @@ const userController = require('../controllers/user-controller');
 const teamController = require('../controllers/team-controller');
 const holidayController = require('../controllers/holiday-controller');
 const progressController = require('../controllers/progress-controller');
-const upload = require('../services/file-upload-service');
+const upload = require('../middlewares/multer-cloudinary-config');
 const asyncMiddleware = require('../middlewares/async-middleware');
+const { auth, authRole } = require('../middlewares/auth-middleware');
 
-router.post('/user', upload.single('profile'), asyncMiddleware(userController.createUser));           // Create User
-router.patch('/user/:id', upload.single('profile'), asyncMiddleware(userController.updateUser));      // Update User
-router.delete('/user/:id', asyncMiddleware(userController.deleteUser));                                // Delete User
-router.get('/employees', asyncMiddleware(userController.getUsers));                                  // Employees
-router.get('/employees/free', asyncMiddleware(userController.getFreeEmployees));                     // Free Employees
-router.get('/employee/:id', asyncMiddleware(userController.getUser));                                // Employee
-router.get('/user/:id', asyncMiddleware(userController.getUserNoFilter));                            // User - No Filter (Admin,Leader,Employee)
-router.get('/admins', asyncMiddleware(userController.getUsers));                                     // Admins
-router.get('/admin/:id', asyncMiddleware(userController.getUser));                                   // Admin
-router.get('/leaders/free', asyncMiddleware(userController.getFreeLeaders));                         // Free Leaders
-router.get('/leaders', asyncMiddleware(userController.getLeaders));                                  // Leaders
-router.get('/leader/:id', asyncMiddleware(userController.getUser));                                  // Leader
-router.post('/team', upload.single('image'), asyncMiddleware(teamController.createTeam));             // Create Team
-router.patch('/team/:id', upload.single('image'), asyncMiddleware(teamController.updateTeam));        // Update Team
-router.patch('/team/:id/progress', asyncMiddleware(teamController.updateTeamProgress));              // Update Team Progress
-router.get('/teams', asyncMiddleware(teamController.getTeams));                                      // Teams
-router.get('/team/:id', asyncMiddleware(teamController.getTeam));                                    // Team
-router.delete('/team/:id', asyncMiddleware(teamController.deleteTeam));                              // Delete Team
-router.get('/team/:id/members', asyncMiddleware(teamController.getTeamMembers));                     // Team Members
-router.patch('/team/member/add', asyncMiddleware(teamController.addMember));                         // Add Team Member
-router.patch('/team/member/remove', asyncMiddleware(teamController.removeMember));                   // Remove Team Member
-router.patch('/team/leader/add', asyncMiddleware(teamController.addRemoveLeader));                   // Add Team Leader
-router.patch('/team/leader/remove', asyncMiddleware(teamController.addRemoveLeader));                // Remove Team Leader
-router.get('/counts', asyncMiddleware(teamController.getCounts));                                    // Counts
+router.post('/user', upload.single('image'), asyncMiddleware(userController.createUser));
+router.patch('/user/:id', upload.single('image'), asyncMiddleware(userController.updateUser));
+router.delete('/user/:id', asyncMiddleware(userController.deleteUser));
+router.get('/employees', asyncMiddleware(userController.getUsers));
+router.get('/employees/free', asyncMiddleware(userController.getFreeEmployees));
+router.get('/employee/:id', asyncMiddleware(userController.getUser));
+router.get('/user/:id', asyncMiddleware(userController.getUserNoFilter));
+router.get('/admins', asyncMiddleware(userController.getUsers));
+router.get('/admin/:id', asyncMiddleware(userController.getUser));
+router.get('/leaders/free', asyncMiddleware(userController.getFreeLeaders));
+router.get('/leaders', asyncMiddleware(userController.getLeaders));
+router.get('/leader/:id', asyncMiddleware(userController.getUser));
+router.post('/team', upload.single('image'), asyncMiddleware(teamController.createTeam));
+router.patch('/team/:id', upload.single('image'), asyncMiddleware(teamController.updateTeam));
+router.patch('/team/:id/progress', asyncMiddleware(teamController.updateTeamProgress));
+router.get('/teams', asyncMiddleware(teamController.getTeams));
+router.get('/team/:id', asyncMiddleware(teamController.getTeam));
+router.delete('/team/:id', asyncMiddleware(teamController.deleteTeam));
+router.get('/team/:id/members', asyncMiddleware(teamController.getTeamMembers));
+router.patch('/team/member/add', asyncMiddleware(teamController.addMember));
+router.patch('/team/member/remove', asyncMiddleware(teamController.removeMember));
+router.patch('/team/leader/add', asyncMiddleware(teamController.addRemoveLeader));
+router.patch('/team/leader/remove', asyncMiddleware(teamController.addRemoveLeader));
+router.get('/counts', asyncMiddleware(teamController.getCounts));
 
-// Type-filtered user queries (for role-based pages)
-router.get('/users/by-type/:type', asyncMiddleware(userController.getUsersByType));                  // Get users by type
-router.get('/users/type/admin', asyncMiddleware(userController.getAdminUsers));                      // Get all admins
-router.get('/users/type/leader', asyncMiddleware(userController.getLeaderUsers));                    // Get all leaders
-router.get('/users/type/employee', asyncMiddleware(userController.getEmployeeUsers));                // Get all employees
+router.get('/users/by-type/:type', asyncMiddleware(userController.getUsersByType));
+router.get('/users/type/admin', asyncMiddleware(userController.getAdminUsers));
+router.get('/users/type/leader', asyncMiddleware(userController.getLeaderUsers));
+router.get('/users/type/employee', asyncMiddleware(userController.getEmployeeUsers));
 
 router.post('/view-employee-attendance', asyncMiddleware(userController.viewEmployeeAttendance));
 router.post('/view-leave-applications', asyncMiddleware(userController.viewLeaveApplications));
@@ -46,19 +46,15 @@ router.post('/update-leave/:id', asyncMiddleware(userController.updateLeaveAppli
 router.delete('/delete-leave/:id', asyncMiddleware(userController.deleteLeaveApplication));
 router.delete('/delete-salary/:id', asyncMiddleware(userController.deleteSalary));
 
-// Attendance summary and management
-router.get('/attendance-summary/:userId', asyncMiddleware(userController.getAttendanceSummary));
+router.get('/attendance-summary/:userId', auth, authRole(['super_admin', 'sub_admin']), asyncMiddleware(userController.getAttendanceSummary));
 router.patch('/attendance/:id', asyncMiddleware(userController.editAttendance));
 router.patch('/user/:id/progress', asyncMiddleware(userController.updateUserProgress));
 router.post('/recalculate-salary/:userId', asyncMiddleware(userController.recalculateSalary));
 
-// Progress (admin read-only)
-router.get('/progress', asyncMiddleware(progressController.getAllProgress));
+router.get('/progress', auth, authRole(['super_admin', 'sub_admin']), asyncMiddleware(progressController.getAllProgress));
 
-// Holidays
 router.post('/holidays', asyncMiddleware(holidayController.createHoliday));
 router.get('/holidays', asyncMiddleware(holidayController.getHolidays));
 router.delete('/holidays/:id', asyncMiddleware(holidayController.deleteHoliday));
-
 
 module.exports = router;

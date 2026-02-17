@@ -4,12 +4,13 @@ import { doLogin } from "../http";
 import { useDispatch } from "react-redux";
 import {setAuth} from '../store/auth-slice';
 import { toast } from "react-toastify";
+import logo from "../assets/icons/logo.png";
 
 const LoginForm = () =>
 {  
     const dispatch = useDispatch();
     const [formData,setFormData] = useState({
-        email:'',
+        emailOrUsername:'',
         password:''
     });
 
@@ -30,32 +31,30 @@ const LoginForm = () =>
     const onSubmit = async (e) =>
     {
         e.preventDefault();
-        const {email,password} = formData;
-        if(!email || !password) return toast.error('Email and Password are Required');
+        const {emailOrUsername,password} = formData;
+        const identifier = (emailOrUsername || '').trim();
+        if(!identifier || !password) return toast.error('Email/Username and Password are required');
         try {
-            console.log('Login attempt with:', {email});
-            const res = await doLogin({email,password});
-            console.log('Login response:', res);
+            const res = await doLogin({ emailOrUsername: identifier, password });
             
             if(!res) {
-                console.error('No response from server');
                 return toast.error('No response from server');
             }
             
             const {success, message, user} = res;
-            console.log('Response values:', {success, message, user});
             
             if(success && user) {
-                console.log('Login successful, dispatching auth');
                 dispatch(setAuth(user));
                 toast.success('Login Successful');
             } else {
-                console.error('Login failed:', message);
                 toast.error(message || 'Login failed');
             }
         } catch(error) {
-            console.error('Login error:', error);
-            toast.error('Login error: ' + (error.message || 'Unknown error'));
+            const serverMessage =
+                error?.response?.data?.message ||
+                error?.response?.data?.error ||
+                error?.message;
+            toast.error(serverMessage || 'Login failed');
         }
     }
 
@@ -66,7 +65,8 @@ const LoginForm = () =>
             <div className="row justify-content-center">
               <div className="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
                 <div className="text-center mb-5 mt-4">
-                  <h1 className="display-5 fw-bold gradient-text mb-2">RACO AI</h1>
+                  <img src={logo} alt="RACO EMS Logo" style={{ width: '72px', height: '72px', objectFit: 'contain', marginBottom: '12px' }} />
+                  <h1 className="display-5 fw-bold gradient-text mb-2">RACO AI EMS</h1>
                   <p className="text-muted">Precision management for elite teams</p>
                 </div>
     
@@ -78,12 +78,12 @@ const LoginForm = () =>
                     </div>
                     <form onSubmit={onSubmit} className="needs-validation" noValidate="">
                       <div className="form-group mb-4">
-                        <label className="mb-2 small text-uppercase fw-bold text-muted letter-spacing-1" htmlFor="email">Email Address</label>
+                        <label className="mb-2 small text-uppercase fw-bold text-muted letter-spacing-1" htmlFor="emailOrUsername">Email or Username</label>
                         <div className="input-group">
                             <span className="input-group-text border-0 bg-light rounded-start-3">
                                 <i className="far fa-envelope text-primary"></i>
                             </span>
-                            <input id="email" onChange={inputEvent} value={formData.email} type="email" className="form-control form-control-lg border-0 bg-light shadow-none rounded-end-3" name="email" placeholder="agent@target.com" tabIndex="1" required autoFocus/>
+                            <input id="emailOrUsername" onChange={inputEvent} value={formData.emailOrUsername} type="text" className="form-control form-control-lg border-0 bg-light shadow-none rounded-end-3" name="emailOrUsername" placeholder="agent@target.com or username" tabIndex="1" required autoFocus/>
                         </div>
                       </div>
     

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { verifyInvitation, registerInvited } from "../../http";
+import logo from "../../assets/icons/logo.png";
 
 const RegisterInvited = () => {
     const { token } = useParams();
@@ -25,7 +26,7 @@ const RegisterInvited = () => {
         district: '',
         nid: '',
         bloodGroup: '',
-        profile: null
+        image: null
     });
 
     useEffect(() => {
@@ -56,7 +57,7 @@ const RegisterInvited = () => {
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setFormData(old => ({ ...old, profile: file }));
+            setFormData(old => ({ ...old, image: file }));
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result);
@@ -104,14 +105,16 @@ const RegisterInvited = () => {
                 <div className="row justify-content-center">
                     <div className="col-12 col-md-8 col-lg-6">
                         <div className="login-brand">
-                            <h2 style={{ color: '#6777ef' }}>RACO AI</h2>
+                            <img src={logo} alt="RACO EMS Logo" style={{ width: '64px', height: '64px', objectFit: 'contain', marginBottom: '8px' }} />
+                            <h2 style={{ color: '#6777ef' }}>RACO AI EMS</h2>
                         </div>
                         <div className="card card-primary">
                             <div className="card-header">
                                 <h4>Complete Your Registration</h4>
                                 <div className="ml-auto">
                                     <span className="badge badge-info mr-2">{invitationData?.type}</span>
-                                    <span className="badge badge-primary">{invitationData?.position}</span>
+                                    <span className="badge badge-primary mr-2">{invitationData?.position}</span>
+                                    {invitationData?.empire && <span className="badge badge-success">Empire: {invitationData.empire.name || 'Assigned'}</span>}
                                 </div>
                             </div>
 
@@ -169,7 +172,7 @@ const RegisterInvited = () => {
                                         <div className="form-group col-6">
                                             <label htmlFor="password">Password</label>
                                             <div className="input-group">
-                                                <input onChange={inputEvent} value={formData.password} type={showPassword ? "text" : "password"} className="form-control" name="password" required />
+                                                <input onChange={inputEvent} value={formData.password} type={showPassword ? "text" : "password"} className="form-control" name="password" required minLength="8" />
                                                 <div className="input-group-append">
                                                     <span className="input-group-text" onClick={() => setShowPassword(!showPassword)} style={{cursor: 'pointer'}}>
                                                         <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
