@@ -105,7 +105,7 @@ class AuthController {
         console.log('Forgot password request for:', requestEmail);
         if (!requestEmail) return next(ErrorHandler.badRequest());
         if (!validator.isEmail(requestEmail)) return next(ErrorHandler.badRequest('Inavlid Email Address'));
-        const normalizedEmail = validator.normalizeEmail(requestEmail) || requestEmail.toLowerCase();
+        const normalizedEmail = requestEmail.toLowerCase();
         console.log('Normalized email:', normalizedEmail);
         const user = await userService.findUser({ email: new RegExp(`^${escapeRegex(normalizedEmail)}$`, 'i') });
         console.log('User found for forgot password:', user ? user.email : 'No user found');
