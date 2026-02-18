@@ -6,9 +6,11 @@ import swal from "sweetalert";
 const InvitationsPage = () => {
     const [loading, setLoading] = useState(true);
     const [invitations, setInvitations] = useState([]);
+    const [loadError, setLoadError] = useState("");
 
     const fetchInvitations = async () => {
         setLoading(true);
+        setLoadError("");
         try {
             const res = await getInvitations();
             if (res.success) {
@@ -16,6 +18,9 @@ const InvitationsPage = () => {
             }
         } catch (err) {
             console.error(err);
+            const message = err?.response?.data?.message || err?.message || "Failed to load invitations.";
+            setLoadError(message);
+            toast.error(message);
         } finally {
             setLoading(false);
         }
@@ -79,6 +84,8 @@ const InvitationsPage = () => {
                                 <tbody>
                                     {loading ? (
                                         <tr><td colSpan="6" className="text-center p-5">Loading invitations...</td></tr>
+                                    ) : loadError ? (
+                                        <tr><td colSpan="6" className="text-center p-5 text-danger">{loadError}</td></tr>
                                     ) : invitations.length === 0 ? (
                                         <tr><td colSpan="6" className="text-center p-5">No invitations found.</td></tr>
                                     ) : invitations.map((inv) => (

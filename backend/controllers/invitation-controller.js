@@ -4,6 +4,28 @@ const UserModel = require('../models/user-model');
 const ErrorHandler = require('../utils/error-handler');
 const mailService = require('../services/mail-service');
 
+const normalizeUrl = (value = '') => String(value).trim().replace(/\/+$/, '');
+
+const getClientRegisterBaseUrl = () => {
+  const configuredUrls = String(process.env.CLIENT_URL || '')
+    .split(',')
+    .map(normalizeUrl)
+    .filter(Boolean);
+
+  if (configuredUrls.length === 0) return 'http://192.168.10.13:3000';
+
+  const preferredUrl = configuredUrls.find((url) => {
+    try {
+      const hostname = new URL(url).hostname;
+      return hostname !== 'localhost' && hostname !== '127.0.0.1';
+    } catch (error) {
+      return false;
+    }
+  });
+
+  return preferredUrl || configuredUrls[0];
+};
+
 class InvitationController {
   inviteUser = async (req, res, next) => {
     try {
@@ -71,7 +93,7 @@ class InvitationController {
       }
 
       // Send Email
-      const registrationLink = `${process.env.CLIENT_URL}/register/${token}`;
+      const registrationLink = `${getClientRegisterBaseUrl()}/register/${token}`;
       try {
         await mailService.sendInvitationMail(normalizedEmail, type, registrationLink);
       } catch (mailError) {
@@ -128,10 +150,29 @@ class InvitationController {
 
   getInvitations = async (req, res, next) => {
     try {
-      const invitations = await InvitationModel.find().sort({ createdAt: -1 });
+      const rawPage = Number.parseInt(req.query.page, 10);
+      const rawLimit = Number.parseInt(req.query.limit, 10);
+      const page = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
+      const limit = Number.isFinite(rawLimit) && rawLimit > 0 ? Math.min(rawLimit, 500) : 200;
+      const skip = (page - 1) * limit;
+
+      const invitations = await InvitationModel.find(
+        {},
+        'email type position status expiresAt createdAt updatedAt'
+      )
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean();
+
       res.json({
         success: true,
-        data: invitations
+        data: invitations,
+        pagination: {
+          page,
+          limit,
+          hasMore: invitations.length === limit
+        }
       });
     } catch (error) {
       next(error);

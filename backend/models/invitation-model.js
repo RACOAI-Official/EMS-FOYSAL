@@ -45,4 +45,7 @@ const invitationSchema = new Schema({
   timestamps: true
 });
 
+// Supports fast "latest invitations first" queries.
+invitationSchema.index({ createdAt: -1 });
+
 module.exports = mongoose.model('Invitation', invitationSchema, 'invitations');

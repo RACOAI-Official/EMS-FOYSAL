@@ -4,38 +4,13 @@ import axios from 'axios';
    Backend URL Setup
 ============================== */
 
-const isPrivateHost = (host) => {
-    return (
-        host === 'localhost' ||
-        host === '127.0.0.1' ||
-        /^192\.168\.\d{1,3}\.\d{1,3}$/.test(host) ||
-        /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host) ||
-        /^172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}$/.test(host)
-    );
-};
-
 const getBackendUrl = () => {
     const envUrl = process.env.REACT_APP_BASE_URL?.trim();
-    const currentHost = window.location.hostname;
-
     if (envUrl) {
-        try {
-            const envHost = new URL(envUrl).hostname;
-            if (!(isPrivateHost(currentHost) && isPrivateHost(envHost) && envHost !== currentHost)) {
-                return envUrl;
-            }
-            console.warn(`Ignoring REACT_APP_BASE_URL host (${envHost}) because app is running on ${currentHost}.`);
-        } catch (error) {
-            console.warn('Invalid REACT_APP_BASE_URL. Falling back to host-based URL.', error);
-        }
+        return envUrl;
     }
 
-    if (isPrivateHost(currentHost)) {
-        return `http://${currentHost}:5500`;
-    }
-
-    console.error('REACT_APP_BASE_URL not set. Using production fallback.');
-    return 'https://emsbackend.easyemployee.io';
+    return 'http://192.168.10.13:5500';
 };
 
 export const backendUrl = getBackendUrl();
@@ -81,12 +56,18 @@ const clearClientSession = () => {
     localStorage.removeItem('userType');
 };
 
-const subscribeTokenRefresh = (callback) => {
-    refreshSubscribers.push(callback);
-};
+const subscribeTokenRefresh = () =>
+    new Promise((resolve, reject) => {
+        refreshSubscribers.push({ resolve, reject });
+    });
 
 const onRefreshed = () => {
-    refreshSubscribers.forEach((callback) => callback());
+    refreshSubscribers.forEach(({ resolve }) => resolve());
+    refreshSubscribers = [];
+};
+
+const onRefreshFailed = (error) => {
+    refreshSubscribers.forEach(({ reject }) => reject(error));
     refreshSubscribers = [];
 };
 
@@ -106,11 +87,7 @@ api.interceptors.response.use(
             hasLocalUser
         ) {
             if (isRefreshing) {
-                return new Promise((resolve) => {
-                    subscribeTokenRefresh(() => {
-                        resolve(api(originalRequest));
-                    });
-                });
+                return subscribeTokenRefresh().then(() => api(originalRequest));
             }
 
             originalRequest._retry = true;
@@ -127,6 +104,7 @@ api.interceptors.response.use(
                 return api(originalRequest);
             } catch (refreshError) {
                 isRefreshing = false;
+                onRefreshFailed(refreshError);
                 clearClientSession();
                 if (window.location.pathname !== '/login') {
                     window.location.href = '/login';
@@ -275,7 +253,15 @@ export const getProblem = (id) => api.get(`/problems/${id}`);
 ============================== */
 export const inviteUser = (data) => api.post('/invitations/invite', data);
 export const verifyInvitation = (token) => api.get(`/invitations/verify/${token}`);
-export const getInvitations = () => api.get('/invitations');
+export const getInvitations = (params = {}) =>
+    api.get('/invitations', {
+        params: {
+            page: 1,
+            limit: 200,
+            ...params
+        },
+        timeout: 15000
+    });
 export const deleteInvitation = (id) => api.delete(`/invitations/${id}`);
 
 /* ==============================

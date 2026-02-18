@@ -50,7 +50,7 @@ const Letterhead = ({ children }) => {
       clipPath: 'polygon(28px 0%, 100% 0%, 100% 28px, 0% 28px)', // Flush top-left cut
     },
     header: {
-      padding: '60px 60px 20px 60px',
+      padding: '44px 60px 20px 60px',
       position: 'relative',
     },
     headerContent: {
@@ -59,7 +59,7 @@ const Letterhead = ({ children }) => {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      marginTop: '20px',
+      marginTop: '0',
       borderBottom: '1px solid #e0e0e0',
       paddingBottom: '15px',
     },
@@ -77,6 +77,8 @@ const Letterhead = ({ children }) => {
       fontSize: '26px',
       marginRight: '15px',
       boxShadow: '2px 2px 10px rgba(0,0,0,0.1)',
+      marginLeft: '40px',
+      marginTop: '20px'
     },
     brandTextH1: {
       fontSize: '32px',
@@ -84,7 +86,9 @@ const Letterhead = ({ children }) => {
       color: 'var(--text-main)',
       lineHeight: 1,
       margin: 0,
-      letterSpacing: '-1px'
+      letterSpacing: '-1px',
+      marginLeft: '30px',
+      marginTop: '30px'
     },
     brandTextP: {
       fontSize: '11px',
@@ -200,12 +204,29 @@ const Letterhead = ({ children }) => {
               print-color-adjust: exact;
             }
 
+            #app,
+            .main-wrapper {
+              margin: 0 !important;
+              padding: 0 !important;
+            }
+
+            .main-navbar,
+            .main-sidebar,
+            .navbar-bg,
+            .main-footer {
+              display: none !important;
+            }
+
             .letterhead-print-wrapper {
               padding: 0 !important;
               margin: 0 !important;
               background-color: white !important;
               display: block !important;
-              min-height: 100vh !important;
+              min-height: 100% !important;
+              width: 100% !important;
+              position: absolute !important;
+              top: 0 !important;
+              left: 0 !important;
             }
 
             .letterhead-container {
@@ -220,6 +241,9 @@ const Letterhead = ({ children }) => {
               position: relative !important;
               background-color: white !important;
               overflow: hidden !important;
+              page-break-inside: avoid !important;
+              page-break-after: avoid !important;
+              
             }
 
             .top-accent {
@@ -237,15 +261,20 @@ const Letterhead = ({ children }) => {
             }
 
             .letterhead-header {
-              padding: 60px 60px 20px 60px !important;
+              padding: 34px 60px 16px 60px !important;
+            }
+
+            .letterhead-header > div {
+              margin-top: 0 !important;
             }
 
             .letterhead-footer {
-              position: fixed !important;
-              left: 0 !important;
-              bottom: 0 !important;
+              position: relative !important;
+              left: auto !important;
+              bottom: auto !important;
               width: 100% !important;
-              padding-bottom: 30px !important;
+              padding-bottom: 20px !important;
+              margin-top: auto !important;
               z-index: 20 !important;
             }
 
@@ -268,7 +297,7 @@ const Letterhead = ({ children }) => {
             }
 
             .letterhead-body {
-              padding: 40px 80px 170px 80px !important;
+              padding: 40px 80px 40px 80px !important;
               flex-grow: 1 !important;
             }
 
@@ -293,8 +322,8 @@ const Letterhead = ({ children }) => {
                 </span>
               </div>
               <div>
-                <h1 style={styles.brandTextH1}>RACO AI EMS</h1>
-                <p style={styles.brandTextP}>Precision Management</p>
+                <h1 style={styles.brandTextH1}>RACO AI</h1>
+                <p style={styles.brandTextP}>Limitless Intelligence</p>
               </div>
             </div>
 

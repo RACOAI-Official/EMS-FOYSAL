@@ -103,9 +103,9 @@ const ProgressLeaderboard = ({ mode = "users", type = null, includeLeaders = fal
 
     if (leaderboard.length === 0) {
         return (
-            <div className="card shadow-sm border-0 mb-4">
-                <div className="card-header border-0 pt-4">
-                    <h4 className="font-weight-bold mb-0"><i className="fas fa-chart-bar mr-2 text-primary"></i>{title}</h4>
+            <div className="glass-card mb-4 overflow-hidden border-0">
+                <div className="card-header border-bottom py-4 d-flex justify-content-between align-items-center">
+                    <h5 className="font-weight-bold mb-0"><i className="fas fa-chart-bar mr-2 ps-3 pe-2 text-primary"></i>{title}</h5>
                 </div>
                 <div className="card-body text-center py-5 text-muted">
                     <p className="mb-0">No progress data available.</p>
@@ -118,7 +118,7 @@ const ProgressLeaderboard = ({ mode = "users", type = null, includeLeaders = fal
         <div className="glass-card mb-4 overflow-hidden border-0">
             <div className="card-header border-bottom py-4 d-flex justify-content-between align-items-center">
                 <h5 className="font-weight-bold mb-0">
-                    <i className={mode === "teams" ? "fas fa-layer-group mr-2 ps-3 pe-2 text-primary" : "fas fa-fire mr-3 text-danger"}></i>
+                    <i className={mode === "teams" ? "fas fa-layer-group mr-2 ps-3 pe-2 text-primary" : "fas fa-fire mr-3 mr-2 ps-3 pe-2 text-danger"}></i>
                     {title}
                 </h5>
             </div>
