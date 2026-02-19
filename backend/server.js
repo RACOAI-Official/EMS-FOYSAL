@@ -79,6 +79,9 @@ const employerRoute = require('./routes/employer-route');
 const chatRoute = require('./routes/chat-route');
 const notificationRoute = require('./routes/notification-route');
 const invitationRoute = require('./routes/invitation-route');
+const userController = require('./controllers/user-controller');
+const { auth } = require('./middlewares/auth-middleware');
+const asyncMiddleware = require('./middlewares/async-middleware');
 const errorMiddleware = require('./middlewares/error-middleware');
 
 app.use('/api/upload', uploadRoute);
@@ -87,6 +90,7 @@ app.use('/api/admin', adminRoute);
 app.use('/api/auth', authRoute);
 app.use('/api/tasks', taskRoute);
 app.use('/api/users', userListRoute);
+app.get('/api/search', auth, asyncMiddleware(userController.globalSearch));
 app.use('/api/profile', profileRoute);
 app.use('/api/problems', problemRoute);
 // Also support legacy singular path used by older frontend code: '/api/problem'

@@ -9,6 +9,21 @@ export const useAutoLogin = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        const pathname = window.location.pathname || "/";
+        const isGuestAuthPage =
+            pathname === "/" ||
+            pathname === "/login" ||
+            pathname === "/forgot" ||
+            pathname.startsWith("/register/") ||
+            pathname.startsWith("/verify/");
+
+        // Skip refresh probe on guest auth pages to avoid expected 401 noise.
+        if (isGuestAuthPage) {
+            dispatch(setAuth(null));
+            setLoading(false);
+            return;
+        }
+
         const checkAuth = async () => {
             try {
                 // Attempt to refresh the session once on mount.

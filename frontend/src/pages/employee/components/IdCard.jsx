@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getUser } from "../../../http";
+import { getUser, backendUrl } from "../../../http";
 import HeaderSection from "../../../components/HeaderSection";
 import { getFileUrl } from "../../../utils/fileUtil";
 import { QRCodeSVG as QRCode } from 'qrcode.react';
@@ -102,8 +102,8 @@ const IdCard = () => {
                 }
 
                 .user-photo-box img {
-                    width: 100%;
-                    height: 100%;
+                    width: 150px;
+                    height: 150px;                    
                     object-fit: cover;
                 }
 
@@ -127,8 +127,8 @@ const IdCard = () => {
                 }
 
                 .id-arrow {
-                    width: 16px;
-                    height: 16px;
+                    width: 20px;
+                    height: 20px;
                     border: 1.5px solid #ffffff;
                     border-radius: 60%;
                     position: absolute;
@@ -168,15 +168,16 @@ const IdCard = () => {
                 }
 
                 .minor-circle {
-                    width: 16px;
-                    height: 16px;
-                    border: 1.5px solid #cccccc;
-                    border-radius: 60%;
+                    border: 2px solid #cccccc;
+                    border-radius: 100%;
                     position: absolute;
-                    right: 7px;
-                    bottom: 40px;
+                    right: 9px;
+                    bottom: 29px;
                     font-size: 12px;
+                    font-weight: 700;
                     color: #ffffff !important;
+                    padding: 1px 3px;
+}
                 }
 
                 /* Back Page Specifics */
@@ -259,7 +260,7 @@ const IdCard = () => {
                 .side-logo {
                     position: absolute;
                     right: -22px;
-                    top: 80px;
+                    top: 120px;
                     width: 80px;
                     height: 50px;
 
@@ -269,6 +270,29 @@ const IdCard = () => {
                 }
 
                 .side-logo img {
+                    width: 100%;
+                    height: auto;
+
+                    /* Rotation */
+                    transform: rotate(270deg); /* change to 0deg, 180deg, -90deg, etc */
+                    transform-origin: center;
+
+                    opacity: 0.9; /* optional premium feel */
+                }
+
+                .main-logo {
+                    position: absolute;
+                    right: 3px;
+                    top: 11px;
+                    width: 33px;
+                    height: 47px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transform: rotate(90deg);
+                }
+
+                .main-logo img {
                     width: 100%;
                     height: auto;
 
@@ -293,6 +317,7 @@ const IdCard = () => {
 
                 .contact-box {
                     text-align: right;
+                    margin-left:18px;
                 }
 
                 .contact-label {
@@ -344,42 +369,54 @@ const IdCard = () => {
                                 </div>
                                 <p className="user-role">{user.position || user.type || 'Employee'}</p>
                             </div>
-
+                            
                             <div className="side-logo">
                                 <img
-                                    src="/new-logo.png"
-                                    alt="Easy Employee Logo"
+                                    src="/RACOAI_LOGO.png"
+                                    alt="RACO Logo"
                                 />
                             </div>
+                            <div className="main-logo">
+                                <img src="/RACOlogo5.png"
+                                alt="RACO Logo" />
+                            </div>
+                            <div className="side-logo">
+                                <img src="/RACOAI_LOGO.png"
+                                alt="RACO Logo" />
+                            </div>
 
-                            <div className="id-arrow">→</div>
+                            {/*<div className="id-arrow">→</div>*/}
 
                             <div className="front-footer-row">
                                 <div>
                                     <p className="id-label">ID NUMBER</p>
                                     <p className="id-value">{user.employeeId || user._id?.substring(0, 8).toUpperCase()}</p>
                                 </div>
-                                <div className="minor-circle text-bold">---</div>
+                               <div className="minor-circle text-bold">---</div>
                             </div>
                         </div>
 
                         {/* BACK SIDE */}
                         <div className="premium-id-card">
+                            <div className="main-logo">
+                                <img src="/RACOlogo5.png"
+                                alt="RACO Logo" />
+                            </div>
                             <div className="side-logo">
                                 <img
-                                    src="/new-logo.png"
-                                    alt="Easy Employee Logo"
+                                    src="/RACOAI_LOGO.png"
+                                    alt="RACO Logo"
                                 />
                             </div>
 
-                            <p className="website-link">https://easyemployee.io</p>
+                            <p className="website-link">https://racoai.io</p>
 
                             <div style={{ marginBottom: '15px' }}>
                                 <div className="back-title-row">
-                                    {/* <h3>Easy Employee</h3> */}
-                                    <div className="id-arrow">→</div>
+                                    {/* <h3>RACO AI</h3> */}
+                                    
                                 </div>
-                                <p className="company-desc">State-of-the-art employee management solutions tailored for your needs.</p>
+                                <p className="company-desc">State-of-the-art machine learning and deep learning solutions tailored for your needs.</p>
                                 
                                 <div className="return-box">
                                     <p className="return-label">IF FOUND, PLEASE RETURN TO:</p>
@@ -399,7 +436,7 @@ const IdCard = () => {
                             <div className="front-footer-row">
                                 <div className="qr-box">
                                     <QRCode 
-                                        value="https://easyemployee.io"
+                                        value="https://racoai.io"
                                         size={50}
                                         level="H"
                                     />
@@ -408,8 +445,8 @@ const IdCard = () => {
                                 <div className="contact-box">
                                     <p className="contact-label">CONTACT</p>
                                     <p className="contact-details">
-                                        {user.mobile || '+880123456789'}<br />
-                                        {user.email || 'operations@easyemployee.io'}
+                                        {user.mobile || '+8801343831119'}<br />
+                                        {user.email || 'raco-operationsbd@racoai.io'}
                                     </p>
                                 </div>
                             </div>

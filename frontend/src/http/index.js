@@ -177,7 +177,7 @@ export const getEmployees = () => api.get('/admin/employees');
 export const getFreeEmployees = () => api.get('/admin/employees/free');
 export const getLeaders = () => api.get('/admin/leaders');
 export const getFreeLeaders = () => api.get('/admin/leaders/free');
-export const getUser = (id) => api.get(`/admin/employee/${id}`);
+export const getUser = (id) => api.get(`/admin/user/${id}`);
 export const getUserNoFilter = (id) => api.get(`/admin/user/${id}`);
 export const getAdminUsers = () => api.get('/admin/users/type/admin');
 export const getLeaderUsers = () => api.get('/admin/users/type/leader');
@@ -223,7 +223,8 @@ export const getAdminTasks = (params) => api.get('/tasks/admin', { params });
 export const getLeaderTasks = (params) => api.get('/tasks/leader', { params });
 export const getUserTasks = (params) => api.get('/tasks/user', { params });
 export const deleteTask = (id) => api.delete(`/tasks/admin/${id}`);
-export const downloadTaskPDF = (id) => api.get(`/tasks/${id}/pdf`, { responseType: 'blob' });
+export const downloadTaskPDF = (id, mode = 'download') =>
+    `${backendUrl}/api/tasks/${id}/pdf?mode=${encodeURIComponent(mode)}`;
 export const updateTaskProgress = (id, data) => api.patch(`/tasks/${id}/progress`, data);
 
 /* ==============================
@@ -277,9 +278,9 @@ export const deleteEmpire = (id) => api.delete(`/employers/${id}`);
 /* ==============================
     LEADER / TEAM APIs
 ============================== */
-export const getTeam_Leader = () => api.get('/leader/team');
-export const getMembers_Leader = () => api.get('/leader/team/members');
-export const getLeaderStats = () => api.get('/leader/stats');
+export const getTeam_Leader = () => api.get('/leaders/team');
+export const getMembers_Leader = () => api.get('/leaders/team/members');
+export const getLeaderStats = () => api.get('/leaders/stats');
 
 export const getEmployeeTeam = (id) => api.get(`/employee/team/${id}`);
 export const getEmployeeTeamMembers = (id) => api.get(`/employee/team/${id}/members`);
@@ -300,8 +301,8 @@ export const getAllProgress = () => api.get('/admin/progress');
     PROGRESS / LEADER HELPERS
 ============================== */
 export const updateUserProgress = (id, data) => api.patch(`/admin/user/${id}/progress`, data);
-export const updateMemberProgress = (id, data) => api.patch(`/leader/progress/member/${id}`, data);
-export const getLeaderboardData = (mode, type) => api.get('/leader/leaderboard', { params: { mode, type } });
+export const updateMemberProgress = (id, data) => api.patch(`/leaders/progress/member/${id}`, data);
+export const getLeaderboardData = (mode, type) => api.get('/leaders/leaderboard', { params: { mode, type } });
 
 /* ==============================
    EXPORT INSTANCE

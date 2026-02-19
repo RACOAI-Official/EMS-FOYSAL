@@ -14,12 +14,14 @@ const EditUser = () => {
     const initialState = {
         name: '',
         email: '',
+        username: '',
         mobile: '',
         password: '',
         type: '',
         address: '',
-        profile: '',
+        image: null,
         status: '',
+        empire: '',
         fatherName: '',
         motherName: '',
         presentAddress: '',
@@ -29,8 +31,34 @@ const EditUser = () => {
         union: '',
         district: '',
         nid: '',
-        bloodGroup: ''
+        bloodGroup: '',
+        adminPassword: ''
     };
+
+    const normalizeFormData = (data = {}) => ({
+        ...initialState,
+        ...data,
+        name: data.name || '',
+        email: data.email || '',
+        username: data.username || '',
+        mobile: data.mobile || '',
+        password: '',
+        type: data.type || '',
+        address: data.address || '',
+        status: data.status || '',
+        fatherName: data.fatherName || '',
+        motherName: data.motherName || '',
+        presentAddress: data.presentAddress || '',
+        permanentAddress: data.permanentAddress || data.address || '',
+        employeeId: data.employeeId || '',
+        village: data.village || '',
+        union: data.union || '',
+        district: data.district || '',
+        nid: data.nid || '',
+        bloodGroup: data.bloodGroup || '',
+        empire: data.empire || '',
+        adminPassword: ''
+    });
     const [imagePreview, setImagePreview] = useState('/assets/icons/user.png');
     const [formData, setFormData] = useState(initialState);
     const [showModal, setShowModal] = useState(false);
@@ -51,8 +79,9 @@ const EditUser = () => {
             const res = await getUser(id);
             if (res.success) {
                 setUserType(res.data.type);
-                setFormData(res.data);
-                setOriginalFormData(res.data); // Store original data
+                const normalized = normalizeFormData(res.data);
+                setFormData(normalized);
+                setOriginalFormData(normalized); // Store original data
                 
                 let img = getFileUrl(res.data.image);
                 setImagePreview(img);
@@ -113,16 +142,29 @@ const EditUser = () => {
         console.log('Full updateFormData:', updateFormData);
 
         if (updateFormData.type && !showModal) return setShowModal(true);
+        if (!Object.keys(updateFormData).length) {
+            toast.info('No changes to update');
+            return;
+        }
 
         const fd = new FormData();
-        Object.keys(updateFormData).map((key) => {
+        Object.keys(updateFormData).forEach((key) => {
             return fd.append(key, updateFormData[key]);
         })
 
         console.log('FormData keys:', Array.from(fd.keys()));
         console.log('FormData type value:', fd.get('type'));
 
-        const { success, message } = await updateUser(id, fd);
+        let success = false;
+        let message = '';
+        try {
+            const response = await updateUser(id, fd);
+            success = response?.success;
+            message = response?.message || '';
+        } catch (error) {
+            toast.error(error?.response?.data?.message || 'Failed to update user');
+            return;
+        }
         console.log("Update User:", message)
 
         if (success) {
@@ -140,11 +182,12 @@ const EditUser = () => {
     }
 
     const captureImage = (e) => {
-        const file = e.target.files[0];
+        const file = e.target.files?.[0];
+        if (!file) return;
         setFormData((old) => {
             return {
                 ...old,
-                profile: file
+                image: file
             }
 
         })
@@ -152,7 +195,7 @@ const EditUser = () => {
         setUpdatedFormData((old) => {
             return {
                 ...old,
-                profile: file
+                image: file
             }
 
         })
@@ -247,7 +290,7 @@ const EditUser = () => {
                             {/* Avatar Section */}
                             <div className="col-12 text-center mb-5">
                                 <div className="position-relative d-inline-block">
-                                    <input type="file" id='profile' name='profile' className="form-control d-none" onChange={captureImage} accept="image/*" />
+                                    <input type="file" id='profile' name='image' className="form-control d-none" onChange={captureImage} accept="image/*" />
                                     <label htmlFor='profile' className="cursor-pointer d-block">
                                         <div className="avatar-preview shadow-xl border border-4 border-white rounded-circle overflow-hidden mx-auto position-relative" 
                                              style={{ width: '130px', height: '130px', transition: 'transform 0.3s ease' }}>

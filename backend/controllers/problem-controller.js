@@ -78,7 +78,13 @@ class ProblemController {
     try {
       // Find all team members first
       const team = await mongoose.model('Team').findOne({ leader: req.user._id });
-      if (!team) return next(ErrorHandler.notFound('You are not leading any team'));
+      if (!team) {
+        return res.json({
+          success: true,
+          message: 'No team assigned',
+          data: []
+        });
+      }
 
       const members = await mongoose.model('User').find({ team: team._id });
       const memberIds = members.map(m => m._id);

@@ -189,6 +189,9 @@ const App = () => {
         <AdminRoute path='/editteam/:id'>
           <EditTeam />
         </AdminRoute>
+        <PlainProtectedRoute exact path='/print-id'>
+          <IdCard />
+        </PlainProtectedRoute>
         <PlainProtectedRoute path='/print-id/:id'>
           <IdCard />
         </PlainProtectedRoute>

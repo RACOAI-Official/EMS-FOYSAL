@@ -12,16 +12,22 @@ const SearchResults = () => {
     const query = new URLSearchParams(location.search).get('q');
 
     useEffect(() => {
+        let isMounted = true;
+
         const fetchResults = async () => {
             if (!query) {
-                setResults([]);
-                setLoading(false);
+                if (isMounted) {
+                    setResults([]);
+                    setLoading(false);
+                }
                 return;
             }
 
-            setLoading(true);
+            if (isMounted) setLoading(true);
             try {
                 const res = await globalSearch(query);
+                if (!isMounted) return;
+
                 if (res.success) {
                     const data = res.data;
                     // If only one result, redirect immediately to user detail
@@ -39,13 +45,17 @@ const SearchResults = () => {
                     }
                 }
             } catch (err) {
+                if (!isMounted) return;
                 console.error("Search error:", err);
             } finally {
-                setLoading(false);
+                if (isMounted) setLoading(false);
             }
         };
 
         fetchResults();
+        return () => {
+            isMounted = false;
+        };
     }, [query, history]);
 
     if (loading) return <Loading />;

@@ -40,7 +40,14 @@ const Navigation = () => {
             
             // Redirect if link exists
             if (notif.link) {
-                history.push(notif.link);
+                const rawLink = typeof notif.link === 'string' ? notif.link.trim() : '';
+                const isValidInternalRoute =
+                    rawLink.startsWith('/') &&
+                    rawLink !== '/[object Promise]' &&
+                    rawLink !== '/[object%20Promise]' &&
+                    !rawLink.includes('[object Promise]');
+
+                history.push(isValidInternalRoute ? rawLink : '/');
             }
         } catch (err) {
             console.error(err);

@@ -92,7 +92,7 @@ const AssignSalary = () =>
           >
             <option value="">Employees</option>
             {employees?.map((employee) => (
-              <option key={employee._id} value={employee.id}>
+              <option key={employee.id || employee._id || employee.email} value={employee.id}>
                 {employee.name}
               </option>
             ))}

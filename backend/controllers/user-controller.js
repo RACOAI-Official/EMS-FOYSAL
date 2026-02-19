@@ -230,7 +230,11 @@ class UserController {
         const type = req.path.replace(id, '').replace('/', '').replace('/', '');
         console.log(`Fetching user with ID: ${id}, Type: ${type}`);
         if (!mongoose.Types.ObjectId.isValid(id)) return next(ErrorHandler.badRequest(`Invalid ${type.charAt(0).toUpperCase() + type.slice(1).replace(' ', '')} Id`));
-        const emp = await userService.findUser({ _id: id, type });
+        let emp = await userService.findUser({ _id: id, type });
+        // Fallback for mixed lists (e.g., ID card printing) where route type can differ from actual user type.
+        if (!emp) {
+            emp = await userService.findUser({ _id: id });
+        }
         console.log(`User found: ${emp ? emp.name : 'NOT FOUND'}`);
         if (!emp) return next(ErrorHandler.notFound(`No ${type.charAt(0).toUpperCase() + type.slice(1).replace(' ', '')} Found`));
         const userData = new UserDto(emp);

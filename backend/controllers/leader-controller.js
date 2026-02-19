@@ -4,14 +4,15 @@ const ErrorHandler = require('../utils/error-handler');
 const UserDto = require('../dtos/user-dto');
 const TeamDto = require('../dtos/team-dto');
 const progressService = require('../services/progress-service');
+const mongoose = require('mongoose');
 
 class LeaderController {
 
     getTeamMembers = async (req, res, next) => {
         const team = await teamService.findTeam({ leader: req.user._id });
-        if (!team) return next(ErrorHandler.notFound('You are not leading any team'));
+        if (!team) return res.json({ success: true, message: 'No team assigned', data: [] });
         const members = await userService.findUsers({ team: team._id });
-        if (!members || members.length < 1) return next(ErrorHandler.notFound('We could not find any members in your team'));
+        if (!members || members.length < 1) return res.json({ success: true, message: 'No members found', data: [] });
         const data = members.map((o) => new UserDto(o));
         res.json({ success: true, message: 'Members Found', data });
     }
@@ -90,7 +91,7 @@ class LeaderController {
 
     getTeam = async (req, res, next) => {
         const team = await teamService.findTeam({ leader: req.user._id });
-        if (!team) return next(ErrorHandler.notFound('You are not leading any team'));
+        if (!team) return res.json({ success: true, message: 'No team assigned', data: null });
         const data = new TeamDto(team);
         res.json({ success: true, message: 'Team Found', data });
     }
@@ -98,7 +99,15 @@ class LeaderController {
     getDashboardStats = async (req, res, next) => {
         try {
             const team = await teamService.findTeam({ leader: req.user._id });
-            if (!team) return next(ErrorHandler.notFound('You are not leading any team'));
+            if (!team) {
+                return res.json({
+                    success: true,
+                    data: {
+                        totalMembers: 0,
+                        totalProblems: 0
+                    }
+                });
+            }
 
             const membersCount = await userService.findCount({ team: team._id });
             const problemsCount = await mongoose.model('Problem').countDocuments({

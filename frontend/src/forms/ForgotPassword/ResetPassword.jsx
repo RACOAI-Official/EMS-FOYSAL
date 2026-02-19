@@ -61,12 +61,12 @@ const ResetPassword = () =>
                         <p className="text-muted">We have send you an OTP to reset your password</p>
                         <form onSubmit={onSubmit}>
                         <div className="form-group">
-                            <label for="email">Email</label>
+                            <label htmlFor="email">Email</label>
                             <input id="email" onChange={inputEvent} value={formData.email} type="email" className="form-control" name="email" tabIndex="1" required autoFocus readOnly/>
                         </div>
 
                         <div className="form-group">
-                            <label for="otp">OTP</label>
+                            <label htmlFor="otp">OTP</label>
                             <input id="otp" onChange={inputEvent} value={formData.otp} type="number" className="form-control pwstrength" data-indicator="pwindicator" name="otp" tabIndex="2" required/>
                             <div id="pwindicator" className="pwindicator">
                             <div className="bar"></div>
@@ -75,7 +75,7 @@ const ResetPassword = () =>
                         </div>
 
                         <div className="form-group">
-                            <label for="password">New Password</label>
+                            <label htmlFor="password">New Password</label>
                             <div className="input-group">
                                 <input id="password" onChange={inputEvent} value={formData.password} type={showPassword ? "text" : "password"} className="form-control" name="password" tabIndex="2" required/>
                                 <div className="input-group-append">

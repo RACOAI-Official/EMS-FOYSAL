@@ -79,8 +79,7 @@ class AuthController {
 
             const emailNorm = email.toLowerCase();
             const user = await userService.findUser({ email: emailNorm });
-
-            if (!user) return next(ErrorHandler.notFound('No Account Found'));
+            if (!user) return res.json({ success: false, message: 'No Account Found' });
 
             const type = process.env.TYPE_FORGOT_PASSWORD || 2;
 

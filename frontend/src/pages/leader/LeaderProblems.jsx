@@ -10,11 +10,20 @@ const LeaderProblems = () => {
 
     const fetchProblems = async () => {
         setLoading(true);
-        const res = await getLeaderProblems();
-        if (res.success) {
-            setProblems(res.data);
+        try {
+            const res = await getLeaderProblems();
+            if (res.success) {
+                setProblems(res.data || []);
+            } else {
+                setProblems([]);
+                toast.error(res.message || "Failed to load problems");
+            }
+        } catch (error) {
+            setProblems([]);
+            toast.error(error?.response?.data?.message || "Failed to load problems");
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     }
 
     useEffect(() => {

@@ -4,6 +4,7 @@ import HeaderSection from "../../components/HeaderSection";
 import { getLeaderStats, getMembers_Leader } from "../../http";
 import RowEmployee from "../../components/rows/row-employee";
 import CircularProgress from "../../components/CircularProgress";
+import { toast } from "react-toastify";
 
 const LeaderDashboard = () => {
     const { user } = useSelector((state) => state.authSlice);
@@ -13,12 +14,17 @@ const LeaderDashboard = () => {
 
     const fetchData = async () => {
         setLoading(true);
-        const statsRes = await getLeaderStats();
-        if (statsRes.success) setStats(statsRes.data);
+        try {
+            const statsRes = await getLeaderStats();
+            if (statsRes.success) setStats(statsRes.data);
 
-        const membersRes = await getMembers_Leader();
-        if (membersRes.success) setMembers(membersRes.data);
-        setLoading(false);
+            const membersRes = await getMembers_Leader();
+            if (membersRes.success) setMembers(membersRes.data);
+        } catch (error) {
+            toast.error(error?.response?.data?.message || "Failed to load dashboard data");
+        } finally {
+            setLoading(false);
+        }
     }
 
     useEffect(() => {
