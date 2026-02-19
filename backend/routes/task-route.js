@@ -4,7 +4,7 @@ const { auth, authRole } = require('../middlewares/auth-middleware');
 const asyncMiddleware = require('../middlewares/async-middleware');
 const upload = require('../middlewares/multer-cloudinary-config');
 
-router.post('/admin', auth, authRole(['super_admin', 'sub_admin', 'leader']), upload.single('image'), asyncMiddleware(taskController.createTask));
+router.post('/admin', auth, authRole(['super_admin', 'sub_admin', 'leader']), upload.single('taskFile'), asyncMiddleware(taskController.createTask));
 router.get('/admin', auth, authRole(['super_admin', 'sub_admin']), asyncMiddleware(taskController.getAdminTasks));
 router.get('/leader', auth, authRole(['leader']), asyncMiddleware(taskController.getLeaderTasks));
 router.delete('/admin/:id', auth, authRole(['super_admin', 'sub_admin']), asyncMiddleware(taskController.softDeleteTask));

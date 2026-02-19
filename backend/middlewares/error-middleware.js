@@ -5,6 +5,14 @@ module.exports = (err, req, res, next) => {
         err.statusCode = 400;
     }
 
+    if (err.name === 'MulterError') {
+        err.statusCode = 400;
+    }
+
+    if (!err.statusCode && err.message && err.message.toLowerCase().includes('invalid file type')) {
+        err.statusCode = 400;
+    }
+
     err.statusCode = err.statusCode || 500;
     err.message = err.message || "Internal Server Error"
     res.status(err.statusCode).json({ success: false, message: err.message });

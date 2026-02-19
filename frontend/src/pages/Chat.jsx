@@ -9,6 +9,7 @@ import socket from '../socket';
 
 const Chat = () => {
     const { user } = useSelector((state) => state.authSlice);
+    const currentUserId = user?.id || user?._id;
     const [contacts, setContacts] = useState([]);
     const [activeContact, setActiveContact] = useState(null);
     const [messages, setMessages] = useState([]);
@@ -17,6 +18,7 @@ const Chat = () => {
     const [loading, setLoading] = useState(false);
     const [isSending, setIsSending] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
+    const [brokenAvatarIds, setBrokenAvatarIds] = useState({});
     const fileInputRef = useRef(null);
 
     useEffect(() => {
@@ -185,6 +187,27 @@ const Chat = () => {
         return ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext);
     };
 
+    const getAvatarFallback = (name = 'User') =>
+        `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}`;
+
+    const getAvatarSrc = (entity) => {
+        const id = entity?._id || entity?.id;
+        const name = entity?.name || 'User';
+        if (id && brokenAvatarIds[id]) return getAvatarFallback(name);
+        return getFileUrl(entity?.image, getAvatarFallback(name));
+    };
+
+    const handleAvatarError = (entity, e) => {
+        const id = entity?._id || entity?.id;
+        const name = entity?.name || 'User';
+        if (e?.currentTarget) {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = getAvatarFallback(name);
+        }
+        if (!id) return;
+        setBrokenAvatarIds((prev) => (prev[id] ? prev : { ...prev, [id]: true }));
+    };
+
     return (
         <div className="main-content">
             <section className="section">
@@ -222,12 +245,12 @@ const Chat = () => {
                                             <div className="d-flex align-items-center w-100">
                                                 <div className="avatar mr-3 position-relative">
                                                     <img
-                                                        src={getFileUrl(contact.image)}
+                                                        src={getAvatarSrc(contact)}
                                                         alt={contact.name}
                                                         className="rounded-circle"
                                                         width="40"
                                                         height="40"
-                                                        onError={(e) => { e.target.src = 'https://ui-avatars.com/api/?name=' + contact.name; }}
+                                                        onError={(e) => handleAvatarError(contact, e)}
                                                     />
                                                     {contact.isOnline && (
                                                         <span className="position-absolute" style={{
@@ -318,13 +341,13 @@ const Chat = () => {
                                         </button>
                                         <div className="avatar mr-3 position-relative">
                                             <img
-                                                src={getFileUrl(activeContact.image)}
+                                                src={getAvatarSrc(activeContact)}
                                                 className="rounded-circle shadow-sm"
                                                 alt="avatar"
                                                 width="45"
                                                 height="45"
                                                 style={{ objectFit: 'cover' }}
-                                                onError={(e) => { e.target.src = 'https://ui-avatars.com/api/?name=' + activeContact.name; }}
+                                                onError={(e) => handleAvatarError(activeContact, e)}
                                             />
                                             {activeContact.isOnline && (
                                                 <span className="position-absolute" style={{
@@ -357,13 +380,13 @@ const Chat = () => {
                                                     {!isMe && (
                                                         <div className="mr-3 align-self-end">
                                                             <img
-                                                                src={getFileUrl(activeContact.image)}
+                                                                src={getAvatarSrc(activeContact)}
                                                                 alt="avatar"
                                                                 className="rounded-circle shadow-sm"
                                                                 width="40"
                                                                 height="40"
                                                                 style={{ objectFit: 'cover' }}
-                                                                onError={(e) => { e.target.src = 'https://ui-avatars.com/api/?name=' + activeContact.name; }}
+                                                                onError={(e) => handleAvatarError(activeContact, e)}
                                                             />
                                                         </div>
                                                     )}
@@ -445,13 +468,13 @@ const Chat = () => {
                                                     {isMe && (
                                                         <div className="ml-3 align-self-end">
                                                             <img
-                                                                src={getFileUrl(user.image)}
+                                                                src={getAvatarSrc({ _id: currentUserId, name: user?.name, image: user?.image })}
                                                                 alt="avatar"
                                                                 className="rounded-circle shadow-sm"
                                                                 width="40"
                                                                 height="40"
                                                                 style={{ objectFit: 'cover' }}
-                                                                onError={(e) => { e.target.src = 'https://ui-avatars.com/api/?name=' + user.name; }}
+                                                                onError={(e) => handleAvatarError({ _id: currentUserId, name: user?.name, image: user?.image }, e)}
                                                             />
                                                         </div>
                                                     )}

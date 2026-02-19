@@ -1,32 +1,49 @@
-const crypto = require('crypto');
 const OtpModel = require('../models/otp-model');
 
 class OtpService {
+    generateOtp = () => Math.floor(100000 + Math.random() * 900000);
 
-    generateOtp = () => crypto.randomInt(100000,999999);
+    storeOtp = async (userId, otp, type) => {
+        return await OtpModel.create({
+            userId,
+            otp: Number(otp),
+            type: Number(type)
+        });
+    }
 
-    storeOtp = async (userId,otp,type) => await OtpModel.create({userId,otp,type});
-
-    removeOtp = async userId => await OtpModel.deleteOne({userId});
-
-    verifyOtp = async (userId,otp,type) =>
-    {
-        const otpData = await OtpModel.findOne({userId,otp,type});
-        if(otpData)
-        {
-            const now = new Date(1635966633159);
-            await this.removeOtp(userId);
-            if(now<otpData.expire)
-            {
-                return 'VALID';
-            }
-            else
-                return 'EXPIRED'
+    getOtp = async (userId, type) => {
+        const filter = { userId };
+        if (typeof type !== 'undefined') {
+            filter.type = Number(type);
         }
-        else
-            return 'INVALID'
-    }   
 
+        return await OtpModel.findOne(filter).sort({ createdAt: -1 });
+    }
+
+    removeOtp = async (userId, type) => {
+        const filter = { userId };
+        if (typeof type !== 'undefined') {
+            filter.type = Number(type);
+        }
+
+        return await OtpModel.deleteMany(filter);
+    }
+
+    verifyOtp = async (userId, otp, type) => {
+        const storedOtp = await this.getOtp(userId, type);
+
+        if (!storedOtp) return 'INVALID';
+
+        if (storedOtp.expire < new Date()) {
+            return 'EXPIRED';
+        }
+
+        if (storedOtp.otp !== Number(otp)) {
+            return 'INVALID';
+        }
+
+        return 'VALID';
+    }
 }
 
 module.exports = new OtpService();

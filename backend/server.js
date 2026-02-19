@@ -79,6 +79,7 @@ const employerRoute = require('./routes/employer-route');
 const chatRoute = require('./routes/chat-route');
 const notificationRoute = require('./routes/notification-route');
 const invitationRoute = require('./routes/invitation-route');
+const errorMiddleware = require('./middlewares/error-middleware');
 
 app.use('/api/upload', uploadRoute);
 app.use('/api/employee', employeeRoute);
@@ -97,6 +98,9 @@ app.use('/api/employers', employerRoute);
 app.use('/api/chat', chatRoute);
 app.use('/api/notifications', notificationRoute);
 app.use('/api/invitations', invitationRoute);
+
+// Centralized error handler (must be after routes)
+app.use(errorMiddleware);
 
 // Test route
 app.get('/', (req, res) => {

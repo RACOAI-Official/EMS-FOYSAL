@@ -1,13 +1,12 @@
 const crypto = require('crypto');
 const validator = require('validator');
-const bcrypt = require('bcrypt');
 const ErrorHandler = require('../utils/error-handler');
 const userService = require('../services/user-service');
 const tokenService = require('../services/token-service');
-const UserDto = require('../dtos/user-dto');
 const otpService = require('../services/otp-service');
 const mailService = require('../services/mail-service');
 const InvitationModel = require('../models/invitation-model');
+const UserDto = require('../dtos/user-dto');
 const { generateEmployeeId } = require('../utils/id-generator');
 
 const cookieSameSite = process.env.COOKIE_SAME_SITE || (process.env.NODE_ENV === 'production' ? 'none' : 'lax');
@@ -24,167 +23,212 @@ const authCookieOptions = {
     maxAge: authCookieMaxAge
 };
 
-const escapeRegex = (value = '') => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
 class AuthController {
+
+    // ==================== LOGIN ====================
     login = async (req, res, next) => {
         try {
             const { email, emailOrUsername, password } = req.body;
-            console.log('Login Request Body:', req.body);
-            console.log('Login attempt with:', { email: email || emailOrUsername, password: '***' });
-
             const identifier = (emailOrUsername || email || '').trim();
 
             if (!identifier || !password) {
-                console.log('Missing email or password');
                 return next(ErrorHandler.badRequest('Email and Password are required'));
             }
 
-            let data;
+            let user;
             if (validator.isEmail(identifier)) {
-                const normalizedEmail = validator.normalizeEmail(identifier) || identifier.toLowerCase();
-                data = { email: new RegExp(`^${escapeRegex(normalizedEmail)}$`, 'i') };
+                user = await userService.findUser({ email: identifier.toLowerCase() });
             } else {
-                data = { username: identifier };
+                user = await userService.findUser({ username: identifier });
             }
 
-            console.log('Finding user with:', data);
-            const user = await userService.findUser(data);
+            if (!user) return next(ErrorHandler.badRequest('Invalid Email or Username'));
+            if (user.status === 'banned') return next(ErrorHandler.badRequest('Your account has been banned, please contact admin'));
 
-            if (!user) {
-                console.log('User not found');
-                return next(ErrorHandler.badRequest('Invalid Email or Username'));
-            }
+            const isValid = await userService.verifyPassword(password, user.password);
+            if (!isValid) return next(ErrorHandler.badRequest('Invalid Password'));
 
-            console.log('User found:', { id: user._id, email: user.email, status: user.status });
-            const { _id, name, username, email: dbEmail, password: hashPassword, type, status } = user;
-
-            if (status === 'banned') {
-                console.log('User account is banned');
-                return next(ErrorHandler.badRequest('Your account has been banned, Please contact to the admin'));
-            }
-
-            console.log('Verifying password...');
-            const isValid = await userService.verifyPassword(password, hashPassword);
-
-            if (!isValid) {
-                console.log('Password verification failed');
-                return next(ErrorHandler.badRequest('Invalid Password'));
-            }
-
-            console.log('Password verified successfully');
             const payload = {
-                _id,
-                email: dbEmail,
-                username,
-                name,
-                type
-            }
-            const { accessToken, refreshToken } = tokenService.generateToken(payload);
-            console.log("Access Token Generated", accessToken.substring(0, 20) + '...');
-            console.log("Refresh Token Generated", refreshToken.substring(0, 20) + '...');
+                _id: user._id,
+                email: user.email,
+                username: user.username,
+                name: user.name,
+                type: user.type
+            };
 
-            await tokenService.storeRefreshToken(_id, refreshToken);
-            console.log('Refresh token stored');
+            const { accessToken, refreshToken } = tokenService.generateToken(payload);
+            await tokenService.storeRefreshToken(user._id, refreshToken);
 
             res.cookie('accessToken', accessToken, authCookieOptions);
             res.cookie('refreshToken', refreshToken, authCookieOptions);
 
-            console.log('Cookies set, sending response');
             user.status = 'active';
             await user.save();
-            res.json({ success: true, message: 'Login Successfull', user: new UserDto(user) })
+
+            res.json({ success: true, message: 'Login Successful', user: new UserDto(user) });
         } catch (error) {
-            console.error('Login error:', error);
             next(error);
         }
     }
 
+    // ==================== FORGOT PASSWORD ====================
     forgot = async (req, res, next) => {
-        const { email: requestEmail } = req.body;
-        console.log('Forgot password request for:', requestEmail);
-        if (!requestEmail) return next(ErrorHandler.badRequest());
-        if (!validator.isEmail(requestEmail)) return next(ErrorHandler.badRequest('Inavlid Email Address'));
-        const normalizedEmail = requestEmail.toLowerCase();
-        console.log('Normalized email:', normalizedEmail);
-        const user = await userService.findUser({ email: new RegExp(`^${escapeRegex(normalizedEmail)}$`, 'i') });
-        console.log('User found for forgot password:', user ? user.email : 'No user found');
-        if (!user) return next(ErrorHandler.notFound('Invalid Email Address'));
-        const { _id: userId, name, email } = user;
-        const otp = otpService.generateOtp();
-        const type = process.env.TYPE_FORGOT_PASSWORD;
-        await otpService.removeOtp(userId);
-        await otpService.storeOtp(userId, otp, type);
-        await mailService.sendForgotPasswordMail(name, email, otp);
-        res.json({ success: true, message: 'Email has been sent to your email address' });
+        try {
+            const { email } = req.body;
+            if (!email || !validator.isEmail(email)) return next(ErrorHandler.badRequest('Invalid Email Address'));
+
+            const emailNorm = email.toLowerCase();
+            const user = await userService.findUser({ email: emailNorm });
+
+            if (!user) return next(ErrorHandler.notFound('No Account Found'));
+
+            const type = process.env.TYPE_FORGOT_PASSWORD || 2;
+
+            // Check cooldown
+            const existingOtp = await otpService.getOtp(user._id, type);
+            const cooldownMs = 60 * 1000;
+            if (existingOtp) {
+                const timeSinceLastOtp = Date.now() - new Date(existingOtp.createdAt).getTime();
+                if (timeSinceLastOtp < cooldownMs) {
+                    const secondsLeft = Math.ceil((cooldownMs - timeSinceLastOtp) / 1000);
+                    return res.json({
+                        success: false,
+                        message: `Please wait ${secondsLeft} seconds before requesting a new OTP.`
+                    });
+                }
+            }
+
+            await otpService.removeOtp(user._id);
+            const otp = otpService.generateOtp();
+            await otpService.storeOtp(user._id, otp, type);
+            await mailService.sendForgotPasswordMail(user.name, user.email, otp);
+
+            res.json({ success: true, message: 'OTP has been sent to your email address.' });
+        } catch (error) {
+            next(error);
+        }
     }
 
+    // ==================== RESET PASSWORD ====================
     reset = async (req, res, next) => {
-        const { email, otp, password } = req.body;
-        if (!email || !otp || !password) return next(ErrorHandler.badRequest());
-        const normalizedEmail = validator.normalizeEmail(email) || email.toLowerCase();
-        const user = await userService.findUser({ email: new RegExp(`^${escapeRegex(normalizedEmail)}$`, 'i') });
-        if (!user) return next(ErrorHandler.notFound('No Account Found'));
-        const { _id: userId } = user;
-        const type = process.env.TYPE_FORGOT_PASSWORD || 2;
-        const response = await otpService.verifyOtp(userId, otp, type);
-        console.log("Response", response);
-        if (response === 'INVALID') return next(ErrorHandler.badRequest('Invalid OTP'));
-        if (response === 'EXPIRED') return next(ErrorHandler.badRequest('Otp has been Expired'));
-        const { modifiedCount } = await userService.updatePassword(userId, password);
-        return modifiedCount === 1 ? res.json({ success: true, message: 'Password has been reset successfully' }) : next(ErrorHandler.serverError('Failed to Reset your password'));
+        try {
+            const { email, otp, password } = req.body;
+            if (!email || !otp || !password) return next(ErrorHandler.badRequest('Email, OTP, and Password are required'));
+
+            const emailNorm = email.toLowerCase();
+            const user = await userService.findUser({ email: emailNorm });
+            if (!user) return next(ErrorHandler.notFound('No Account Found'));
+
+            const type = process.env.TYPE_FORGOT_PASSWORD || 2;
+            let response = await otpService.verifyOtp(user._id, otp, type);
+
+            if (response === 'INVALID') return next(ErrorHandler.badRequest('Invalid OTP'));
+
+            if (response === 'EXPIRED') {
+                // Check cooldown before sending new OTP
+                const cooldownMs = 60 * 1000;
+                const existingOtp = await otpService.getOtp(user._id, type);
+                const timeSinceLastOtp = existingOtp ? Date.now() - new Date(existingOtp.createdAt).getTime() : cooldownMs + 1;
+
+                if (timeSinceLastOtp < cooldownMs) {
+                    const secondsLeft = Math.ceil((cooldownMs - timeSinceLastOtp) / 1000);
+                    return res.json({
+                        success: false,
+                        message: `OTP expired. Please wait ${secondsLeft} seconds before requesting a new OTP.`
+                    });
+                }
+
+                // Generate new OTP
+                const newOtp = otpService.generateOtp();
+                await otpService.removeOtp(user._id);
+                await otpService.storeOtp(user._id, newOtp, type);
+                await mailService.sendForgotPasswordMail(user.name, user.email, newOtp);
+
+                return res.json({
+                    success: false,
+                    message: 'Your OTP has expired. A new OTP has been sent to your email address.'
+                });
+            }
+
+            // OTP valid → reset password
+            const { modifiedCount } = await userService.updatePassword(user._id, password);
+            if (modifiedCount !== 1) return next(ErrorHandler.serverError('Failed to reset your password'));
+
+            res.json({ success: true, message: 'Password has been reset successfully' });
+        } catch (error) {
+            next(error);
+        }
     }
 
+    // ==================== LOGOUT ====================
     logout = async (req, res, next) => {
-        const { refreshToken } = req.cookies;
-        const { _id } = req.user;
-        const response = await tokenService.removeRefreshToken(_id, refreshToken);
-        await userService.updateUser(_id, { status: 'deactive' });
-        res.clearCookie('refreshToken', baseCookieOptions);
-        res.clearCookie('accessToken', baseCookieOptions);
-        return (response.modifiedCount === 1) ? res.json({ success: true, message: 'Logout Successfully' }) : next(ErrorHandler.unAuthorized());
+        try {
+            const { refreshToken } = req.cookies;
+            const { _id } = req.user;
+
+            const response = await tokenService.removeRefreshToken(_id, refreshToken);
+            await userService.updateUser(_id, { status: 'deactive' });
+
+            res.clearCookie('refreshToken', baseCookieOptions);
+            res.clearCookie('accessToken', baseCookieOptions);
+
+            return (response.modifiedCount === 1)
+                ? res.json({ success: true, message: 'Logout Successfully' })
+                : next(ErrorHandler.unAuthorized());
+        } catch (error) {
+            next(error);
+        }
     }
 
+    // ==================== REFRESH TOKEN ====================
     refresh = async (req, res, next) => {
-        console.log('[AuthController.refresh] Cookies received:', req.cookies);
-        const { refreshToken: refreshTokenFromCookie } = req.cookies;
-        if (!refreshTokenFromCookie) {
-            return res.status(401).json({ success: false, message: 'Unauthorized Access' });
+        try {
+            const { refreshToken: refreshTokenFromCookie } = req.cookies;
+            if (!refreshTokenFromCookie) return res.status(401).json({ success: false, message: 'Unauthorized Access' });
+
+            const userData = await tokenService.verifyRefreshToken(refreshTokenFromCookie);
+            const { _id, email, username } = userData;
+
+            const token = await tokenService.findRefreshToken(_id, refreshTokenFromCookie);
+            if (!token) {
+                res.clearCookie('refreshToken', baseCookieOptions);
+                res.clearCookie('accessToken', baseCookieOptions);
+                return res.status(401).json({ success: false, message: 'Unauthorized Access' });
+            }
+
+            const user = await userService.findUser({ email });
+            if (!user) {
+                res.clearCookie('refreshToken', baseCookieOptions);
+                res.clearCookie('accessToken', baseCookieOptions);
+                return res.status(401).json({ success: false, message: 'User not found' });
+            }
+
+            if (user.status === 'banned') return next(ErrorHandler.unAuthorized('Your account has been banned, please contact admin'));
+
+            const payload = { _id, email, username, name: user.name, type: user.type };
+            const { accessToken, refreshToken } = tokenService.generateToken(payload);
+
+            await tokenService.updateRefreshToken(_id, refreshTokenFromCookie, refreshToken);
+
+            res.cookie('accessToken', accessToken, authCookieOptions);
+            res.cookie('refreshToken', refreshToken, authCookieOptions);
+
+            user.status = 'active';
+            await user.save();
+
+            res.json({ success: true, message: 'Secure access has been granted', user: new UserDto(user) });
+        } catch (error) {
+            next(error);
         }
-        const userData = await tokenService.verifyRefreshToken(refreshTokenFromCookie);
-        const { _id, email, username, type } = userData;
-        const token = await tokenService.findRefreshToken(_id, refreshTokenFromCookie);
-        if (!token) {
-            res.clearCookie('refreshToken', baseCookieOptions);
-            res.clearCookie('accessToken', baseCookieOptions);
-            return res.status(401).json({ success: false, message: 'Unauthorized Access' })
-        }
-        const user = await userService.findUser({ email });
-        if (!user) {
-            res.clearCookie('refreshToken', baseCookieOptions);
-            res.clearCookie('accessToken', baseCookieOptions);
-            return res.status(401).json({ success: false, message: 'User not found' });
-        }
-        if (user?.status === 'banned') return next(ErrorHandler.unAuthorized('Your account has been banned, Please contact to the admin'));
-        const payload = {
-            _id,
-            email,
-            username,
-            name: user.name,
-            type: user.type
-        }
-        const { accessToken, refreshToken } = tokenService.generateToken(payload);
-        await tokenService.updateRefreshToken(_id, refreshTokenFromCookie, refreshToken);
-        res.cookie('accessToken', accessToken, authCookieOptions);
-        res.cookie('refreshToken', refreshToken, authCookieOptions);
-        user.status = 'active';
-        await user.save();
-        res.json({ success: true, message: 'Secure access has been granted', user: new UserDto(user) })
     }
 
+    // ==================== REGISTER INVITED USER ====================
     registerInvited = async (req, res, next) => {
         try {
-            const { token, name, password, mobile, fatherName, motherName, presentAddress, permanentAddress, nid, bloodGroup } = req.body;
+            const {
+                token, name, password, mobile, fatherName, motherName,
+                presentAddress, permanentAddress, nid, bloodGroup
+            } = req.body;
 
             if (!token || !name || !password || !mobile) {
                 return next(ErrorHandler.badRequest('Required fields are missing'));
@@ -199,13 +243,11 @@ class AuthController {
                 return next(ErrorHandler.badRequest('Invitation has expired'));
             }
 
-            // Check if user already exists (should not happen if invitation is valid)
             const existingUser = await userService.findUser({ email: invitation.email });
             if (existingUser) return next(ErrorHandler.badRequest('User already registered'));
 
             const employeeId = generateEmployeeId();
             const username = 'user' + crypto.randomInt(11111111, 999999999);
-
             const image = req.file ? req.file.path : 'user.png';
 
             const user = await userService.createUser({
@@ -220,8 +262,7 @@ class AuthController {
                 motherName,
                 presentAddress,
                 permanentAddress,
-                address: permanentAddress, // Backup for existing address field
-
+                address: permanentAddress,
                 nid,
                 bloodGroup,
                 employeeId,
@@ -230,7 +271,6 @@ class AuthController {
                 status: 'active'
             });
 
-            // Mark invitation as completed
             invitation.status = 'completed';
             await invitation.save();
 
@@ -242,8 +282,7 @@ class AuthController {
         } catch (error) {
             next(error);
         }
-    };
-
+    }
 }
 
 module.exports = new AuthController();

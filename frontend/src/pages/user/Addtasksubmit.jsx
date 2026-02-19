@@ -17,9 +17,10 @@ const Addtasksubmit = ({ onTaskAdded, isPage = true }) => {
     const fetchUsers = async () => {
       try {
         const res = await getDropdownUsers();
-        if (res && Array.isArray(res)) {
-          setUsers(res);
-        }
+        const userList = Array.isArray(res)
+          ? res
+          : (Array.isArray(res?.data) ? res.data : []);
+        setUsers(userList);
       } catch (err) {
         console.error("Failed to load users", err);
       }
@@ -29,7 +30,7 @@ const Addtasksubmit = ({ onTaskAdded, isPage = true }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title || !description || !assignedTo) {
+    if (!title || !description || !assignedTo || assignedTo === "undefined") {
       toast.error("Title, Description and Assigned User are required");
       return;
     }
@@ -95,12 +96,19 @@ const Addtasksubmit = ({ onTaskAdded, isPage = true }) => {
                 onChange={(e) => setAssignedTo(e.target.value)}
                 required
               >
-                <option value="">Select an agent</option>
-                {users.map((user) => (
-                  <option key={user._id} value={user._id}>
-                    {user.name} — {user.type}
-                  </option>
-                ))}
+                <option value="">Select an assignee</option>
+                {users.length === 0 && (
+                  <option value="" disabled>No available users. Create one from Invite User page.</option>
+                )}
+                {users.map((user, index) => {
+                  const userId = user?.id || user?._id;
+                  if (!userId) return null;
+                  return (
+                    <option key={`${userId}-${index}`} value={userId}>
+                    {user.name} - {user.type}
+                    </option>
+                  );
+                })}
               </select>
             </div>
 

@@ -3,6 +3,7 @@ const User = require('../models/user-model');
 const Notification = require('../models/notification-model');
 const socketService = require('../services/socket-service');
 const ErrorHandler = require('../utils/error-handler');
+const mongoose = require('mongoose');
 const path = require('path');
 const fs = require('fs');
 const PDFDocument = require('pdfkit');
@@ -20,6 +21,10 @@ class TaskController {
     const { description, assignedTo, startDate, endDate, title: bodyTitle } = req.body;
     let title = bodyTitle;
 
+    if (!assignedTo || !mongoose.Types.ObjectId.isValid(assignedTo)) {
+      return next(ErrorHandler.badRequest('Please select a valid assignee'));
+    }
+
     // If leader, verify assignedTo is in their team
     if (req.user.type === 'leader') {
       const Team = require('../models/team-model');
@@ -27,7 +32,8 @@ class TaskController {
       if (!team) return next(ErrorHandler.badRequest('You must be leading a team to assign tasks'));
 
       const user = await User.findById(assignedTo);
-      if (!user || user.team.toString() !== team._id.toString()) {
+      const userTeams = Array.isArray(user?.team) ? user.team.map((id) => id.toString()) : [];
+      if (!user || !userTeams.includes(team._id.toString())) {
         return next(ErrorHandler.unauthorized('You can only assign tasks to members of your own team'));
       }
     }
