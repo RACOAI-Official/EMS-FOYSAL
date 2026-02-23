@@ -3,14 +3,14 @@ import swal from 'sweetalert';
 import { toast } from "react-toastify";
 import { addMember } from "../../http";
 import { useDispatch } from "react-redux";
-import { setFreeEmployees, setTeamMembers } from "../../store/user-slice";
+import { setTeamMembers } from "../../store/user-slice";
 import { updateEmployeeCount } from "../../store/team-slice";
 
 const RowAddMember = ({index,data}) =>
 {
 
   const {team} = useSelector(state=>state.teamSlice);
-  const {freeEmployees,teamMembers} = useSelector(state=>state.userSlice);
+  const {teamMembers} = useSelector(state=>state.userSlice);
   const dispatch = useDispatch();
 
   const add = async () =>

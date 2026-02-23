@@ -7,6 +7,9 @@ const upload = require('../middlewares/multer-cloudinary-config');
 const asyncMiddleware = require('../middlewares/async-middleware');
 const { auth, authRole } = require('../middlewares/auth-middleware');
 
+// All admin endpoints require authenticated admin/sub-admin user context.
+router.use(auth, authRole(['super_admin', 'sub_admin']));
+
 router.post('/user', upload.single('image'), asyncMiddleware(userController.createUser));
 router.patch('/user/:id', upload.single('image'), asyncMiddleware(userController.updateUser));
 router.delete('/user/:id', asyncMiddleware(userController.deleteUser));

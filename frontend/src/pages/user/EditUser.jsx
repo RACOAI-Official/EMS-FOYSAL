@@ -1,41 +1,40 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams, useHistory } from "react-router";
 import { toast } from "react-toastify";
-import HeaderSection from "../../components/HeaderSection";
-import { updateUser, getUser, backendUrl, getEmpires } from "../../http";
+import { updateUser, getUser, getEmpires } from "../../http";
 import { getFileUrl } from "../../utils/fileUtil";
 import Modal from '../../components/modal/Modal';
+
+const initialState = {
+    name: '',
+    email: '',
+    username: '',
+    mobile: '',
+    password: '',
+    type: '',
+    address: '',
+    image: null,
+    status: '',
+    empire: '',
+    fatherName: '',
+    motherName: '',
+    presentAddress: '',
+    permanentAddress: '',
+    employeeId: '',
+    village: '',
+    union: '',
+    district: '',
+    nid: '',
+    bloodGroup: '',
+    adminPassword: ''
+};
 
 const EditUser = () => {
     const { user: currentUser } = useSelector((state) => state.authSlice);
     const isAdmin = ['super_admin', 'sub_admin'].includes(currentUser?.type);
 
-    const initialState = {
-        name: '',
-        email: '',
-        username: '',
-        mobile: '',
-        password: '',
-        type: '',
-        address: '',
-        image: null,
-        status: '',
-        empire: '',
-        fatherName: '',
-        motherName: '',
-        presentAddress: '',
-        permanentAddress: '',
-        employeeId: '',
-        village: '',
-        union: '',
-        district: '',
-        nid: '',
-        bloodGroup: '',
-        adminPassword: ''
-    };
-
-    const normalizeFormData = (data = {}) => ({
+    const normalizeFormData = useCallback((data = {}) => ({
         ...initialState,
         ...data,
         name: data.name || '',
@@ -58,7 +57,7 @@ const EditUser = () => {
         bloodGroup: data.bloodGroup || '',
         empire: data.empire || '',
         adminPassword: ''
-    });
+    }), []);
     const [imagePreview, setImagePreview] = useState('/assets/icons/user.png');
     const [formData, setFormData] = useState(initialState);
     const [showModal, setShowModal] = useState(false);
@@ -92,7 +91,7 @@ const EditUser = () => {
                 setEmpires(empRes.data);
             }
         })();
-    }, [id])
+    }, [id, normalizeFormData])
 
     const inputEvent = (e) => {
         const { name, value } = e.target;

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { markEmployeeAttendance, markEmployeeCheckOut, viewEmployeeAttendance } from '../../../http';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import socket from '../../../socket';
 import Loading from '../../../components/Loading';
 import AttendanceSummaryCards from '../../../components/common/AttendanceSummaryCards';
 
@@ -17,9 +16,6 @@ const Attendance = () => {
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedDay, setSelectedDay] = useState('');
   const [attendance, setAttendance] = useState();
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const [showLocationModal, setShowLocationModal] = useState(false);
-  const [locationError, setLocationError] = useState('');
 
   const years = [2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030]; // Customize this as needed
   const months = [
@@ -172,7 +168,6 @@ const Attendance = () => {
     if (success) {
       toast.success(res.message);
       setIsAttendanceMarked(true);
-      setRefreshTrigger(prev => prev + 1);
       // Trigger background tracker
       const event = new Event('attendance-update');
       window.dispatchEvent(event);
@@ -189,7 +184,6 @@ const Attendance = () => {
     if (success) {
       toast.success(res.message);
       setIsCheckedOut(true);
-      setRefreshTrigger(prev => prev + 1);
       // Trigger background tracker
       const event = new Event('attendance-update');
       window.dispatchEvent(event);

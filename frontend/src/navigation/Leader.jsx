@@ -1,5 +1,5 @@
 import { NavLink, useLocation, useHistory } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { dLogout } from "../http";
 import { setAuth } from "../store/auth-slice";
 import swal from 'sweetalert';
@@ -8,7 +8,6 @@ const Leader = () =>
 {
     const dispatch = useDispatch();
     const history = useHistory();
-    const { user } = useSelector(state => state.authSlice); // Get user from state
     const location = useLocation(); // Added useLocation hook
 
     const logout = async (e) => {

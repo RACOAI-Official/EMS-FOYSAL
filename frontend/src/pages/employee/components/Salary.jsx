@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { exportToPrint } from '../../../utils/printHelper';
 import { useSelector } from 'react-redux';
 import { viewEmployeeSalary } from '../../../http';
-import { toast } from "react-toastify";
-import Loading from '../../../components/Loading';
 
 
 
@@ -35,13 +33,13 @@ const Salary = () => {
         const currentYear = new Date().getFullYear();
          setYears([currentYear]);
     }
-  }, [user]);
+  }, [user, selectedYear]);
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     const obj = {
       "employeeID": user.id,
       "year": parseInt(selectedYear)
@@ -55,33 +53,11 @@ const Salary = () => {
     } else {
       setSalary(null);
     }
-  }
+  }, [selectedYear, user.id]);
 
   useEffect(() => {
     fetchData();
-  },[selectedYear]);
-
-  const handlePrint = () => {
-    if (!salary) return;
-
-    const tableColumn = ["Description", "Amount"];
-    const tableRows = [
-      ["Employee Name", user.name],
-      ["Email", user.email],
-      ["Basic Salary", `tk ${salary.salary}`],
-      ["Bonus", `tk ${salary.bonus}`],
-      ["Total Salary", `tk ${parseInt(salary.salary) + parseInt(salary.bonus)}`],
-      ["Description", salary.reasonForBonus || "N/A"],
-      ["Updated On", salary.assignedDate]
-    ];
-
-    exportToPrint({
-      title: "Salary Slip",
-      columns: tableColumn,
-      data: tableRows,
-      date: `Generated: ${new Date().toLocaleDateString()}`
-    });
-  };
+  },[fetchData]);
 
   const handlePrintAnnual = () => {
     if (!salaries || salaries.length === 0) {

@@ -97,8 +97,8 @@ const EmpiresPage = () => {
                                             <i className="fas fa-ellipsis-v"></i>
                                         </button>
                                         <ul className="dropdown-menu dropdown-menu-end">
-                                            <li><a className="dropdown-item" onClick={() => { setFormData({ name: emp.name, description: emp.description, id: emp._id }); setShowModal(true); }}>Edit</a></li>
-                                            <li><a className="dropdown-item text-danger" onClick={() => handleDelete(emp._id)}>Delete</a></li>
+                                            <li><button type="button" className="dropdown-item" onClick={() => { setFormData({ name: emp.name, description: emp.description, id: emp._id }); setShowModal(true); }}>Edit</button></li>
+                                            <li><button type="button" className="dropdown-item text-danger" onClick={() => handleDelete(emp._id)}>Delete</button></li>
                                         </ul>
                                     </div>
                                 </div>

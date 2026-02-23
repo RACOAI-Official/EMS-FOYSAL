@@ -8,7 +8,11 @@ const getSocketUrl = () => {
     return envUrl;
   }
 
-  return 'http://192.168.10.13:5500';
+  if (typeof window !== 'undefined' && window.location?.hostname) {
+    return `${window.location.protocol}//${window.location.hostname}:5500`;
+  }
+
+  return 'http://127.0.0.1:5500';
 };
 
 // Create a single shared Socket.IO instance

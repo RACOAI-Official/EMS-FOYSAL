@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getAttendance, getEmployees, getLeaders, editAttendance } from '../../../http';
 import { toast } from 'react-toastify';
-import HeaderSection from '../../../components/HeaderSection';
 import AttendanceSummaryCards from '../../../components/common/AttendanceSummaryCards';
 
 const AdminAttendanceManagement = () => {
@@ -69,7 +68,7 @@ const AdminAttendanceManagement = () => {
 
     const handleSaveEdit = async () => {
         try {
-            const { _id, status, present, checkInTime, checkOutTime } = editingRecord;
+            const { _id, status, checkInTime, checkOutTime } = editingRecord;
             const updateData = {
                 status,
                 present: status === 'Present' || status === 'Leave',

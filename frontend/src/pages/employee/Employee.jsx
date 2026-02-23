@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, NavLink } from "react-router-dom";
-import { getUser, updateUser, backendUrl } from "../../http";
+import { getUser, updateUser } from "../../http";
 import { getFileUrl } from "../../utils/fileUtil";
 import CircularProgress from "../../components/CircularProgress";
 import { useSelector } from "react-redux";

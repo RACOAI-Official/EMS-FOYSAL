@@ -3,7 +3,6 @@ import { toast } from "react-toastify";
 import HeaderSection from "../../components/HeaderSection";
 import { submitProblem, getUserProblems, getUserTasks } from "../../http";
 import moment from "moment";
-import { useSelector } from "react-redux";
 
 const Userproblem = () => {
     const initialState = {

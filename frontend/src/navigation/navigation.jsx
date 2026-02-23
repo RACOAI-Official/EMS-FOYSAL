@@ -174,7 +174,16 @@ const Navigation = () => {
             <nav className="navbar navbar-expand-lg main-navbar">
                 <form className="d-flex align-items-center flex-grow-1" onSubmit={handleSearch}>
                     <ul className="navbar-nav mr-3">
-                        <li><a href="#" onClick={(e) => { e.preventDefault(); toggleSidebar(); }} id='sidebarCollapse' className="nav-link nav-link-lg"><i className="fas fa-bars"></i></a></li>
+                        <li>
+                            <button
+                                type="button"
+                                onClick={toggleSidebar}
+                                id='sidebarCollapse'
+                                className="nav-link nav-link-lg btn btn-link p-0 border-0"
+                            >
+                                <i className="fas fa-bars"></i>
+                            </button>
+                        </li>
                         <li><NavLink to='/' className="nav-link nav-link-lg d-none"><i className="fas fa-search"></i></NavLink></li>
                     </ul>
                     <div className="d-flex align-items-center mr-3" style={{ whiteSpace: 'nowrap' }}>
@@ -215,7 +224,12 @@ const Navigation = () => {
                 </div>
                 <ul className="navbar-nav navbar-right">
                     <li className="dropdown dropdown-list-toggle d-none d-lg-block">
-                        <a href='#' data-bs-toggle="dropdown" className="nav-link notification-toggle nav-link-lg" style={{ position: 'relative' }}>
+                        <button
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            className="nav-link notification-toggle nav-link-lg btn btn-link p-0 border-0"
+                            style={{ position: 'relative' }}
+                        >
                             <i className="far fa-bell"></i>
                             {notifications.length > 0 && (
                                 <span className="badge badge-danger" style={{
@@ -235,7 +249,7 @@ const Navigation = () => {
                                     {notifications.length}
                                 </span>
                             )}
-                        </a>
+                        </button>
                         <div className="dropdown-menu dropdown-list dropdown-menu-end">
                             <div className="dropdown-header">Notifications
                                 <div className="float-right">
@@ -244,7 +258,12 @@ const Navigation = () => {
                             </div>
                             <div className="dropdown-list-content dropdown-list-icons">
                                 {notifications.length > 0 ? notifications.map((notif) => (
-                                    <a href="#" key={notif._id} className="dropdown-item dropdown-item-unread" onClick={(e) => handleMarkAsRead(e, notif)}>
+                                    <button
+                                        type="button"
+                                        key={notif._id}
+                                        className="dropdown-item dropdown-item-unread"
+                                        onClick={(e) => handleMarkAsRead(e, notif)}
+                                    >
                                         <div className={`dropdown-item-icon ${notif.type === 'problem' ? 'bg-danger' : (notif.type === 'salary' ? 'bg-success' : 'bg-info')} text-white`}>
                                             <i className={`fas ${notif.type === 'problem' ? 'fa-exclamation-triangle' : (notif.type === 'salary' ? 'fa-money-bill-wave' : 'fa-comment')}`}></i>
                                         </div>
@@ -252,7 +271,7 @@ const Navigation = () => {
                                             {notif.message}
                                             <div className="time text-primary">{new Date(notif.createdAt).toLocaleTimeString()}</div>
                                         </div>
-                                    </a>
+                                    </button>
                                 )) : (
                                     <div className="dropdown-item">
                                         <div className="dropdown-item-desc text-center">
@@ -266,9 +285,15 @@ const Navigation = () => {
                             </div>
                         </div>
                     </li>
-                    <li className="dropdown"><a href='#' data-bs-toggle="dropdown" className="nav-link dropdown-toggle nav-link-lg nav-link-user" style={{ color: 'black' }}>
-                        <img alt="image" src={image && (image.startsWith('http') || image.startsWith('data:') || image.startsWith('/')) ? image : `${backendUrl}/storage/${image}`} className="rounded-circle mr-1" />
-                        <div className="d-sm-none d-lg-inline-block">Hi, {name}</div></a>
+                    <li className="dropdown">
+                        <button
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            className="nav-link dropdown-toggle nav-link-lg nav-link-user btn btn-link p-0 border-0"
+                            style={{ color: 'black' }}
+                        >
+                        <img alt={name || 'User'} src={image && (image.startsWith('http') || image.startsWith('data:') || image.startsWith('/')) ? image : `${backendUrl}/storage/${image}`} className="rounded-circle mr-1" />
+                        <div className="d-sm-none d-lg-inline-block">Hi, {name}</div></button>
                         <div className="dropdown-menu dropdown-menu-end">
                             <div className="dropdown-title">Logged in 5 min ago</div>
 

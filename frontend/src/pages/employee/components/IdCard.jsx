@@ -88,7 +88,7 @@ const IdCard = () => {
                     width: 50px;
                     height: 15px;
                     background: #ffffff;
-                    margin: -26px auto 15px 55px;
+                    margin: -26px auto 15px 60px;
                     border-radius: 8px 8px 8px 8px;
                 }
 
@@ -97,13 +97,14 @@ const IdCard = () => {
                     height: 160px;
                     background: #2a2a2a;
                     border-radius: 4px;
-                    overflow: hidden;
+                    /*overflow: hidden;*/
                     margin-bottom: 12px;
+                    border-radius: 50%;
                 }
 
                 .user-photo-box img {
-                    width: 150px;
-                    height: 150px;                    
+                    width: 154px;
+                    height: 161px;                    
                     object-fit: cover;
                 }
 
@@ -111,7 +112,7 @@ const IdCard = () => {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    margin-bottom: 8px;
+                    /*margin-bottom: 8px;*/
                 }
 
                 .front-name-row h2 {
@@ -187,6 +188,9 @@ const IdCard = () => {
                     color: #ffffff !important;
                     letter-spacing: 0.5px;
                 }
+                    .url-link{
+                        font-color: #ffffff !important;
+                    }
 
                 .back-title-row {
                     display: flex;
@@ -284,8 +288,8 @@ const IdCard = () => {
                     position: absolute;
                     right: 3px;
                     top: 11px;
-                    width: 33px;
-                    height: 47px;
+                    width: 48px;
+                    height: 48px;
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -409,7 +413,7 @@ const IdCard = () => {
                                 />
                             </div>
 
-                            <p className="website-link">https://racoai.io</p>
+                            <div className="url-link" style={{color: '#ffffff'}}>https://racoai.io</div>
 
                             <div style={{ marginBottom: '15px' }}>
                                 <div className="back-title-row">
@@ -441,7 +445,6 @@ const IdCard = () => {
                                         level="H"
                                     />
                                 </div>
-                                
                                 <div className="contact-box">
                                     <p className="contact-label">CONTACT</p>
                                     <p className="contact-details">

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import HeaderSection from '../components/HeaderSection';
-import { getContacts, getMessages, sendMessage, markMessagesAsRead, deleteMessage, deleteConversation, backendUrl } from '../http';
+import { getContacts, getMessages, sendMessage, markMessagesAsRead, deleteMessage, deleteConversation } from '../http';
 import { getFileUrl } from '../utils/fileUtil';
 import moment from 'moment';
 import { toast } from 'react-toastify';
@@ -15,7 +15,6 @@ const Chat = () => {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const messagesEndRef = useRef(null);
-    const [loading, setLoading] = useState(false);
     const [isSending, setIsSending] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
     const [brokenAvatarIds, setBrokenAvatarIds] = useState({});
@@ -104,8 +103,7 @@ const Chat = () => {
         }
     };
 
-    const fetchMessages = async (userId, background = false) => {
-        if (!background) setLoading(true);
+    const fetchMessages = async (userId) => {
         try {
             const res = await getMessages(userId);
             if (res.success) {
@@ -113,8 +111,6 @@ const Chat = () => {
             }
         } catch (err) {
             console.error(err);
-        } finally {
-            if (!background) setLoading(false);
         }
     };
 

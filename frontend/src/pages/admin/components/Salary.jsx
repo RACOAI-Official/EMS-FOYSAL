@@ -40,7 +40,7 @@ const SalaryView = () => {
         }
         fetchData();
 
-    },[]);
+    },[id]);
 
 
     const inputEvent = (e) =>

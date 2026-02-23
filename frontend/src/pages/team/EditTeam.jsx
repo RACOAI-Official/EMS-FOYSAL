@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
-import HeaderSection from "../../components/HeaderSection";
-import { getTeam, updateTeam, backendUrl } from "../../http";
+import { getTeam, updateTeam } from "../../http";
 import { getFileUrl } from "../../utils/fileUtil";
 
 const EditTeam = () =>

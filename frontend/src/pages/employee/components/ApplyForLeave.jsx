@@ -1,9 +1,6 @@
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import HeaderSection from "../../../components/HeaderSection";
 import { applyforleave, viewLeaves } from "../../../http";
-import Modal from '../../../components/modal/Modal';
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useSelector } from "react-redux";
 
@@ -16,11 +13,7 @@ const ApplyForLeave = () =>
   const [myLeaves, setMyLeaves] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(true);
 
-    useEffect(() => {
-        fetchMyLeaves();
-    }, [user.id]);
-
-    const fetchMyLeaves = async () => {
+    const fetchMyLeaves = useCallback(async () => {
         try {
             setLoadingHistory(true);
             const res = await viewLeaves({ applicantID: user.id });
@@ -32,7 +25,11 @@ const ApplyForLeave = () =>
         } finally {
             setLoadingHistory(false);
         }
-    };
+    }, [user.id]);
+
+    useEffect(() => {
+        fetchMyLeaves();
+    }, [fetchMyLeaves]);
 
     const inputEvent = (e) =>
     {
@@ -67,7 +64,7 @@ const ApplyForLeave = () =>
     const onSubmit = async (e) =>
     {
         e.preventDefault();
-        const {title, type, startDate, endDate, reason, period} = formData;
+        const {title, type, startDate, endDate, reason} = formData;
         if(!title || !type || !startDate || !endDate || !reason) return toast.error('All Fields Required');
         
         if (new Date(endDate) < new Date(startDate)) {

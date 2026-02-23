@@ -12,8 +12,8 @@ services:
       # Use the ATLAS URL for DB
       - DB_URL=mongodb+srv://RACO:P2zbjmPN2Az80ai3@invertory.lhz7idi.mongodb.net/easy-employee?retryWrites=true&w=majority&appName=Invertory
       # Allow the browser to connect via CORS (using LAN IP)
-      - CLIENT_URL=http://192.168.10.55:3000
-      - BASE_URL=http://192.168.10.55:5588
+      - CLIENT_URL=http://192.168.10.7:3000
+      - BASE_URL=http://192.168.10.7:5588
     volumes:
       - ./backend/storage:/app/storage
     networks:
@@ -27,7 +27,7 @@ services:
       - "3000:3000"
     environment:
       # Browser runs on your machine, so it looks for backend at host IP
-      - REACT_APP_BASE_URL=http://192.168.10.55:5588
+      - REACT_APP_BASE_URL=http://192.168.10.7:5588
       - HOST=0.0.0.0
       # Fix for React file watching in Docker on Windows
       - CHOKIDAR_USEPOLLING=true

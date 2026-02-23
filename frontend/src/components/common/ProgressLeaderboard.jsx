@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getLeaderboardData } from '../../http';
 import socket from '../../socket';
@@ -17,25 +17,7 @@ const ProgressLeaderboard = ({ mode = "users", type = null, includeLeaders = fal
         };
     }, []);
 
-    useEffect(() => {
-        fetchData();
-        
-        // Real-time listener
-        if (socket) {
-            socket.on('progress-update', (data) => {
-                if (isMounted.current) {
-                    console.log('Real-time progress update received:', data);
-                    fetchData();
-                }
-            });
-        }
-
-        return () => {
-            if (socket) socket.off('progress-update');
-        };
-    }, [mode, type, includeLeaders]);
-
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         try {
             if (isMounted.current) setLoading(true);
             const res = await getLeaderboardData(mode, type);
@@ -54,7 +36,25 @@ const ProgressLeaderboard = ({ mode = "users", type = null, includeLeaders = fal
         } finally {
             if (isMounted.current) setLoading(false);
         }
-    };
+    }, [mode, type]);
+
+    useEffect(() => {
+        fetchData();
+        
+        // Real-time listener
+        if (socket) {
+            socket.on('progress-update', (data) => {
+                if (isMounted.current) {
+                    console.log('Real-time progress update received:', data);
+                    fetchData();
+                }
+            });
+        }
+
+        return () => {
+            if (socket) socket.off('progress-update');
+        };
+    }, [fetchData, includeLeaders]);
 
     const getMedalIcon = (rank, item) => {
         if (mode === "teams" && item.isFavorite) return '⭐';
@@ -75,7 +75,7 @@ const ProgressLeaderboard = ({ mode = "users", type = null, includeLeaders = fal
                 const singleQuoteMatch = raw.match(/name:\s*'([^']+)'/);
                 if (singleQuoteMatch?.[1]) return singleQuoteMatch[1];
 
-                const doubleQuoteMatch = raw.match(/name:\s*\"([^\"]+)\"/);
+                const doubleQuoteMatch = raw.match(/name:\s*"([^"]+)"/);
                 if (doubleQuoteMatch?.[1]) return doubleQuoteMatch[1];
             }
 

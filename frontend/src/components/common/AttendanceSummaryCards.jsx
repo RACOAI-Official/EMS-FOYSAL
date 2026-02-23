@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { getMyAttendanceSummary, getAttendanceSummary } from '../../http';
 import './AttendanceSummaryCards.css';
 
@@ -6,11 +6,7 @@ const AttendanceSummaryCards = ({ userId = null, dateRange = null, refreshTrigge
     const [summary, setSummary] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetchSummary();
-    }, [userId, dateRange, refreshTrigger]);
-
-    const fetchSummary = async () => {
+    const fetchSummary = useCallback(async () => {
         try {
             setLoading(true);
             const startDate = dateRange?.startDate instanceof Date ? dateRange.startDate.toISOString() : dateRange?.startDate;
@@ -31,7 +27,11 @@ const AttendanceSummaryCards = ({ userId = null, dateRange = null, refreshTrigge
         } finally {
             setLoading(false);
         }
-    };
+    }, [dateRange, userId]);
+
+    useEffect(() => {
+        fetchSummary();
+    }, [fetchSummary, refreshTrigger]);
 
     if (loading) {
         return (

@@ -30,7 +30,7 @@ const LeaveApplications = () => {
     }
     fetchData();
 
-  },[]);
+  },[user.id]);
 
   const searchLeaveApplications = async () => {
       const obj = {

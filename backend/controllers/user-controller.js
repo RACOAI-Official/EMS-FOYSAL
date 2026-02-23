@@ -77,6 +77,10 @@ class UserController {
     updateUser = async (req, res, next) => {
         console.log('>>> [UserController.updateUser] Entered controller handle');
         try {
+            if (!req.user || !req.user.type) {
+                return next(ErrorHandler.unAuthorized('Unauthorized request'));
+            }
+
             const file = req.file;
             const filename = file ? (file.path || file.url || file.secure_url) : null;
             let user, id;

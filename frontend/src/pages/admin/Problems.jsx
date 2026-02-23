@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import HeaderSection from "../../components/HeaderSection";
-import { getAllProblems, updateProblemStatus, provideSolution, backendUrl } from "../../http";
+import { getAllProblems, updateProblemStatus, provideSolution } from "../../http";
 import { getFileUrl } from "../../utils/fileUtil";
 import moment from "moment";
-import BootstrapModal from "../../BootstrapModal";
 
 const AdminProblems = () => {
     const [problems, setProblems] = useState([]);

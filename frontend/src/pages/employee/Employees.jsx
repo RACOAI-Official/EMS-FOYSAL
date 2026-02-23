@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { exportToPrint } from "../../utils/printHelper";
-import HeaderSection from "../../components/HeaderSection";
 import RowEmployee from "../../components/rows/row-employee";
 import { getEmployeeUsers, deleteUser, getTeams } from "../../http";
 import ConfirmationModal from "../../components/modal/ConfirmationModal";

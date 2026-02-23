@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { dLogout } from "../http";
 import { setAuth } from "../store/auth-slice";
-import { useDispatch, useSelector } from "react-redux"; // Added useSelector
+import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import swal from 'sweetalert';
 
@@ -12,7 +12,6 @@ const Employee = () =>
 {
 
   const dispatch = useDispatch();
-  const { user } = useSelector(state => state.authSlice); // Get user from state
   const history = useHistory();
 
   const logout = async (e) => {

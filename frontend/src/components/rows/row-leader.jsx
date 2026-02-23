@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-import { backendUrl, updateUserProgress } from "../../http";
+import { updateUserProgress } from "../../http";
 import { toast } from "react-toastify";
 import ProgressModal from "../common/ProgressModal";
 import { getFileUrl } from "../../utils/fileUtil";

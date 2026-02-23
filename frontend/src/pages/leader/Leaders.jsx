@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import HeaderSection from "../../components/HeaderSection";
 import RowLeader from "../../components/rows/row-leader";
-import { getLeaderUsers, deleteUser, getAdminTasks, downloadTaskPDF, backendUrl } from "../../http";
+import { getLeaderUsers, deleteUser, getAdminTasks, downloadTaskPDF } from "../../http";
 import { getFileUrl } from "../../utils/fileUtil";
 import { exportToPrint } from "../../utils/printHelper";
 import ConfirmationModal from "../../components/modal/ConfirmationModal";

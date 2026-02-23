@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import HeaderSection from "../../components/HeaderSection";
-import { getLeaderTasks, downloadTaskPDF, backendUrl } from '../../http';
+import { getLeaderTasks, downloadTaskPDF } from '../../http';
 import { getFileUrl } from '../../utils/fileUtil';
 import CircularProgress from '../../components/CircularProgress';
 import Modal from '../../components/modal/Modal';

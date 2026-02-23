@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { getAttendance, getEmployees, getLeaders } from '../../../http';
-import { useHistory } from 'react-router-dom';
 import { exportToPrint } from '../../../utils/printHelper';
 import { toast } from 'react-toastify';
 import Loading from '../../../components/Loading';
@@ -29,7 +28,6 @@ const monthDays = {
 }
 
 const AttendanceView = () => {
-  const history = useHistory();
   const [selectedYear, setSelectedYear] = useState('');
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedDay, setSelectedDay] = useState('');
@@ -126,7 +124,6 @@ const AttendanceView = () => {
       const fullMonthData = [];
 
       // Get user's join date
-      const user = employees.user ? employees.find(e => e.id === (selectedEmployee.id || selectedEmployee)) : null;
       // Fixed: employees logic was potentially accessing undefined properties
       // Actually employees is an array of objects {id, name...}
       // Re-finding user safely:

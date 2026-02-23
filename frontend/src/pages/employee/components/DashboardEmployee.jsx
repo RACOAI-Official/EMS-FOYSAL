@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { NavLink } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { updateTaskProgress, getUserTasks, downloadTaskPDF } from '../../../http';
 import { getFileUrl } from '../../../utils/fileUtil';
 import { toast } from 'react-toastify';
