@@ -12,7 +12,7 @@ const getClientRegisterBaseUrl = () => {
     .map(normalizeUrl)
     .filter(Boolean);
 
-  if (configuredUrls.length === 0) return 'http://192.168.10.7:3000';
+  if (configuredUrls.length === 0) return process.env.CLIENT_URL;
 
   const preferredUrl = configuredUrls.find((url) => {
     try {
