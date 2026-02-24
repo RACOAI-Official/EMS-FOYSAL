@@ -16,51 +16,25 @@ const app = express();
 const server = http.createServer(app);
 
 const normalizeOrigin = (origin = '') => origin.trim().replace(/\/+$/, '');
-const isPrivateNetworkHost = (hostname = '') =>
-  /^(localhost|127\.0\.0\.1)$/.test(hostname) ||
-  /^192\.168\.\d{1,3}\.\d{1,3}$/.test(hostname) ||
-  /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(hostname) ||
-  /^172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}$/.test(hostname);
 
 const configuredOrigins = (process.env.CLIENT_URL || '')
   .split(',')
   .map(normalizeOrigin)
   .filter(Boolean);
 
-const inferredClientOrigin = (() => {
-  try {
-    const baseUrl = String(process.env.BASE_URL || '').trim();
-    if (!baseUrl) return '';
-    const parsed = new URL(baseUrl);
-    return `${parsed.protocol}//${parsed.hostname}:3000`;
-  } catch (error) {
-    return '';
-  }
-})();
-
 const defaultOrigins = [
-  'http://localhost:3000',
+  'http://192.168.10.18:3000',
   'http://127.0.0.1:3000',
-  inferredClientOrigin,
 ];
 
 const allowedOrigins = [...new Set([...defaultOrigins, ...configuredOrigins])];
+const lanDevOriginPattern = /^http:\/\/192\.168\.\d{1,3}\.\d{1,3}:3000$/;
 
 const isAllowedOrigin = (origin) => {
   if (!origin) return true;
   const normalizedOrigin = normalizeOrigin(origin);
   if (allowedOrigins.includes(normalizedOrigin)) return true;
-
-  // In local development, allow private-LAN frontend origins to avoid
-  // manual IP edits whenever DHCP changes the machine address.
-  if (process.env.NODE_ENV !== 'production') {
-    try {
-      return isPrivateNetworkHost(new URL(normalizedOrigin).hostname);
-    } catch (error) {
-      return false;
-    }
-  }
-
+  if (process.env.NODE_ENV !== 'production' && lanDevOriginPattern.test(normalizedOrigin)) return true;
   return false;
 };
 
@@ -172,15 +146,16 @@ io.on('connection', (socket) => {
 // Start server
 // ==========================
 const PORT = process.env.PORT || 5500;
-const publicHost = (() => {
+const getAdvertisedOrigin = (port) => {
   try {
-    const baseUrl = String(process.env.BASE_URL || '').trim();
-    if (!baseUrl) return 'localhost';
-    return new URL(baseUrl).hostname || 'localhost';
+    const configuredBaseUrl = String(process.env.BASE_URL || '').trim();
+    if (!configuredBaseUrl) return `http://localhost:${port}`;
+    const parsed = new URL(configuredBaseUrl);
+    return `${parsed.protocol}//${parsed.hostname}:${port}`;
   } catch (error) {
-    return 'localhost';
+    return `http://localhost:${port}`;
   }
-})();
+};
 
 // Function to connect to database with retry logic
 const connectDatabase = async (retries = 5, delay = 5000) => {
@@ -236,8 +211,9 @@ const connectDatabase = async (retries = 5, delay = 5000) => {
     });
 
     server.listen(port, () => {
-      console.log(`\n✅ Server running on http://${publicHost}:${port}`);
-      console.log(`📝 Routes available at http://${publicHost}:${port}/api/*\n`);
+      const advertisedOrigin = getAdvertisedOrigin(port);
+      console.log(`\nServer running on ${advertisedOrigin}`);
+      console.log(`Routes available at ${advertisedOrigin}/api/*\n`);
     });
   };
 
