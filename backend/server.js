@@ -25,6 +25,8 @@ const configuredOrigins = (process.env.CLIENT_URL || '')
 const defaultOrigins = [
   'http://192.168.10.18:3000',
   'http://127.0.0.1:3000',
+  'https://ems.racoai.io',
+  'https://www.ems.racoai.io',
 ];
 
 const allowedOrigins = [...new Set([...defaultOrigins, ...configuredOrigins])];
@@ -50,6 +52,13 @@ const corsOptions = {
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 };
+
+app.use((req, res, next) => {
+  if (req.headers['access-control-request-private-network'] === 'true') {
+    res.setHeader('Access-Control-Allow-Private-Network', 'true');
+  }
+  next();
+});
 
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions)); // Handle preflight OPTIONS requests
