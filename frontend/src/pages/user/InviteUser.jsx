@@ -26,7 +26,8 @@ const InviteUser = () => {
         'CTO','CFO','CMO','Software Engineer', 'Data Analyst', 'DevOps Engineer', 'Project Manager', 'Business Analyst', 'Marketing Manager', 'Sales Manager',
         'Sales Executive', 'Customer Support', 'HR Manager',
         'Marketing Specialist', 'Content Creator', 'Graphic Designer', 'Financial Analyst', 'Operations Manager', 'Product Owner', 'Scrum Master',
-        'HR', 'CEO', 'COO', 'Not Specified'
+        'HR', 'CEO', 'COO', 'Not Specified',
+        'Office Assistant', 'Receptionist', 'Intern', 'Consultant', 'Freelancer', 'Contractor', 'Volunteer', 'Advisor', 'Board Member', 'Shareholder'
     ];
 
     const inputEvent = (e) => {
