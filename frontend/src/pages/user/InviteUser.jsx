@@ -22,12 +22,12 @@ const InviteUser = () => {
     }, []);
 
     const positions = [
-        'AI Engineer', 'AI Developer', 'Backend AI Engineer', 'Data Scientist', 'Machine Learning Engineer', 'UI/UX Designer','Full Stack Developer', 'Full Stack Engineer', 'Product Manager',  
-        'CTO','CFO','CMO','Software Engineer', 'Data Analyst', 'DevOps Engineer', 'Project Manager', 'Business Analyst', 'Marketing Manager', 'Sales Manager',
-        'Sales Executive', 'Customer Support', 'HR Manager',
+        'AI Engineer', 'AI Developer', 'Backend AI Engineer','Machine Learning Engineer', 'UI/UX Designer','Full Stack Developer', 'Full Stack Engineer','Backend Developer', 'Backend Engineer','Frontend Developer','Frontend Engineer',  'Data Scientist', 'Software Engineer', 'Data Analyst', 'DevOps Engineer', 'Project Manager', 
+        'Business Analyst', 'CTO','CFO','CMO','Marketing Manager', 'Sales Manager',
+        'Sales Executive', 'Customer Support', 'HR Manager', 'HR Executive',
         'Marketing Specialist', 'Content Creator', 'Graphic Designer', 'Financial Analyst', 'Operations Manager', 'Product Owner', 'Scrum Master',
-        'HR', 'CEO', 'COO', 'Not Specified',
-        'Office Assistant', 'Receptionist', 'Intern', 'Consultant', 'Freelancer', 'Contractor', 'Volunteer', 'Advisor', 'Board Member', 'Shareholder'
+        'HR', 'CEO', 'COO',
+        'Office Assistant', 'Receptionist', 'Intern', 'Consultant', 'Freelancer', 'Contractor', 'Volunteer', 'Advisor', 'Board Member', 'Shareholder','Not Specified'
     ];
 
     const inputEvent = (e) => {
