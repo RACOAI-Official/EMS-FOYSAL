@@ -17,8 +17,10 @@ const invitationSchema = new Schema({
     type: String,
     required: true,
     enum: [
-      'AI Engineer', 'AI Developer',
-      'Full Stack Developer', 'Full Stack Engineer',
+      'AI Engineer', 'AI Developer', 'Backend AI Engineer', 'Data Scientist', 'Machine Learning Engineer', 'UI/UX Designer','Full Stack Developer', 'Full Stack Engineer', 'Product Manager',  
+      'CTO','CFO','CMO','Software Engineer', 'Data Analyst', 'DevOps Engineer', 'Project Manager', 'Business Analyst', 'Marketing Manager', 'Sales Manager',
+      'Sales Executive', 'Customer Support', 'HR Manager',
+      'Marketing Specialist', 'Content Creator', 'Graphic Designer', 'Financial Analyst', 'Operations Manager', 'Product Owner', 'Scrum Master',
       'HR', 'CEO', 'COO', 'Not Specified'
     ],
     default: 'Not Specified'
